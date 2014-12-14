@@ -104,7 +104,7 @@ In the remainder of this section feature detectors implemented in the SLAM++ fro
 	
 	\item A \textbf{Scale Invariant Feature Transform (SIFT)} keypoint is image region with an orientation. The detector uses as a keypoints image structures  which resemble blobs. The use of the detector is licenced which is one of the reasons why we would like to use a different detecter. However, as expected, the detector performs very well and is used by other SfM software we discussed earlier. \cite{article:sift}
 	
-	\item The \textbf{Speeded Up Robust Features} detector is modification of the SIFT detector. It addresses slow processing of the SIFT while maintaining reasonable efficiency. While it can surely be used in the SfM application, from our experiments we discovered that the increased performance greatly decreases feature detection for (in our case) important structures.  \cite{www:surf}
+	\item The \textbf{Speeded Up Robust Features (SURF)} detector is modification of the SIFT detector. It addresses slow processing of the SIFT while maintaining reasonable efficiency. While it can surely be used in the SfM application, from our experiments we discovered that the increased performance greatly decreases feature detection for (in our case) important structures.  \cite{www:surf}
 \end{itemize}
 
 We've implemented all of the standard OpenCV keypoints detectors from previous list in the SLAM++ frontend. The goal was to test how do they perform on our specific problem: detecting keypoints in buildings. The figure \ref{fig:detectors} shows three detectors (SIFT, SURF and FAST) that are suitable for our task as they find enough relevant features in an image. 
@@ -119,19 +119,36 @@ We've implemented all of the standard OpenCV keypoints detectors from previous l
 
 \section{Extractors}
 \label{sec:extractors}
-Once features have been detected, a local image patch around the feature can be extracted. This extraction may involve quite considerable amounts of image processing. The result is known as a feature descriptor or feature vector. Among the approaches that are used to feature description, one can mention N-jets and local histograms. In addition to such attribute information, the feature detection step by itself may also provide complementary attributes, such as the edge orientation and gradient magnitude in edge detection and the polarity and the strength of the blob in blob detection.
+In order to work further with the keypoints detected in previous step, the keypoints have to be analysed and transformed into so called feature descriptor. The process consist of inspecting local image patch around the keypoint to be extracted. This extraction may involve quite considerable amounts of image processing and involves reducing the amount of resources required to describe a the original data. The result is known as a feature descriptor or a feature vector. Among the information that may be stored within feature descriptor, one can mention local histograms. In addition to such attribute information, the keypoints detection step may also provide complementary attributes, such as the edge orientation, gradient magnitude in edge detection and the polarity or the strength of the blob in blob detection. The authors of detectors usually specify which extractor should work best for their detection algorithm, some even provide their own. Nevertheless, we tried all combinations with detectors to get the best results for our application.
 
+There are two types of descriptors in the OpenCV that are now available in Slam++ frontend; a) descriptors using floating point and b) descriptors storing information as a binary data in unsigned char type.
 \begin{itemize}
-	\item \textbf{SIFT:} The scale-invariant feature transform of a neighbourhood is a 128-dimensional vector of histograms of image gradients. The region, at the appropriate scale and orientation, is divided into a $4\times 4$ square grid, each cell of which yields a histogram with 8 orientation bins.
+	\item[a)] \textbf{Float} descriptors:
+	
+	\begin{itemize}
+		\item \textbf{SIFT:} The scale-invariant feature transform of a neighbourhood is a 128-dimensional vector of histograms of image gradients. The region, at the appropriate scale and orientation, is divided into a $4\times 4$ square grid, each cell of which yields a histogram with 8 orientation bins. The SIFT extractor is advised to be used with the SIFT, SURF and FAST detector.
+		\item \textbf{SURF:} The speeded up robust feature extractor uses either 128 or 64-dimensional vector of histograms of image gradients.An oriented quadratic grid of $4 \times 4$ square sub-regions is laid over the keypoint and a wavelet response computed for each square. According to literature the SIFT, SURF and FAST detector can be used with the SURF extractor.
+	\end{itemize}
+	
+	\item[b)] \textbf{Binary} descriptors:
+	
+	\begin{itemize}
+		\item \textbf{BRIEF:} The Binary Robust Independent Elementary Feature descriptor is a 128, 256 or 512-dimensional bitstring which is a good compromise between speed, storage efficiency and recognition rate. The descriptor is much smaller (16, 32 or 64 bytes) compared to floating point descriptors, while maintaining a good performance compared to SURF or U-SURF. \cite{article:brief}
+		
+		\item \textbf{ORB:} Unlike BRIEF, Oriented FAST and Rotated BRIEF (ORB) is comparatively scale and rotation invariant while still employing the very efficient Hamming distance metric for matching. As such, it is preferred for real-time applications, but may be suitable for some offline applications as well. \cite{www:orb}\cite{article:orb}
+		
+		\item \textbf{FREAK:} The Fast Retina Keypoint extractor aims to be faster and more robust than SIFT and SURF. It uses a novel keypoint descriptor inspired by the human visual system to compute cascade of binary strings.\cite{article:freak}
+		
+		\item \textbf{BRISK:}  The  Binary Robust Invariant Scalable Keypoints extractor uses a 64-byte binary descriptor composed as a binary string by concatenating the results of simple brightness comparison tests. \cite{article:brisk}
+	\end{itemize}
 \end{itemize}
+
 \section{Matchers}
 \label{sec:matchers}
 
-\section{Feature Based Image Registration}
-
 \chapter{Methodology}
 \label{chapter:methodology}
-This chapter describes the process of 3D reconstruction from a set of images to the point cloud output. It puts the features detection, extraction and matching into context of 3D reconstruction. In order to select only inliers, the RUNSAC algorithmes filters the matched feature pairs. Then, using mathematical apparatus from chapter \ref{chapter:theoretical-background} the fundamental matrix and camera model are estimated. Finally, once we know the camera model, we can run dense reconstruction, creating the resulting point cloud.  
+This chapter describes the process of 3D reconstruction from a set of images to the point cloud output. It puts the features detection, extraction and matching into context of 3D reconstruction. In order to select only inliers, the RUNSAC algorithmes filters the matched feature pairs. Then, using mathematical apparatus from chapter  the fundamental matrix and camera model are estimated. Finally, once we know the camera model, we can run dense reconstruction, creating the resulting point cloud.  
 \section{Three-dimensional Structure Estimation Pipeline}
 \subsection*{Selecting Dataset}
 \subsection*{Feature Detection and Extraction}
