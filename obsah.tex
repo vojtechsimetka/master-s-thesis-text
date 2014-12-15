@@ -19,7 +19,7 @@ The study of the geometry involved in multiple camera vision systems should allo
 \section{Overall Structure}
 This paper consist of 4 chapters and a bibliography at the end of the document.
 
-Chapter \ref{chapter:the-state-of-the-art} introduces reader to the process of estimation three-dimensional structure from two-dimensional image sequences. Firstly, it discuss existing solutions, like VisualSFM, photosynth and Bundler, elaborated on the output of these programs. Later they will be used as a benchmark for the implemented application. These will be used for the final application performance and effectiveness evaluation.. Then it focuses on the state-of-the-art features detectors, extractors and matchers, built in the SLAM++ frontend, and aims to compare theirs efficiency and performance. The comparison is then discussed and best combination in terms of performance and effectiveness chosen for the planned application.
+Chapter \ref{chapter:the-state-of-the-art} introduces reader to the process of estimation three-dimensional structure from two-dimensional image sequences. Firstly, it discuss existing solutions, like VisualSFM, photosynth and Bundler, elaborated on the output of these programs. Later they will be used as a benchmark for the implemented application. These will be used for the final application performance and effectiveness evaluation. Then it focuses on the state-of-the-art features detectors, extractors and matchers, built in the SLAM++ frontend, and aims to compare theirs efficiency and performance. The comparison is then discussed and best combination in terms of performance and effectiveness chosen for the planned application.
 
 In the chapter \ref{chapter:methodology} the whole 3D reconstruction process is thoroughly discussed and step by step explained. The steps that are already implemented, like dataset acquisition or feature detection, extraction and matching, are in detail described. The rest of the pipeline is also outlined to give the reader idea what are the next steps to be implemented. 
 
@@ -30,6 +30,7 @@ Finally, chapter \ref{chapter:conclusion} summarizes this document by discussing
 The following chapter presents to the reader the process of estimating three-dimensional structures from two-dimensional image sequences. After brief introduction into the pipeline, some of the existing solutions for the Structure from Motion (SfM) imaging technique are discussed. The programs described will be used as a benchmark for the final solution once it's presented. We take a closer look on first part of the pipeline consisting of the feature detectors, extractors and matchers. The goal is to select the best combination in terms of performance and effectiveness for reconstruction of historic landmarks. 
 
 \section{Existing 3D Reconstruction Solutions}
+\label{sec:existing_3D_reconstruction_solutions}
 The problem of creating 3D reconstruction from set of images has been addressed by many research groups. In this section we will talk about few of the widely known solutions. All of the programs below implement a subset of algorithm for structure from motion which consist of 7 distinct steps:
 \begin{itemize}
 	\item[1)] \textbf{Dataset aquisition.} First step in the SfM pipeline is selection of a input data. Specific requirements on the data varies throughout different software, however, we can generalize some properties of such set of images. The set has to contain images that are overlapping one another. Only such images are used in the reconstruction as they provide points seen by multiple cameras and therefore the 3D position can be calculated.
@@ -177,14 +178,55 @@ We manually selected 100 image pairs from the Červená Lhota dataset and tried 
 
 \chapter{Methodology}
 \label{chapter:methodology}
-This chapter describes the process of 3D reconstruction from a set of images to the point cloud output. It puts the features detection, extraction and matching into context of 3D reconstruction. In order to select only inliers, the RUNSAC algorithmes filters the matched feature pairs. Then, using mathematical apparatus from chapter  the fundamental matrix and camera model are estimated. Finally, once we know the camera model, we can run dense reconstruction, creating the resulting point cloud.  
+This chapter thoroughly describes the so far implemented part of the process of 3D reconstruction from a set of images. Steps that are not yet implemented are outlined and briefly discussed. The reader will be introduced to the dataset aquisition from the internet especially Flickr. Then the implemented feature detection, extraction and matching in context of 3D reconstruction. The next section discusses the 3D reconstruction approaches leading to the uncalibrated one which will be implemented. Finally we introduce the SLAM++ framework and it's application in this project. 
+
 \section{Three-dimensional Structure Estimation Pipeline}
-\subsection*{Selecting Dataset}
-\subsection*{Feature Detection and Extraction}
-\subsection*{Feature Matching}
+The pipeline (depicted in figure \ref{fig:pipeline}) for the implemented solution is similar to the pipeline described in section \ref{sec:existing_3D_reconstruction_solutions}. Firstly we create a dataset by downloading images from the internet. These images are then filtered and used as an input for the implemented application called uncalibrated app. The uncalibrated app detects and extracts features from the input image set and finds the matches between every image. As of now these are the steps implemented. Next steps, which will be soon implemented, includes the camera initialization and pose estimation. Finally this allows us to calculate the model's 3D structure from the points seen by different cameras. As of now there are no plans to implement visualization of a final sparse reconstruction, but the SLAM++ fremework provides a means to visualize the resulting sparse point cloud. 
+
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=\textwidth]{fig/pipeline.pdf}
+	\end{center}
+	\caption{The three-dimensional structure from two-dimensional images estimation pipeline.}
+	\label{fig:pipeline}
+\end{figure}
+
+\subsection*{Dataset Generation}
+Creating a dataset is a crucial part of the process of estimating three-dimensional structures from two-dimensional image sequences. The dataset has to contain enough images with a feature pairs to be vialable for reconstruction. We also want to filter out images taken during the night or throughout various seasons as the depicted object and its surroundings may change significantly.
+
+With this in mind we've decided to download images from Flickr webpage. Flickr is well known and widely used web service for sharing pictures. The advantage of this service, in comparison to other picture sharing websites, is the ability to tag the photo. Each image can contain a number of tags describing the photo. Most of the pictures uploaded contain information about the place where the photo was taken and can be aggregated using such this tag. A tool, Flickr downloader, we designed allows downloading images from Flickr in batches based on the tag. It is a simple Python script taking two parameters; number of photos to be downloaded and a tag of the image. The script connects to the Flickr webpage, downloads the search results page, cyclically opens each photo page and downloads the image. The downloaded images are stored to the \texttt{downloaded} output folder.
+
+While the Flickr yelds good results for well known places in countries like USA or western Europe, there is not enough images in the Czech Republic yet. This is the reason why we have, for now, decided to use different services, like Google image search, as well. The datasets aquired were manually filtered to eliminate irrelevant images and limit the selection to daytime photos taken in summer.
+
+\subsection*{Feature Detection, Extraction and Matching}
+Once we have a desired dataset we compute the feature pairs. An interface between the SLAM++ and the OpenCV was created which allowed use of the feature detectors, extractors and matchers described in chapter \ref{chapter:the-state-of-the-art}. The interface is a C++ template so there is no overhead. The extractors are defined using the \texttt{typedef} keyword and naming convention follows this scheme: \texttt{FeatureExtractor\_OpenCV\_[detector]\_[extractor]}.
+
+In the building reconstruction the repeated features are common. Many objects, such as clock towers with nearly identical sides, or domes with strong radial symmetries, pose challenges for structure from motion. When similar but distinct features are mistakenly equated, the resulting 3D reconstructions can have errors ranging from phantom walls and superimposed structures to a complete failure to reconstruct. This can be partially solved by a good selection of the feature detecting, extracting and matching algorithms. In section \ref{sec:matchers} we have identified some combinations that yeld good feature matches and therefore are suitable for the Structure from Motion algorithms on building reconstruction. We will use these algorithms int the uncalibrated app once it is finished.
+
 \section{3D Reconstruction Approaches}
-Stereo, Mono, Uncalibrated
-frontend and backend
+Based on the image source we can distinguish between three types of vision: Stereoscopic, Monocular and Uncalibrated. The type of the vision defines the difficulty of the 3D reconstruction problem.
+
+\subsection*{Stereoscopic Vision}
+The stereoscopic vision is similar to human binocular vision. Two cameras, displaced horizontally from one another are used to obtain view of the scene, simulating human vision. By comparing both images, the relative depth information can be obtained, which is proportional to the differences in distance to the objects. If the images are undistorted, and camera parameters known, we can easily calculate the 3D relative position of the points. The figure \ref{fig:stereo} shows how the depth can be calculated using following equation:
+
+\begin{equation}
+	z=\frac{f b}{x_L - x_R}
+\end{equation}
+
+The reconstruction is straightforward as the depth is the only thing required to understand
+
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=9cm]{fig/stereo.pdf}
+	\end{center}
+	\caption{3D information from stereo image.}
+	\label{fig:stereo}
+\end{figure}
+
+
+\subsection*{Monocular Vision}
+\subsection*{Uncalibrated Vision}
+\section{SLAM++ Frontend and Backend}
 
 \chapter{Conclusion}
 \label{chapter:conclusion}
