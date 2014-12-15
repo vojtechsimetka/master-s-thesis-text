@@ -52,7 +52,7 @@ The Photosynth technology is using an interest point detection and matching algo
 		\includegraphics[keepaspectratio,width=\textwidth]{fig/Photosynth.png}
 	\end{center}
 	\caption{The Photosynth output of the Červená Lhota Castle in transition between several morphed images.}
-	\label{fig:visualsfm}
+	\label{fig:photosynth}
 \end{figure}
 
 \subsection*{VisualSFM}
@@ -146,11 +146,11 @@ There are two types of descriptors in the OpenCV that are now available in Slam+
 
 \section{Matchers}
 \label{sec:matchers}
-So far we are able to find points of interest in an image and describe them in such a way that they are effectively stored but still contain information about the point and its local image patch. Once descriptors are extracted from two or more images, we want to match points that are visible in more then one image. This is called nearest neighbour search which is an optimization problem for finding closest (or most similar) points. There are two approaches to this problem that are implemented in the OpenCV: Brute-Force and FLANN-based matching.
+So far we are able to find points of interest in an image and describe them in such a way that they are effectively stored but still contain information about the point and its local image patch. Once descriptors are extracted from two or more images, we want to match points present more then one image. This is called nearest neighbour search which is an optimization problem for finding closest (or most similar) points. There are two approaches to this problem that are implemented in the OpenCV: Brute-Force and FLANN-based matching.
 
-The Brute-Force matcher is simple and naive approach. It takes the descriptor of one feature from the first image set and matches it with all other feature from the second image set. During the process a distance of some sort is calculated and the match with best metric selected. There are number of metrics implemented in the OpenCV to be used with different descriptors, but we once again tried all the combination in order to get best result for our problem. The algorithm promises best possible matches, but due to the fact that it tries to match each pair of feature, can take a lot of time to process. 
+The Brute-Force matcher is simple and naive approach. It takes the descriptor of one feature from the first image set and matches it with all other feature from the second image set. During the process a distance of some sort is calculated and the match with best metric selected. There are number of metrics implemented in the OpenCV to be used with different descriptors but we, once again, tried all the combinations in order to get best result for our problem. The algorithm promises best possible matches, but due to the fact that it tries to match each pair of feature, can take a lot of time to process. 
 
-The Fast Library for Approximate Nearest Neighbors (FLANN) implementad in OpenCV, performs a fast approximate nearest neighbor searches in high dimensional spaces. It uses the Hierachical K-means Tree for generic feature matching. Nearest neighbors are discovered by choosing to examine the branch-not-taken nodes along the way.
+The Fast Library for Approximate Nearest Neighbors (FLANN) implemented in OpenCV, performs a fast approximate nearest neighbour searches in high dimensional spaces. It uses the Hierachical K-means Tree for generic feature matching. Nearest neighbors are discovered by choosing to examine the branch-not-taken nodes along the way. \cite{www:flann}
 
 \begin{figure}[ht]
 	\begin{center}
@@ -166,7 +166,7 @@ We manually selected 100 image pairs from the Červená Lhota dataset and tried 
 	0.02 \leq G \leq 2* M
 \end{equation}
 
-\ where $M$ is a minimal distance found between a match pair for selected images. From the results, we can conclude that best result, in terms of performance to effectiveness ratio, is achieved using FAST detector, SIFT extractor and FLANN matcher. The figure \ref{fig:matches} shows matches for one image pair using some of the well known feature detector, extractor and matcher combinations. The picture a) shows that the ORB detector is fast, but for our application does not yeld good results. The SIFT detector and extractor performs well and can be used for the SfM application. In fact it is being used by the VisualSfM program introduced earlier. The best obtained result is depicted in c) where FAST detector and SIFT extractor were used.
+where $M$ is a minimal distance found between a match pair for selected images. From the results, we can conclude that best result, in terms of performance to effectiveness ratio, is achieved using FAST detector, SIFT extractor and FLANN matcher. The figure \ref{fig:matches} shows matches for one image pair using some of the well known feature detector, extractor and matcher combinations. The picture a) shows that the ORB detector is fast, but for our application does not yeld good results. The SIFT detector and extractor performs well and can be used for the SfM application. In fact it is being used by the VisualSfM program introduced earlier. The best obtained result is depicted in c) where FAST detector and SIFT extractor were used.
 
 \begin{figure}[ht]
 	\begin{center}
@@ -178,7 +178,7 @@ We manually selected 100 image pairs from the Červená Lhota dataset and tried 
 
 \chapter{Methodology}
 \label{chapter:methodology}
-This chapter thoroughly describes the so far implemented part of the process of 3D reconstruction from a set of images. Steps that are not yet implemented are outlined and briefly discussed. The reader will be introduced to the dataset aquisition from the internet especially Flickr. Then the implemented feature detection, extraction and matching in context of 3D reconstruction. The next section discusses the 3D reconstruction approaches leading to the uncalibrated one which will be implemented. Finally we introduce the SLAM++ framework and it's application in this project. 
+This chapter thoroughly describes the so far implemented part of the process of 3D reconstruction from a set of images. Steps that are not yet implemented are outlined and briefly discussed. The reader will be introduced to the dataset aquisition from the internet especially Flickr. Then we will briefly talk about the implemented feature detection, extraction and matching in context of 3D reconstruction. The next section discusses the 3D reconstruction approaches leading to the uncalibrated one which will be implemented. Finally we introduce the SLAM++ framework and it's application in this project. 
 
 \section{Three-dimensional Structure Estimation Pipeline}
 The pipeline (depicted in figure \ref{fig:pipeline}) for the implemented solution is similar to the pipeline described in section \ref{sec:existing_3D_reconstruction_solutions}. Firstly we create a dataset by downloading images from the internet. These images are then filtered and used as an input for the implemented application called uncalibrated app. The uncalibrated app detects and extracts features from the input image set and finds the matches between every image. As of now these are the steps implemented. Next steps, which will be soon implemented, includes the camera initialization and pose estimation. Finally this allows us to calculate the model's 3D structure from the points seen by different cameras. As of now there are no plans to implement visualization of a final sparse reconstruction, but the SLAM++ fremework provides a means to visualize the resulting sparse point cloud. 
@@ -194,14 +194,14 @@ The pipeline (depicted in figure \ref{fig:pipeline}) for the implemented solutio
 \subsection*{Dataset Generation}
 Creating a dataset is a crucial part of the process of estimating three-dimensional structures from two-dimensional image sequences. The dataset has to contain enough images with a feature pairs to be vialable for reconstruction. We also want to filter out images taken during the night or throughout various seasons as the depicted object and its surroundings may change significantly.
 
-With this in mind we've decided to download images from Flickr webpage. Flickr is well known and widely used web service for sharing pictures. The advantage of this service, in comparison to other picture sharing websites, is the ability to tag the photo. Each image can contain a number of tags describing the photo. Most of the pictures uploaded contain information about the place where the photo was taken and can be aggregated using such this tag. A tool, Flickr downloader, we designed allows downloading images from Flickr in batches based on the tag. It is a simple Python script taking two parameters; number of photos to be downloaded and a tag of the image. The script connects to the Flickr webpage, downloads the search results page, cyclically opens each photo page and downloads the image. The downloaded images are stored to the \texttt{downloaded} output folder.
+With this in mind we've decided to download images from Flickr webpage. Flickr is well known and widely used web service for sharing pictures. The advantage of this service, in comparison to other picture sharing websites, is the ability to tag the photo. Each image can contain a number of tags describing it. Most of the pictures uploaded contain information about the place where the photo was taken and can be aggregated by that tag. A tool, Flickr downloader, we designed allows downloading images with specified tag from Flickr in batches. It is an easy to use Python script expecting two parameters; number of photos to be downloaded and a tag to be browsed. The script connects to the Flickr webpage, downloads the search results page, cyclically opens each photo page and downloads the image. The downloaded images are stored to the \texttt{downloaded} output folder.
 
 While the Flickr yelds good results for well known places in countries like USA or western Europe, there is not enough images in the Czech Republic yet. This is the reason why we have, for now, decided to use different services, like Google image search, as well. The datasets aquired were manually filtered to eliminate irrelevant images and limit the selection to daytime photos taken in summer.
 
 \subsection*{Feature Detection, Extraction and Matching}
 Once we have a desired dataset we compute the feature pairs. An interface between the SLAM++ and the OpenCV was created which allowed use of the feature detectors, extractors and matchers described in chapter \ref{chapter:the-state-of-the-art}. The interface is a C++ template so there is no overhead. The extractors are defined using the \texttt{typedef} keyword and naming convention follows this scheme: \texttt{FeatureExtractor\_OpenCV\_[detector]\_[extractor]}.
 
-In the building reconstruction the repeated features are common. Many objects, such as clock towers with nearly identical sides, or domes with strong radial symmetries, pose challenges for structure from motion. When similar but distinct features are mistakenly equated, the resulting 3D reconstructions can have errors ranging from phantom walls and superimposed structures to a complete failure to reconstruct. This can be partially solved by a good selection of the feature detecting, extracting and matching algorithms. In section \ref{sec:matchers} we have identified some combinations that yeld good feature matches and therefore are suitable for the Structure from Motion algorithms on building reconstruction. We will use these algorithms int the uncalibrated app once it is finished.
+In the building reconstruction the repeated features are common. Many objects, such as clock towers with nearly identical sides, or domes with strong radial symmetries, pose challenges for structure from motion. When similar but distinct features are mistakenly equated, the resulting 3D reconstructions can have errors ranging from phantom walls and superimposed structures to a complete failure to reconstruct. This can be partially solved by a good selection of the feature detecting, extracting and matching algorithms. In section \ref{sec:matchers} we have identified some combinations that yeld good feature matches and therefore are suitable for the Structure from Motion algorithms on building reconstruction. We will use these algorithms in the uncalibrated app once it is finished.
 
 \section{3D Reconstruction Approaches}
 Based on the image source we can distinguish between three types of vision: Stereoscopic, Monocular and Uncalibrated. The type of the vision defines the difficulty of the 3D reconstruction problem.
@@ -213,7 +213,7 @@ The stereoscopic vision is similar to human binocular vision. Two cameras, displ
 	z=\frac{f b}{x_L - x_R}
 \end{equation}
 
-If the cameras are calibrated then the reconstruction is straightforward as the depth is the only thing required to calculate the position in the 3D image.
+If the cameras are calibrated then the reconstruction is straightforward as the depth is the only thing required to calculate the position of the point in 3D.
 
 \begin{figure}[ht]
 	\begin{center}
@@ -231,33 +231,33 @@ The monocular vision consists of one camera moving in space. Because we have onl
 		\includegraphics[keepaspectratio,width=\textwidth]{fig/mono.pdf}
 	\end{center}
 	\caption{An illustration of the process of 3D reconstruction using a monocular vision. a) detect features b) match them and estimate camera pose c) add other points with next iteration. This image was taken from the Monocular camera 3D reconstruction presentation by Ing. Marek Šolony.}
-	\label{fig:stereo}
+	\label{fig:mono}
 \end{figure}
 
 \subsection*{Uncalibrated Vision}
-Until this point the camera parameters were known or could have been easily estimated. However, when dealing with images downloaded from the internet, we don't have such information. This makes the problem much more complex and to find the solution we not only need to estimate camera position but also it's parameters. The principle of reconstruction is similar as in the monocular vision, but we need 8 points instead of 3 to calculate the two-dimension to three-dimension transformation. Once the camera calibration and position is known, we can undistort the images and calculate the 3D structure.
+Until this point the camera parameters were known or could have been easily estimated. However, when dealing with images downloaded from the internet, we don't have such information. This makes the problem much more complex and to find the solution we not only need to estimate camera position but also it's parameters. The principle of reconstruction is similar as in the monocular vision, but we need 8 points instead of 3 to calculate the two-dimension to three-dimension transformation. Once the camera calibration and position is known, we can undistort the images and calculate the 3D structure in similar fashion as in the monocular.
 
 \section{SLAM++ Frontend and Backend}
 
 \chapter{Conclusion and Further Work}
 \label{chapter:conclusion}
-This chapter presents the conclusion of the term project work. Next steps are also outlined as this topic will be further developed as a part of the Masters thesis.
+This chapter presents the conclusion of the term project work. Further work is also outlined as this topic will be further developed as a part of the Masters thesis.
 
 \section{Conclusion}
 This term project has focused on the study of a means to estimate three-dimensional information from a two-dimensional image sequence. Usually, the first step is to create appropriate dataset. We summarized requirements on such dataset, identified what qualities the images should have and what sort of images should be filtered out. We provided a simple tool that allows downloading images in batches from the Flickr service and explained why we have decided to use additional sources of images as well. 
 
-Another step in the 3D reconstruction is detection of the feature. A number of feature detectors were introduced and their characteristics described. We conducted a series of experiments which goal was to understand qualities of feature detections in context of the building reconstruction. Then the reader was introduced to the issue of extraction of the feature descriptors from the image. The extractors implemented in OpenCV were described and compared one to another. We finished the chapter with feature matching algorithms. All combinations of feature detectors, extractors and matchers were tested on a 100 image pair input set and the result evaluated. We've selected the best combination, FAST detector, SIFT extractor and FLANN matcher, for our problem which maintains a good ratio between performance and efficiency.
+Another step in the 3D reconstruction is detection of the feature. A number of feature detectors were introduced and their characteristics described. We conducted a series of experiments which goal was to understand qualities of feature detection in context of the building reconstruction. Then the reader was introduced to the issue of extraction of the feature descriptors from the image. The extractors implemented in OpenCV were described and compared one to another. We finished the chapter with feature matching algorithms. All combinations of feature detectors, extractors and matchers were tested on a 100 image pair input set and the result evaluated. We have selected the best combination, FAST detector, SIFT extractor and FLANN matcher, for our problem which maintains a good ratio between performance and efficiency.
 
-The problem of 3D information estimation was discussed and three different approaches of non-contact scanning outlined. We started with the stereo vision, where the depth can be directly computed from the image disparity. The problem gets more difficult when only one camera scans the 3D space. This approach, monocular vision, uses feature to calculate camera position and reconstruct the 3D structure. Lastly we talked about the uncalibrated approach, where the scene is being reconstructed from a number images made by multiple cameras, each having a different calibration matrix. The pose estimation was outlined and difficulties with such approach identified.
+The problem of 3D information estimation was discussed and three different approaches of non-contact scanning outlined. We started with the stereo vision, where the depth can be directly computed from the image disparity. The problem gets more difficult when only one camera scans the 3D space. This approach, monocular vision, uses feature to calculate camera position and reconstruct the 3D structure. Lastly we talked about the uncalibrated approach, where the scene is being reconstructed from a number of images made by multiple cameras, each having a different calibration matrix. The pose estimation was outlined and difficulties with such approach identified.
 
-Lastly we talked about existing solutions that are implementing the uncalibrated approach. Three different programs (Photosynth, VisualSFM and Bundler) were introduced and briefly evaluated. These programs will be matched against the final application implemented within the Masters thesis to evaluate its capabilities and performance.
+Lastly we have talked about existing solutions that are implementing the uncalibrated approach. Three different programs (Photosynth, VisualSFM and Bundler) were introduced and briefly evaluated. These programs will be matched against the final application implemented within the Masters thesis to evaluate its capabilities and performance.
 
 \section{Further Work}
 The research and work presented in this paper proposes the following subjects for further work:
 \begin{itemize}
 	\item Completion of the feature detection and matching part of the uncalibrated app. As of now, the program can detect and match feature, however, it would be useful to store such information in a binary form to be able to use it as a input for the VisualSFM. This would allow us to test how does the reconstruction improve with a different detector.
 	
-	\item A further steps should be implemented into the uncalibrated app. This includes camera calibration and pose estimation and the 3D structure reconstruction. The result of this step will be sparse point cloud that can be visualized using software like Meshlab.
+	\item A further steps should be implemented into the uncalibrated app including, among others, camera calibration and pose estimation and the 3D structure reconstruction. The result of this step will be sparse point cloud that can be visualized using software like Meshlab.
 	
 	\item With the application being able to create sparse reconstruction, further description of the math behind the problem needs to be provided. This includes but is not limited to fundamental matrix estimation, camera calibration and epipolar geometry.
 	
