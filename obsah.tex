@@ -1,46 +1,43 @@
 %=========================================================================
 
 \chapter{Introduction}
-This chapter describes the motivation leading to the presentation of this paper and how is it related to the SLAM++ project at FIT VUT. The objectives of the project and the subjects included in this document are briefly explained. The chapter ends describing the overall structure and contents of the remaining of the paper.
+\textit{This chapter describes the motivation leading to the presentation of this paper and how is it related to the SLAM++ project at FIT VUT. The objectives of the project and the subjects included in this document are briefly explained. The chapter ends describing the overall structure and contents of the remaining of the paper.}
 
 \section{Motivation}
-There is an immerse need to record and preserve our knowledge and perception of the world around us. Evidence of such tendency can be track thousands of years back in human existence as a cave paintings. Later we used more advanced techniques in form of written languages, sculptures, drawings, et cetera. Nowadays we have means to record our surroundings as we perceive it in 2D using cameras. However, it has proven difficult to process such information digitally. Even automated analysis of 2D information like typeset books is not a trivial problem and far from being mastered. While there are so called OCR converters available, in many cases they don't work reliably enough.
+There is an immerse need to record and preserve our knowledge and perception of the world around us. Evidence of such tendency can be track thousands of years back in human existence as a cave paintings. Later we used more advanced techniques in form of written languages, sculptures, drawings, et cetera. Nowadays we have means to record our surroundings as we perceive it in 2D using cameras. However, it has proven difficult to process such information digitally. Even automated analysis of 2D information like typeset books is not a trivial problem and far from being mastered.
 
 When it comes to 3D the problem gets much more difficult. Scanning 3D object reliably is nowadays possible in laboratory conditions, but there are hard limits like the size of the object, its structure or surface and material properties. Also the laboratory equipment used is much more expensive and physically larger compared to its 2D counterpart. This paper tries to address both of these problems by allowing user to create 3D model using multiple pictures of an object of interest from various sources. Such 3D model, even though it may be inaccurate, has number of applications. It can be used by archaeologists to preserve cultural heritage, by architects for spatial planning, by entertainers to create 3D models and virtual reality or by engineers to replicate existing 3D objects.
 
 \section{Tools}
-The process of creating a 3D model usually consist of two parts: scanning the object and reconstruction of the model. There are three main approaches how to scan physical object: contact, active non-contact  and passive non-contact scanners. The contact 3D scanners probe the subject through physical touch. The active non-contact scanners use a light in forms of laser or X-ray to scan the object while the passive non-contact scanners are using either multiple cameras, images with varying lighting conditions or silhouettes extruded from image with contrasted background. In this thesis we will be particularly interested in scanning objects using multiple images from various cameras. We will talk more about this in next chapter \ref{chapter:methodology} but for now note that for this we will use the SLAM++ framework \cite{www:slam}. The output of such scanning is usually a set of 3D points with a color information called point cloud. These data have to be filtered in order to remove noise, segmented and then reconstructed into polygonal model. The reconstruction can be done either manually using software like MeshLab \cite{www:meshlab} or automatized with framework like the PCL \cite{www:pcl}. 
+\label{sec:tools}
+The process of creating a 3D model usually consist of two parts: scanning the object and reconstruction of the model. There are three main approaches how to scan physical object: contact, active non-contact  and passive non-contact scanners. The contact 3D scanners probe the subject through physical touch. The active non-contact scanners use a light in forms of laser or X-ray to scan the object while the passive non-contact scanners are using either multiple cameras, images with varying lighting conditions or silhouettes extruded from image with contrasted background. In this thesis we will be particularly interested in scanning objects using multiple images from various cameras. The input images will be downloaded from the internet, especially the Flickr services which provides great means of finding relevant photos using tags. The pipeline of transformation from 2D image to the 3D model consists of 5 steps: 1) keypoints detection 2) feature extraction  3) feature matching 4) camera initialization and pose estimation and finally 5) structure computation. In principle, the algorithm firstly finds points of interests in every image and tries to match them. Once matched the camera position can be estimated and the structure implemented as a series of 3D points called point cloud. This part will use the SLAM++ framework \cite{www:slam} as it implements many of the algorithms used in Bundle Adjustment like Nonlinear Least Square solver. Because the process is quite difficult, the resulting 3D structure contains a lot of noise and has to be filtered and segmented before a polygonal model can be created. There is number of tools available for either manual processing of point cloud data, like MeshLab \cite{www:meshlab}, or the whole process can be automatized using framework like the PCL \cite{www:pcl}. 
 
 \section{Objectives}
-This paper aims to identify challenges of 3D reconstruction from a set of 2D images taken by various cameras leading to creation of a software that can do so automatically. The objective deals with the aim of reducing the correspondence problem between each two images and the study of camera modelling and calibration. An accurate estimation of the camera model and correspondence allows us to compute three-dimensional information from a two-dimensional image sequence. In order to eliminate artefacts the input set of images, obtained from internet, will have to be filtered to contain only daytime images from summer season.
+This thesis aims to identify challenges and propose solution of 3D reconstruction from a set of 2D images taken by various cameras leading to creation of a software that can do so automatically. The objective is to reduce the correspondence problem between each two images and the study of camera modelling and calibration. An accurate estimation of the camera model and correspondence allows us to compute three-dimensional information from a two-dimensional image sequence. In order to eliminate artefacts the input set of images, obtained from internet, will have to be filtered to contain only daytime images from summer season.
 
 The study of the geometry involved in multiple camera vision systems should allow us to present an application that can from a set of two-dimensional images reconstruct 3D scene depicted by the images.
 
 \section{Overall Structure}
-This paper consist of 4 chapters and a bibliography at the end of the document.
+The thesis consist of 4 chapters and a bibliography at the end of the document.
 
-Chapter \ref{chapter:the-state-of-the-art} introduces reader to the process of estimation three-dimensional structure from two-dimensional image sequences. Firstly, it discuss existing solutions, like VisualSFM, photosynth and Bundler, elaborated on the output of these programs. Later they will be used as a benchmark for the implemented application. These will be used for the final application performance and effectiveness evaluation. Then it focuses on the state-of-the-art features detectors, extractors and matchers, built in the SLAM++ frontend, and aims to compare theirs efficiency and performance. The comparison is then discussed and best combination in terms of performance and effectiveness chosen for the planned application.
+Chapter \ref{chapter:the-state-of-the-art} introduces reader to the current state of the art algorithms used in the process of estimation three-dimensional structure from two-dimensional image sequences. Firstly, it discusses existing bundle adjustment solutions, like VisualSFM, Photosynth and Bundler, and elaborates on the output of these programs. Later they will be used as a benchmark for the implemented application. The programs mentions, will be used for the final application performance and effectiveness evaluation. Lastly the chapter focuses on the state-of-the-art features detectors, extractors and matchers, built in the SLAM++, and aims to compare theirs efficiency and performance. The comparison is then discussed and best combination in terms of performance and effectiveness chosen for the planned application.
 
 In the chapter \ref{chapter:methodology} the whole 3D reconstruction process is thoroughly discussed and step by step explained. The steps that are already implemented, like dataset acquisition or feature detection, extraction and matching, are in detail described. The rest of the pipeline is also outlined to give the reader idea what are the next steps to be implemented. 
 
-Finally, chapter \ref{chapter:conclusion} summarizes this document by discussing achieved goals.
+Finally, chapter \ref{chapter:conclusion} summarizes this document by discussing achieved goals and outlining the future work to be done within the Masters thesis.
 
 \chapter{The State of the Art}
 \label{chapter:the-state-of-the-art}
-The following chapter presents to the reader the process of estimating three-dimensional structures from two-dimensional image sequences. After brief introduction into the pipeline, some of the existing solutions for the Structure from Motion (SfM) imaging technique are discussed. The programs described will be used as a benchmark for the final solution once it's presented. We take a closer look on first part of the pipeline consisting of the feature detectors, extractors and matchers. The goal is to select the best combination in terms of performance and effectiveness for reconstruction of historic landmarks. 
+\textit{The following chapter presents to the reader existing implementation of the bundle adjustment technique. Applications described  will be used as a benchmark for the final solution once it is presented. The rest of the chapter focuses on state of the art detectors, extractors and matchers that are now accessible through the SLAM++ framework. All of them are subjected to the survey and the goal is to select the best combination in terms of performance and effectiveness for reconstruction of historic landmarks.}
 
-\section{Existing 3D Reconstruction Solutions}
+\section{Existing 3D Reconstruction Applications}
 \label{sec:existing_3D_reconstruction_solutions}
-The problem of creating 3D reconstruction from set of images has been addressed by many research groups. In this section we will talk about few of the widely known solutions. All of the programs below implement a subset of algorithm for structure from motion which consist of 7 distinct steps:
-\begin{itemize}
-	\item[1)] \textbf{Dataset aquisition.} First step in the SfM pipeline is selection of a input data. Specific requirements on the data varies throughout different software, however, we can generalize some properties of such set of images. The set has to contain images that are overlapping one another. Only such images are used in the reconstruction as they provide points seen by multiple cameras and therefore the 3D position can be calculated.
-	\item[2)] \textbf{Keypoints detection.} Keypoints are parts of the image that are significant in some way. The significance is usually caused by a sudden change in gradient on relatively small part of the image. These points will be used to estimate the 3D representation. We will focus more on keypoints detection in section \ref{sec:detectors}. 
-	\item[3)] \textbf{Feature extraction.} The detected keypoints are rarely used as provided by the detector as they do not provide enough information about the point itself. A set of calculations is applied in order to extract data from the surroundings of such point and enrich information about the keypoint. Resulting structure is called feature and contains all data required for next step. At this point the input image does not have to be kept in memory anymore.
-	\item[4)] \textbf{Feature matching.} Now that we have keypoints represented as feature we want to establish a visual correspondence between a set of keypoints from two closely related images. This is done by so called feature matching and will be discussed in detail in section \ref{sec:matchers}.
-	\item[5)] \textbf{Camera initialization and pose estimation.} Once we know correspondence between two closely related images, we can estimate the parameters of the camera(s). If not known, the camera matrix can be calculated and the relation between the points in 3D.
-	\item[6)] \textbf{Structure computation.} Next step is to calculate the model's 3D structure from the points seen by different cameras. The quality of the structure is greatly affected by errors from previous steps.
-	\item[7)] \textbf{Visualization.} Lastly the resulting 3D structure in form of point cloud is visualized.The visualization can be either just a set of images cleverly arranged to give impression of 3D, cloud of 3D points or polygonal model. In this thesis we will not be interested in the visualization of the resulting model, however we see this as an important part of the SfM pipeline.
-\end{itemize}
+There are two image-based 3D reconstruction techniques based on estimating the position of the 3D points in the environment; structure from motion (SfM) and bundle adjustment (BA). The structure from motion tracks image feature from image sequences obtained by a moving camera. The problem requires camera calibration or an automatic camera parameters re-estimation. If the input image sequence consists of images from multiple uncalibrated cameras (like images from Flickr), the 3D reconstruction technique is called bundle adjustment. Both of these techniques are similar, but the bundle adjustment estimates, apart from camera poses, the calibration parameters known in SfM.
+
+Bundle adjustment and structure from motion are very similar with simultaneous localization and mapping in robotics (SLAM). In order to deal with the inherent uncertainty, they are formulated as estimation problems and can be elegantly solved using nonlinear least squares (NLS). This is in general not an easy task, and remains a bottleneck in many large-scale robotics and computer vision applications. Without a careful approach, its complexity can scale quadratically with the size of the problem.
+% Citation of the Ila's work
+
+The problem of creating 3D reconstruction from set of images has been addressed by many research groups. In this section we will talk about few of the widely known solutions. All of the programs discussed implement a subset of the bundle adjustment pipeline briefly introduced in section \ref{sec:tools}.
 
 \subsection*{Photosynth}
 Photosynth is a software application developed by Microsoft. It is based on Photo Tourism, a research project by University of Washington graduate student Noah Snavely. Formerly the Photosynth was a 3D reconstruction software, however, in the current version output of the application is not a point cloud nor 3D model but an animation of morphing images or panorama. While it still works with images from various sources, the best result is achieved by importing photos from a single camera. Once imported, user has to choose the camera trajectory from four predefined options: spin, panorama, wall or walk. 
@@ -73,6 +70,27 @@ Bundler is first well known Structure from Motion (SfM) system for unordered ima
 
 As other applications discussed, Bundler takes a set of images, image features, and image matches as input, and produces a 3D reconstruction of camera and sparse scene geometry as output. In order to get sparse point clouds, one has to run Bundler to get camera parameters, use the Bundle2PMVS program to convert the results into PMVS2 input and then run PMVS2. The system reconstructs the scene incrementally, a few images at a time, using a modified version of the Sparse Bundle Adjustment package of Lourakis and Argyros as the underlying optimization engine. Bundler has been successfully run on many Internet photo collections, as well as more structured collections. \cite{www:bundler}
 
+The bundler was modified and used in Photo Tourism \cite{article:photo_tourism} \cite{article:photo_tourism2} project that aims to browse large collections of photographs in 3D. The algorithm behind Photo Tourism was further modified to be used in reconstruction of entire cities. The project Rome in a Day  \cite{article:rome_in_a_day} \cite{article:reconstructing_rome} \cite{article:rome_in_a_day2} reconstructs the city of Rome from more than two million photographs.
+
+\subsection*{SLAM\textunderscore frontend}
+The SLAM\textunderscore frontend, developed at the Faculty of Information Technology at Brno University of Technology, is a framework for the bundle adjustment and structure from motion applications. The whole framework (SLAM++ and SLAM\textunderscore frontend) will be further discussed later in this thesis (section \ref{sec:slam}), but right now we want to present implemented applications that are performing the bundle adjustment, respectively structure from motion, algorithms. Right now there are three finished applications:
+
+\begin{itemize}
+	\item The \textbf{Mono app} which reconstructs 3D scene from a video made by single camera which camera calibration is known.
+	
+	\item The \textbf{Spheron app} reconstruct the 3D scene from a spheron camera with known calibration.
+	
+	\item Lastly, the \textbf{Stereo app} uses a stereo vision to reconstruct the 3D scene from a pair of horizontally displaced cameras.
+\end{itemize}
+
+Apart from the applications listed above, two other are under development:
+
+\begin{itemize}
+	\item The \textbf{Activity app} which aims to detect activity in the ... ?
+	
+	\item The \textbf{Uncalibrated app} will be the result of this thesis. The finalized application will implement the bundle adjustment technique to create 3D scene from images downloaded of the internet.
+\end{itemize}
+
 \section{Detectors}
 \label{sec:detectors}
 A successful 3D reconstruction stands and falls on good features detection.The quality and robustness of features is (usually) much more important then their quantity which will be demonstrated by the Dense detector later in this section. The ideal feature detector finds salient image regions such that they are repeatedly detected despite change of viewpoint; more generally it is robust to all possible image transformations. Therefore, it does not detect any points in uniform and uninteresting surfaces like sky or texture-less walls. The best detector to be used depends heavily on the requested task. In our application features we are interested in are edges and corners of buildings and their distinct parts.
@@ -86,29 +104,30 @@ We can divide types of image features into following categories (please note tha
 	\item \textbf{Ridges} are in computer vision a set of curves whose points are have a local maximum in at least one dimension. This notion captures the intuition of geographical ridges. Ridge detection is usually much harder then Edge, Interest point or Blob detection.
 \end{itemize}
 
-In the remainder of this section feature detectors implemented in the SLAM++ frontend using OpenCV will be presented. Each detector will be run on the same set of images with historic landmarks in order to evaluate the effectiveness and speed. Then a summary of the results will be presented.
+The detector algorithms used are implemented in the Open source Computer Vision (OpenCV) \cite{www:opencv} library which is used by the SLAM++. The OpenCV was designed for computational efficiency with a strong focus on real-time applications. It contains number of algorithms from computer vision and is being recognised. In the remainder of this section feature detectors wrapped in the SLAM++ will be presented. Each detector will be run on the same set of images with historic landmarks in order to evaluate the effectiveness and speed. Then a summary of the results will be presented.
  
 \begin{itemize}
+	\item A \textbf{Scale Invariant Feature Transform (SIFT)} keypoint is image region with an orientation. The detector uses as a keypoints image structures  which resemble blobs. The use of the detector is licenced which is one of the reasons why we would like to use a different detecter. However, as expected, the detector performs very well and is used by other SfM software we discussed earlier. \cite{article:sift}
+	
+	\item The \textbf{Speeded Up Robust Features (SURF)} detector is modification of the SIFT detector. It addresses slow processing of the SIFT while maintaining reasonable efficiency. While it can surely be used in the SfM application, from our experiments we discovered that the increased performance greatly decreases feature detection for (in our case) important structures.  \cite{www:surf}
+	
+	\item The \textbf{Features from Accelerated Segment Test (FAST)} aims to rapidly increase performance of feature detection while sustaining feature quality of SIFT-like detectors. The algorithm detects corners in the image and should be used with SIFT or SURF extractor for best performance. As the FAST select in our case three times more features hundred times faster than SIFT (resp. 50 times faster than SURF) we market this as one of the interesting detectors for the final implementation. \cite{article:fast}
+	
+	
 	\item The \textbf{Robust Invariant Scalable Keypoints (BRISK)} detector uses scale-space pyramid layers of octaves and intra-octaves to detect corners in an image. The algorithm uses FAST feature detector score and was developed to get the better of SIFT and SURF detectors. However, in our case the performance gain is not worth decreased feature quality. \cite{article:brisk}
 	
 	\item \textbf{Dense Sampling} uses a regular grid to find a keypoints in the image. This results in good coverage of the entire object or scene and a constant amount of feature per image area. The dense sampling is fast as the detector selects all points on a grid without analysis of the surrounding. On the downside, dense sampling cannot reach the same level of repeatability as obtained with interest points, unless sampling is performed extremely densely, but then the number of features quickly grows unacceptably large. The dense sampling is therefore not useful in the SfM model estimation, but can be used for a dense reconstruction once sparse structure is calculated. \cite{article:dense}
-	
-	\item The \textbf{Features from Accelerated Segment Test (FAST)} aims to rapidly increase performance of feature detection while sustaining feature quality of SIFT-like detectors. The algorithm detects corners in the image and should be used with SIFT or SURF extractor for best performance. As the FAST select in our case three times more features hundred times faster than SIFT (resp. 50 times faster than SURF) we market this as one of the interesting detectors for the final implementation. \cite{article:fast}
 	
 	\item One of the most known feature detectors is the \textbf{Harris Corner Detector} . It can identify similar regions between images that are related through affine transformations and have different illuminations. Even though the Harris Corner Detector is fast, it does not select enough keypoints and therefore is not suitable for the 3D building reconstruction. \cite{www:harris}
 	
 	\item The \textbf{Good Features to Track (GFTT)} detector is modified version of the Harris Corner Detector described earlier. It is still classified as a corner detector, however, the scoring function differs. Compared to the Harris, the algorithm was slightly slower, with higher amount of features. Nevertheless, both of these algorithms do not perform well enough for our problem. \cite{article:gftt}
 	
-	\item The \textbf{Oriented FAST and Rotated BRIEF (ORB)} detector originated from the OpenCV Labs. It's goal was to offer robustness of a SIFT and SURF, while maintaining fast processing time like FAST and BRIEF combination. While this may be true, for our problem the ORB detector does not perform well enough. The feature found rarely belong to a building and usually chunks around trees and vegetation. \cite{www:orb}\cite{article:orb}
+	\item The \textbf{Oriented FAST and Rotated BRIEF (ORB)} detector originated from the OpenCV Labs. Its goal was to offer robustness of a SIFT and SURF, while maintaining fast processing time like FAST and BRIEF combination. While this may be true, for our problem the ORB detector does not perform well enough. The feature found rarely belong to a building and usually chunks around trees and vegetation. \cite{www:orb}\cite{article:orb}
 	
 	\item The \textbf{Maximally Stable Extremal Regions} is a blob detector. For our task this detector performs poorly and takes even more time than SIFT detector.
-	
-	\item A \textbf{Scale Invariant Feature Transform (SIFT)} keypoint is image region with an orientation. The detector uses as a keypoints image structures  which resemble blobs. The use of the detector is licenced which is one of the reasons why we would like to use a different detecter. However, as expected, the detector performs very well and is used by other SfM software we discussed earlier. \cite{article:sift}
-	
-	\item The \textbf{Speeded Up Robust Features (SURF)} detector is modification of the SIFT detector. It addresses slow processing of the SIFT while maintaining reasonable efficiency. While it can surely be used in the SfM application, from our experiments we discovered that the increased performance greatly decreases feature detection for (in our case) important structures.  \cite{www:surf}
 \end{itemize}
 
-We've implemented all of the standard OpenCV keypoints detectors from previous list in the SLAM++ frontend. The goal was to test how do they perform on our specific problem: detecting keypoints in buildings. The figure \ref{fig:detectors} shows three detectors (SIFT, SURF and FAST) that are suitable for our task as they find enough relevant features in an image. 
+We've implemented all of the standard OpenCV keypoints detectors from previous list in the SLAM++ frontend. The goal was to test how do they perform on our specific problem: detecting keypoints in buildings. Figure \ref{fig:detectors} shows three detectors (SIFT, SURF and FAST) that are suitable for our task as they find enough relevant features in an image. 
 
 \begin{figure}[ht]
 	\begin{center}
@@ -120,7 +139,7 @@ We've implemented all of the standard OpenCV keypoints detectors from previous l
 
 \section{Extractors}
 \label{sec:extractors}
-In order to work further with the keypoints detected in previous step, the keypoints have to be analysed and transformed into so called feature descriptor. The process consist of inspecting local image patch around the keypoint to be extracted. This extraction may involve quite considerable amounts of image processing and involves reducing the amount of resources required to describe the original data. The result is known as a feature descriptor or a feature vector. Among the information that may be stored within feature descriptor, one can mention local histograms. In addition to such attribute information, the keypoints detection step may also provide complementary attributes, such as the edge orientation, gradient magnitude in edge detection and the polarity or the strength of the blob in blob detection. The authors of detectors usually specify which extractor should work best for their detection algorithm, some even provide their own. Nevertheless, we tried all combinations with detectors to get the best results for our application.
+In order to work further with the keypoints detected in previous step, the keypoints have to be analysed and transformed into so called feature descriptor. The process consist of inspecting local image patch around the keypoint to be extracted. This extraction may involve quite considerable amounts of image processing and involves reducing the amount of resources required to describe the original data. The result is known as a feature descriptor or a feature vector. Among the information that may be stored within feature descriptor, one can mention local histograms. In addition to such attribute information, the keypoints detection step may also provide complementary attributes, such as the edge orientation, gradient magnitude in edge detection and the polarity or the strength of the blob in blob detection. The authors of detectors usually specify which extractor should work best for their detection algorithm, some even provide their own. Nevertheless, we tried all combinations with detectors to get the best results for our application. However, note that all extractors were used with the default parameters. Final results when, for our problem, better parameters are set may differ.
 
 There are two types of descriptors in the OpenCV that are now available in Slam++ frontend; a) descriptors using floating point and b) descriptors storing information as a binary data in unsigned char type.
 \begin{itemize}
@@ -144,14 +163,6 @@ There are two types of descriptors in the OpenCV that are now available in Slam+
 	\end{itemize}
 \end{itemize}
 
-\section{Matchers}
-\label{sec:matchers}
-So far we are able to find points of interest in an image and describe them in such a way that they are effectively stored but still contain information about the point and its local image patch. Once descriptors are extracted from two or more images, we want to match points present more then one image. This is called nearest neighbour search which is an optimization problem for finding closest (or most similar) points. There are two approaches to this problem that are implemented in the OpenCV: Brute-Force and FLANN-based matching.
-
-The Brute-Force matcher is simple and naive approach. It takes the descriptor of one feature from the first image set and matches it with all other feature from the second image set. During the process a distance of some sort is calculated and the match with best metric selected. There are number of metrics implemented in the OpenCV to be used with different descriptors but we, once again, tried all the combinations in order to get best result for our problem. The algorithm promises best possible matches, but due to the fact that it tries to match each pair of feature, can take a lot of time to process. 
-
-The Fast Library for Approximate Nearest Neighbors (FLANN) implemented in OpenCV, performs a fast approximate nearest neighbour searches in high dimensional spaces. It uses the Hierachical K-means Tree for generic feature matching. Nearest neighbors are discovered by choosing to examine the branch-not-taken nodes along the way. \cite{www:flann}
-
 \begin{figure}[ht]
 	\begin{center}
 		\includegraphics[keepaspectratio,width=12cm]{fig/matchers.pdf}
@@ -160,13 +171,21 @@ The Fast Library for Approximate Nearest Neighbors (FLANN) implemented in OpenCV
 	\label{fig:matchers}
 \end{figure}
 
+\section{Matchers}
+\label{sec:matchers}
+So far we are able to find points of interest in an image and describe them in such a way that they are effectively stored but still contain information about the point and its local image patch. Once descriptors are extracted from two or more images, we want to match points present more then one image. This is called nearest neighbour search which is an optimization problem for finding closest (or most similar) points. There are two approaches to this problem that are implemented in the OpenCV: Brute-Force and FLANN-based matching.
+
+The Brute-Force matcher is simple and naive approach. It takes the descriptor of one feature from the first image set and matches it with all other feature from the second image set. During the process a distance of some sort is calculated and the match with best metric selected. There are number of metrics implemented in the OpenCV to be used with different descriptors but we, once again, tried all the combinations in order to get best result for our problem. The algorithm promises best possible matches, but due to the fact that it tries to match each pair of feature, can take a lot of time to process. 
+
+The Fast Library for Approximate Nearest Neighbors (FLANN) implemented in OpenCV, performs a fast approximate nearest neighbour searches in high dimensional spaces. It uses the Hierachical K-means Tree for generic feature matching. Nearest neighbors are discovered by choosing to examine the branch-not-taken nodes along the way. \cite{www:flann}
+
 We manually selected 100 image pairs from the Červená Lhota dataset and tried every feature detection, extraction and matching combination described in this chapter. The results are shown in figure \ref{fig:matchers}. To select only potentially good matches ($G$), following metric was applied
 
 \begin{equation}
 	0.02 \leq G \leq 2* M
 \end{equation}
 
-where $M$ is a minimal distance found between a match pair for selected images. From the results, we can conclude that best result, in terms of performance to effectiveness ratio, is achieved using FAST detector, SIFT extractor and FLANN matcher. The figure \ref{fig:matches} shows matches for one image pair using some of the well known feature detector, extractor and matcher combinations. The picture a) shows that the ORB detector is fast, but for our application does not yeld good results. The SIFT detector and extractor performs well and can be used for the SfM application. In fact it is being used by the VisualSfM program introduced earlier. The best obtained result is depicted in c) where FAST detector and SIFT extractor were used.
+where $M$ is a minimal distance found between a match pair for selected images. From the results, we can conclude that best result, in terms of performance to effectiveness ratio, is achieved using FAST detector, SIFT extractor and FLANN matcher. Figure \ref{fig:matches} shows matches for one image pair using some of the well known feature detector, extractor and matcher combinations. The picture a) shows that the ORB detector is fast, but for our application does not yeld good results. The SIFT detector and extractor performs well and can be used for the SfM application. In fact it is being used by the VisualSfM program introduced earlier. The best obtained result is depicted in c) where FAST detector and SIFT extractor were used.
 
 \begin{figure}[ht]
 	\begin{center}
@@ -178,16 +197,25 @@ where $M$ is a minimal distance found between a match pair for selected images. 
 
 \chapter{Methodology}
 \label{chapter:methodology}
-This chapter thoroughly describes the so far implemented part of the process of 3D reconstruction from a set of images. Steps that are not yet implemented are outlined and briefly discussed. The reader will be introduced to the dataset aquisition from the internet especially Flickr. Then we will briefly talk about the implemented feature detection, extraction and matching in context of 3D reconstruction. The next section discusses the 3D reconstruction approaches leading to the uncalibrated one which will be implemented. Finally we introduce the SLAM++ framework and it's application in this project. 
+\textit{This chapter thoroughly describes the so far implemented part of the process of 3D reconstruction from a set of images. Steps that are not yet implemented are outlined and briefly discussed. The reader will be introduced to the dataset aquisition from the internet especially Flickr. Then we will briefly talk about the implemented feature detection, extraction and matching in context of 3D reconstruction. The next section discusses the 3D reconstruction approaches leading to the uncalibrated one which will be implemented. Finally we introduce the SLAM++ framework and it is application in this project.}
 
 \section{Three-dimensional Structure Estimation Pipeline}
-The pipeline (depicted in figure \ref{fig:pipeline}) for the implemented solution is similar to the pipeline described in section \ref{sec:existing_3D_reconstruction_solutions}. Firstly we create a dataset by downloading images from the internet. These images are then filtered and used as an input for the implemented application called uncalibrated app. The uncalibrated app detects and extracts features from the input image set and finds the matches between every image. As of now these are the steps implemented. Next steps, which will be soon implemented, includes the camera initialization and pose estimation. Finally this allows us to calculate the model's 3D structure from the points seen by different cameras. As of now there are no plans to implement visualization of a final sparse reconstruction, but the SLAM++ fremework provides a means to visualize the resulting sparse point cloud. 
+The pipeline (depicted in figure \ref{fig:pipeline}) for the to be implemented application consists of 7 distinct steps:
+\begin{itemize}
+	\item[1)] \textbf{Dataset aquisition.} First step in the bundle adjustment pipeline is selection of a input data. Specific requirements on the data varies throughout different software, however, we can generalize some properties of such set of images. The set has to contain images that are overlapping one another. Only such images are used in the reconstruction as they provide points seen by multiple cameras and therefore the 3D position can be calculated.
+	\item[2)] \textbf{Keypoints detection.} Keypoints are parts of the image that are significant in some way. The significance is usually caused by a sudden change in gradient on relatively small part of the image. These points will be used to estimate the 3D representation. We will focus more on keypoints detection in section \ref{sec:detectors}. 
+	\item[3)] \textbf{Feature extraction.} The detected keypoints are rarely used as provided by the detector as they do not provide enough information about the point itself. A set of calculations is applied in order to extract data from the surroundings of such point and enrich information about the keypoint. Resulting structure is called feature and contains all data required for next step. At this point the input image does not have to be kept in memory anymore.
+	\item[4)] \textbf{Feature matching.} Now that we have keypoints represented as feature we want to establish a visual correspondence between a set of keypoints from two closely related images. This is done by so called feature matching and was discussed in detail in section \ref{sec:matchers}. Up to this day, feature matching is the last step we've managed to implement in our application.
+	\item[5)] \textbf{Camera initialization and pose estimation.} Once we know correspondence between two closely related images, we can estimate the parameters of the camera(s). If not known, the camera matrix can be calculated and the relation between the points in 3D.
+	\item[6)] \textbf{Structure computation.} Next step is to calculate the model's 3D structure from the points seen by different cameras. The quality of the structure is greatly affected by errors from previous steps.
+	\item[7)] \textbf{Visualization.} Lastly the resulting 3D structure in form of point cloud is visualized.The visualization can be either just a set of images cleverly arranged to give impression of 3D, cloud of 3D points or polygonal model. In this thesis we will not be interested in the visualization of the resulting model, however we see this as an important part of the bundle adjustment pipeline. As of now there are no plans to implement visualization of a final sparse reconstruction, but the SLAM++ fremework provides a means to visualize the resulting sparse point cloud. 
+\end{itemize}
 
 \begin{figure}[ht]
 	\begin{center}
 		\includegraphics[keepaspectratio,width=\textwidth]{fig/pipeline.pdf}
 	\end{center}
-	\caption{The three-dimensional structure from two-dimensional images estimation pipeline.}
+	\caption{The three-dimensional structure from two-dimensional images estimation pipeline to be implemented in the final application.}
 	\label{fig:pipeline}
 \end{figure}
 
@@ -204,10 +232,10 @@ Once we have a desired dataset we compute the feature pairs. An interface betwee
 In the building reconstruction the repeated features are common. Many objects, such as clock towers with nearly identical sides, or domes with strong radial symmetries, pose challenges for structure from motion. When similar but distinct features are mistakenly equated, the resulting 3D reconstructions can have errors ranging from phantom walls and superimposed structures to a complete failure to reconstruct. This can be partially solved by a good selection of the feature detecting, extracting and matching algorithms. In section \ref{sec:matchers} we have identified some combinations that yeld good feature matches and therefore are suitable for the Structure from Motion algorithms on building reconstruction. We will use these algorithms in the uncalibrated app once it is finished.
 
 \section{3D Reconstruction Approaches}
-Based on the image source we can distinguish between three types of vision: Stereoscopic, Monocular and Uncalibrated. The type of the vision defines the difficulty of the 3D reconstruction problem.
+Based on the image source we can distinguish between three types of vision: Stereoscopic, Monocular and Uncalibrated. The type of the vision defines the difficulty of the 3D reconstruction problem. \cite{book:multiple_view_geometry}
 
 \subsection*{Stereoscopic Vision}
-The stereoscopic vision is similar to human binocular vision. Two cameras, displaced horizontally from one another are used to obtain view of the scene, simulating human vision. By comparing both images, the relative depth information can be obtained, which is proportional to the differences in distance to the objects. If the images are undistorted, and camera parameters known, we can easily calculate the 3D relative position of the points. The figure \ref{fig:stereo} shows how the depth can be calculated using following equation:
+The stereoscopic vision is similar to human binocular vision. Two cameras, displaced horizontally from one another are used to obtain view of the scene, simulating human vision. By comparing both images, the relative depth information can be obtained, which is proportional to the differences in distance to the objects. If the images are undistorted, and camera parameters known, we can easily calculate the 3D relative position of the points. Figure \ref{fig:stereo} shows how the depth can be calculated using following equation:
 
 \begin{equation}
 	z=\frac{f b}{x_L - x_R}
@@ -235,13 +263,17 @@ The monocular vision consists of one camera moving in space. Because we have onl
 \end{figure}
 
 \subsection*{Uncalibrated Vision}
-Until this point the camera parameters were known or could have been easily estimated. However, when dealing with images downloaded from the internet, we don't have such information. This makes the problem much more complex and to find the solution we not only need to estimate camera position but also it's parameters. The principle of reconstruction is similar as in the monocular vision, but we need 8 points instead of 3 to calculate the two-dimension to three-dimension transformation. Once the camera calibration and position is known, we can undistort the images and calculate the 3D structure in similar fashion as in the monocular.
+Until this point the camera parameters were known or could have been easily estimated. However, when dealing with images downloaded from the internet, we don't have such information. This makes the problem much more complex and to find the solution we not only need to estimate camera position but also its parameters. The principle of reconstruction is similar as in the monocular vision, but we need 8 points instead of 3 to calculate the two-dimension to three-dimension transformation. Once the camera calibration and position is known, we can undistort the images and calculate the 3D structure in similar fashion as in the monocular.
 
-\section{SLAM++ Frontend and Backend}
+\section{SLAM++ and SLAM\textunderscore frontend}
+\label{sec:slam}
+The SLAM++ is a library containing several methods used in problems like bundle adjustment (BA), structure from motion (SfM), simultaneous localization and mapping (SLAM) and many others. The library includes general graph optimizer along with several problem solvers, nonlinear least squares solvers and block linear solvers. In our application the SLAM++ will be used for the bundle adjustment.
+
+The SLAM\textunderscore frontend is a complete, easy to use interface for implementing custom structure from motion or bundle adjustment application. It provides means to load set of images and detect, extract and match feature. The framework provides templates for custom estimators, such that one can easily implement camera pose estimator for a BA application. Many algorithms are provided, like the Random Sample Consensus (RANSAC).
 
 \chapter{Conclusion and Further Work}
 \label{chapter:conclusion}
-This chapter presents the conclusion of the term project work. Further work is also outlined as this topic will be further developed as a part of the Masters thesis.
+\textit{This chapter presents the conclusion of the term project work. Further work is also outlined as this topic will be further developed as a part of the Masters thesis.}
 
 \section{Conclusion}
 This term project has focused on the study of a means to estimate three-dimensional information from a two-dimensional image sequence. Usually, the first step is to create appropriate dataset. We summarized requirements on such dataset, identified what qualities the images should have and what sort of images should be filtered out. We provided a simple tool that allows downloading images in batches from the Flickr service and explained why we have decided to use additional sources of images as well. 
@@ -256,6 +288,8 @@ Lastly we have talked about existing solutions that are implementing the uncalib
 The research and work presented in this paper proposes the following subjects for further work:
 \begin{itemize}
 	\item Completion of the feature detection and matching part of the uncalibrated app. As of now, the program can detect and match feature, however, it would be useful to store such information in a binary form to be able to use it as a input for the VisualSFM. This would allow us to test how does the reconstruction improve with a different detector.
+	
+	\item The feature detection and matching should be further tested in order to find best combination. For now only default parameters were used, which gave an overall idea of the algorithms performance, but with different parameters some of them may perform even better.
 	
 	\item A further steps should be implemented into the uncalibrated app including, among others, camera calibration and pose estimation and the 3D structure reconstruction. The result of this step will be sparse point cloud that can be visualized using software like Meshlab.
 	
