@@ -213,22 +213,52 @@ The stereoscopic vision is similar to human binocular vision. Two cameras, displ
 	z=\frac{f b}{x_L - x_R}
 \end{equation}
 
-The reconstruction is straightforward as the depth is the only thing required to understand
+If the cameras are calibrated then the reconstruction is straightforward as the depth is the only thing required to calculate the position in the 3D image.
 
 \begin{figure}[ht]
 	\begin{center}
 		\includegraphics[keepaspectratio,width=9cm]{fig/stereo.pdf}
 	\end{center}
-	\caption{3D information from stereo image.}
+	\caption{An illustration of obtaining the depth information from stereo image.}
 	\label{fig:stereo}
 \end{figure}
 
-
 \subsection*{Monocular Vision}
+The monocular vision consists of one camera moving in space. Because we have only one camera, we can't easily calculate the depth as in stereoscopic vision, but we need to estimate the camera position first. Firstly we detect feature in images and match them. Now that we have paired points in images, we can begin to estimate the camera position. At least three image pairs are needed in order to calculate the camera pose, other points can increase the accuracy of the solution. Once camera position is known, the 3D structure can be calculated. However, because the picture is distorted and pixels have limited precision the structure will introduce some error. In order to minimize the reprojection error, we run a bundle adjustment algorithm.
+
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=\textwidth]{fig/mono.pdf}
+	\end{center}
+	\caption{An illustration of the process of 3D reconstruction using a monocular vision. a) detect features b) match them and estimate camera pose c) add other points with next iteration. This image was taken from the Monocular camera 3D reconstruction presentation by Ing. Marek Šolony.}
+	\label{fig:stereo}
+\end{figure}
+
 \subsection*{Uncalibrated Vision}
+Until this point the camera parameters were known or could have been easily estimated. However, when dealing with images downloaded from the internet, we don't have such information. This makes the problem much more complex and to find the solution we not only need to estimate camera position but also it's parameters. The principle of reconstruction is similar as in the monocular vision, but we need 8 points instead of 3 to calculate the two-dimension to three-dimension transformation. Once the camera calibration and position is known, we can undistort the images and calculate the 3D structure.
+
 \section{SLAM++ Frontend and Backend}
 
-\chapter{Conclusion}
+\chapter{Conclusion and Further Work}
 \label{chapter:conclusion}
+This chapter presents the conclusion of the term project work. Next steps are also outlined as this topic will be further developed as a part of the Masters thesis.
 
+\section{Conclusion}
+This term project has focused on the study of a means to estimate three-dimensional information from a two-dimensional image sequence. Usually, the first step is to create appropriate dataset. We summarized requirements on such dataset, identified what qualities the images should have and what sort of images should be filtered out. We provided a simple tool that allows downloading images in batches from the Flickr service and explained why we have decided to use additional sources of images as well. 
+
+Another step in the 3D reconstruction is detection of the feature. A number of feature detectors were introduced and their characteristics described. We conducted a series of experiments which goal was to understand qualities of feature detections in context of the building reconstruction. Then the reader was introduced to the issue of extraction of the feature descriptors from the image. The extractors implemented in OpenCV were described and compared one to another. We finished the chapter with feature matching algorithms. All combinations of feature detectors, extractors and matchers were tested on a 100 image pair input set and the result evaluated. We've selected the best combination, FAST detector, SIFT extractor and FLANN matcher, for our problem which maintains a good ratio between performance and efficiency.
+
+The problem of 3D information estimation was discussed and three different approaches of non-contact scanning outlined. We started with the stereo vision, where the depth can be directly computed from the image disparity. The problem gets more difficult when only one camera scans the 3D space. This approach, monocular vision, uses feature to calculate camera position and reconstruct the 3D structure. Lastly we talked about the uncalibrated approach, where the scene is being reconstructed from a number images made by multiple cameras, each having a different calibration matrix. The pose estimation was outlined and difficulties with such approach identified.
+
+Lastly we talked about existing solutions that are implementing the uncalibrated approach. Three different programs (Photosynth, VisualSFM and Bundler) were introduced and briefly evaluated. These programs will be matched against the final application implemented within the Masters thesis to evaluate its capabilities and performance.
+
+\section{Further Work}
+The research and work presented in this paper proposes the following subjects for further work:
+\begin{itemize}
+	\item Completion of the feature detection and matching part of the uncalibrated app. As of now, the program can detect and match feature, however, it would be useful to store such information in a binary form to be able to use it as a input for the VisualSFM. This would allow us to test how does the reconstruction improve with a different detector.
+	
+	\item A further steps should be implemented into the uncalibrated app. This includes camera calibration and pose estimation and the 3D structure reconstruction. The result of this step will be sparse point cloud that can be visualized using software like Meshlab.
+	
+	\item With the application being able to create sparse reconstruction, further description of the math behind the problem needs to be provided. This includes but is not limited to fundamental matrix estimation, camera calibration and epipolar geometry.
+\end{itemize}
 %=========================================================================
