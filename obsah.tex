@@ -119,7 +119,7 @@ We've implemented all of the standard OpenCV keypoints detectors from previous l
 
 \section{Extractors}
 \label{sec:extractors}
-In order to work further with the keypoints detected in previous step, the keypoints have to be analysed and transformed into so called feature descriptor. The process consist of inspecting local image patch around the keypoint to be extracted. This extraction may involve quite considerable amounts of image processing and involves reducing the amount of resources required to describe a the original data. The result is known as a feature descriptor or a feature vector. Among the information that may be stored within feature descriptor, one can mention local histograms. In addition to such attribute information, the keypoints detection step may also provide complementary attributes, such as the edge orientation, gradient magnitude in edge detection and the polarity or the strength of the blob in blob detection. The authors of detectors usually specify which extractor should work best for their detection algorithm, some even provide their own. Nevertheless, we tried all combinations with detectors to get the best results for our application.
+In order to work further with the keypoints detected in previous step, the keypoints have to be analysed and transformed into so called feature descriptor. The process consist of inspecting local image patch around the keypoint to be extracted. This extraction may involve quite considerable amounts of image processing and involves reducing the amount of resources required to describe the original data. The result is known as a feature descriptor or a feature vector. Among the information that may be stored within feature descriptor, one can mention local histograms. In addition to such attribute information, the keypoints detection step may also provide complementary attributes, such as the edge orientation, gradient magnitude in edge detection and the polarity or the strength of the blob in blob detection. The authors of detectors usually specify which extractor should work best for their detection algorithm, some even provide their own. Nevertheless, we tried all combinations with detectors to get the best results for our application.
 
 There are two types of descriptors in the OpenCV that are now available in Slam++ frontend; a) descriptors using floating point and b) descriptors storing information as a binary data in unsigned char type.
 \begin{itemize}
@@ -127,7 +127,7 @@ There are two types of descriptors in the OpenCV that are now available in Slam+
 	
 	\begin{itemize}
 		\item \textbf{SIFT:} The scale-invariant feature transform of a neighbourhood is a 128-dimensional vector of histograms of image gradients. The region, at the appropriate scale and orientation, is divided into a $4\times 4$ square grid, each cell of which yields a histogram with 8 orientation bins. The SIFT extractor is advised to be used with the SIFT, SURF and FAST detector.
-		\item \textbf{SURF:} The speeded up robust feature extractor uses either 128 or 64-dimensional vector of histograms of image gradients.An oriented quadratic grid of $4 \times 4$ square sub-regions is laid over the keypoint and a wavelet response computed for each square. According to literature the SIFT, SURF and FAST detector can be used with the SURF extractor.
+		\item \textbf{SURF:} The speeded up robust feature extractor uses either 128 or 64-dimensional vector of histograms of image gradients.An oriented quadratic grid of $4 \times 4$ square sub-regions is laid over the keypoint and a wavelet response computed for each square. According to literature the SIFT, SURF and FAST detector can be used with the SURF extractor. \cite{www:sift_surf}
 	\end{itemize}
 	
 	\item[b)] \textbf{Binary} descriptors:
@@ -145,6 +145,35 @@ There are two types of descriptors in the OpenCV that are now available in Slam+
 
 \section{Matchers}
 \label{sec:matchers}
+So far we are able to find points of interest in an image and describe them in such a way that they are effectively stored but still contain information about the point and its local image patch. Once descriptors are extracted from two or more images, we want to match points that are visible in more then one image. This is called nearest neighbour search which is an optimization problem for finding closest (or most similar) points. There are two approaches to this problem that are implemented in the OpenCV: Brute-Force and FLANN-based matching.
+
+The Brute-Force matcher is simple and naive approach. It takes the descriptor of one feature from the first image set and matches it with all other feature from the second image set. During the process a distance of some sort is calculated and the match with best metric selected. There are number of metrics implemented in the OpenCV to be used with different descriptors, but we once again tried all the combination in order to get best result for our problem. The algorithm promises best possible matches, but due to the fact that it tries to match each pair of feature, can take a lot of time to process. 
+
+The Fast Library for Approximate Nearest Neighbors (FLANN) implementad in OpenCV, performs a fast approximate nearest neighbor searches in high dimensional spaces. It uses the Hierachical K-means Tree for generic feature matching. Nearest neighbors are discovered by choosing to examine the branch-not-taken nodes along the way.
+
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=12cm]{fig/matchers.pdf}
+	\end{center}
+	\caption{Results of the feature detection, extraction and matching evaluation on a set of 100 image pairs from the Červená Lhota dataset. The interesting combinations are labeled. Note that combination taking more than 120 seconds to compute were omitted.}
+	\label{fig:matchers}
+\end{figure}
+
+We manually selected 100 image pairs from the Červená Lhota dataset and tried every feature detection, extraction and matching combination described in this chapter. The results are shown in figure \ref{fig:matchers}. To select only potentially good matches ($G$), following metric was applied
+
+\begin{equation}
+	0.02 \leq G \leq 2* M
+\end{equation}
+
+\ where $M$ is a minimal distance found between a match pair for selected images. From the results, we can conclude that best result, in terms of performance to effectiveness ratio, is achieved using FAST detector, SIFT extractor and FLANN matcher. The figure \ref{fig:matches} shows matches for one image pair using some of the well known feature detector, extractor and matcher combinations. The picture a) shows that the ORB detector is fast, but for our application does not yeld good results. The SIFT detector and extractor performs well and can be used for the SfM application. In fact it is being used by the VisualSfM program introduced earlier. The best obtained result is depicted in c) where FAST detector and SIFT extractor were used.
+
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=\textwidth]{fig/matches.pdf}
+	\end{center}
+	\caption{Examples of various feature detector, extractor and matchers combinations on an image pair. There are 307 good matches in picture a) and the whole process took 0,487 seconds. The picture b) took 12.7 seconds to process and has 274 good matches. The last picture c) contains 1804 good matches and was processed in 23.853 seconds.}
+	\label{fig:matches}
+\end{figure}
 
 \chapter{Methodology}
 \label{chapter:methodology}
