@@ -80,16 +80,10 @@ The SLAM\textunderscore frontend, developed at the Faculty of Information Techno
 	
 	\item The \textbf{Spheron app} reconstruct the 3D scene from a spheron camera with known calibration.
 	
-	\item Lastly, the \textbf{Stereo app} uses a stereo vision to reconstruct the 3D scene from a pair of horizontally displaced cameras.
+	\item Lastly, the \textbf{Stereo app} uses a stereo vision to reconstruct the 3D scene from a pair of horizontally displaced calibrated cameras.
 \end{itemize}
 
-Apart from the applications listed above, two other are under development:
-
-\begin{itemize}
-	\item The \textbf{Activity app} which aims to detect activity in the ... ?
-	
-	\item The \textbf{Uncalibrated app} will be the result of this thesis. The finalized application will implement the bundle adjustment technique to create 3D scene from images downloaded of the internet.
-\end{itemize}
+Apart from the applications listed above, two other are under development: the Activity app and the Uncalibrated app which is the subject of this thesis and will be implemented in the future.
 
 \section{Detectors}
 \label{sec:detectors}
@@ -267,9 +261,9 @@ Until this point the camera parameters were known or could have been easily esti
 
 \section{SLAM++ and SLAM\textunderscore frontend}
 \label{sec:slam}
-The SLAM++ is a library containing several methods used in problems like bundle adjustment (BA), structure from motion (SfM), simultaneous localization and mapping (SLAM) and many others. The library includes general graph optimizer along with several problem solvers, nonlinear least squares solvers and block linear solvers. In our application the SLAM++ will be used for the bundle adjustment.
+The SLAM++ is a library containing several methods used in problems like bundle adjustment (BA), structure from motion (SfM), simultaneous localization and mapping (SLAM) and many others. The library includes general graph optimizer along with several problem solvers, nonlinear least squares solvers and block linear solvers.  It is written in C++ and it is very fast due to the fact that it exploits the block structure the problems and offers very fast solutions to manipulate block matrices within iterative nonlinear solvers.
 
-The SLAM\textunderscore frontend is a complete, easy to use interface for implementing custom structure from motion or bundle adjustment application. It provides means to load set of images and detect, extract and match feature. The framework provides templates for custom estimators, such that one can easily implement camera pose estimator for a BA application. Many algorithms are provided, like the Random Sample Consensus (RANSAC).
+SLAM\textunderscore frontend \cite{www:slam_frontend} is a collection of applications that take as input image files or any other sensor data files and generate inputs for SLAM++ block-sparse linear algebra SLAM solver. Apart form SLAM++, it requires OpenCV. The SLAM\textunderscore frontend is also an easy to use interface for implementing custom structure from motion or bundle adjustment application. It provides means to load set of images and detect, extract and match feature. The framework provides templates for custom estimators, such that one can easily implement camera pose estimator for a BA application.
 
 \chapter{Conclusion and Further Work}
 \label{chapter:conclusion}
