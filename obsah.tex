@@ -121,16 +121,6 @@ The detector algorithms used are implemented in the Open source Computer Vision 
 	\item The \textbf{Maximally Stable Extremal Regions} is a blob detector. For our task this detector performs poorly and takes even more time than SIFT detector.
 \end{itemize}
 
-We've implemented all of the standard OpenCV keypoints detectors from previous list in the SLAM++ frontend. The goal was to test how do they perform on our specific problem: detecting keypoints in buildings. Figure \ref{fig:detectors} shows three detectors (SIFT, SURF and FAST) that are suitable for our task as they find enough relevant features in an image. 
-
-\begin{figure}[ht]
-	\begin{center}
-		\includegraphics[keepaspectratio,width=\textwidth]{fig/detectors.pdf}
-	\end{center}
-	\caption{Results of the feature detection evaluation on as set of 500 various images from the Červená Lhota dataset. Graph a) shows average time necessary for processing an image using selected detector. In graph b) you can find how many features on average were detected in a single image.}
-	\label{fig:detectors}
-\end{figure}
-
 \section{Extractors}
 \label{sec:extractors}
 In order to work further with the keypoints detected in previous step, the keypoints have to be analysed and transformed into so called feature descriptor. The process consist of inspecting local image patch around the keypoint to be extracted. This extraction may involve quite considerable amounts of image processing and involves reducing the amount of resources required to describe the original data. The result is known as a feature descriptor or a feature vector. Among the information that may be stored within feature descriptor, one can mention local histograms. In addition to such attribute information, the keypoints detection step may also provide complementary attributes, such as the edge orientation, gradient magnitude in edge detection and the polarity or the strength of the blob in blob detection. The authors of detectors usually specify which extractor should work best for their detection algorithm, some even provide their own. Nevertheless, we tried all combinations with detectors to get the best results for our application. However, note that all extractors were used with the default parameters. Final results when, for our problem, better parameters are set may differ.
@@ -157,14 +147,6 @@ There are two types of descriptors in the OpenCV that are now available in Slam+
 	\end{itemize}
 \end{itemize}
 
-\begin{figure}[ht]
-	\begin{center}
-		\includegraphics[keepaspectratio,width=12cm]{fig/matchers.pdf}
-	\end{center}
-	\caption{Results of the feature detection, extraction and matching evaluation on a set of 100 image pairs from the Červená Lhota dataset. The interesting combinations are labeled. Note that combination taking more than 120 seconds to compute were omitted.}
-	\label{fig:matchers}
-\end{figure}
-
 \section{Matchers}
 \label{sec:matchers}
 So far we are able to find points of interest in an image and describe them in such a way that they are effectively stored but still contain information about the point and its local image patch. Once descriptors are extracted from two or more images, we want to match points present more then one image. This is called nearest neighbour search which is an optimization problem for finding closest (or most similar) points. There are two approaches to this problem that are implemented in the OpenCV: Brute-Force and FLANN-based matching.
@@ -172,22 +154,6 @@ So far we are able to find points of interest in an image and describe them in s
 The Brute-Force matcher is simple and naive approach. It takes the descriptor of one feature from the first image set and matches it with all other feature from the second image set. During the process a distance of some sort is calculated and the match with best metric selected. There are number of metrics implemented in the OpenCV to be used with different descriptors but we, once again, tried all the combinations in order to get best result for our problem. The algorithm promises best possible matches, but due to the fact that it tries to match each pair of feature, can take a lot of time to process. 
 
 The Fast Library for Approximate Nearest Neighbors (FLANN) implemented in OpenCV, performs a fast approximate nearest neighbour searches in high dimensional spaces. It uses the Hierachical K-means Tree for generic feature matching. Nearest neighbors are discovered by choosing to examine the branch-not-taken nodes along the way. \cite{www:flann}
-
-We manually selected 100 image pairs from the Červená Lhota dataset and tried every feature detection, extraction and matching combination described in this chapter. The results are shown in figure \ref{fig:matchers}. To select only potentially good matches ($G$), following metric was applied
-
-\begin{equation}
-	0.02 \leq G \leq 2* M
-\end{equation}
-
-where $M$ is a minimal distance found between a match pair for selected images. From the results, we can conclude that best result, in terms of performance to effectiveness ratio, is achieved using FAST detector, SIFT extractor and FLANN matcher. Figure \ref{fig:matches} shows matches for one image pair using some of the well known feature detector, extractor and matcher combinations. The picture a) shows that the ORB detector is fast, but for our application does not yeld good results. The SIFT detector and extractor performs well and can be used for the SfM application. In fact it is being used by the VisualSfM program introduced earlier. The best obtained result is depicted in c) where FAST detector and SIFT extractor were used.
-
-\begin{figure}[ht]
-	\begin{center}
-		\includegraphics[keepaspectratio,width=\textwidth]{fig/matches.pdf}
-	\end{center}
-	\caption{Examples of various feature detector, extractor and matchers combinations on an image pair. There are 307 good matches in picture a) and the whole process took 0,487 seconds. The picture b) took 12.7 seconds to process and has 274 good matches. The last picture c) contains 1804 good matches and was processed in 23.853 seconds.}
-	\label{fig:matches}
-\end{figure}
 
 \chapter{Methodology}
 \label{chapter:methodology}
@@ -264,6 +230,271 @@ Until this point the camera parameters were known or could have been easily esti
 The SLAM++ is a library containing several methods used in problems like bundle adjustment (BA), structure from motion (SfM), simultaneous localization and mapping (SLAM) and many others. The library includes general graph optimizer along with several problem solvers, nonlinear least squares solvers and block linear solvers.  It is written in C++ and it is very fast due to the fact that it exploits the block structure the problems and offers very fast solutions to manipulate block matrices within iterative nonlinear solvers.
 
 SLAM\textunderscore frontend \cite{www:slam_frontend} is a collection of applications that take as input image files or any other sensor data files and generate inputs for SLAM++ block-sparse linear algebra SLAM solver. Apart form SLAM++, it requires OpenCV. The SLAM\textunderscore frontend is also an easy to use interface for implementing custom structure from motion or bundle adjustment application. It provides means to load set of images and detect, extract and match feature. The framework provides templates for custom estimators, such that one can easily implement camera pose estimator for a BA application.
+
+\chapter{Math}
+camera definition (intrinsic, extrinsic)
+\begin{verbatim}
+http://dsp.stackexchange.com/questions/2736/step-by-step-camera-pose-estimation-for-visual-tracking-and-planar-markers
+http://docs.opencv.org/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html#solvepnpransac
+https://en.wikipedia.org/wiki/Camera_resectioning
+\end{verbatim}
+, projection, homography, fundamental, essential matrix...
+
+\chapter{Implementation}
+flickr downloader, 
+\section{Camera Calibration}
+\label{sec:camera_calib} 
+data structures, frontend etc...
+\begin{verbatim}
+http://www.morethantechnical.com/2012/02/07/structure-from-motion-and-3d-reconstruction-on-the-easy-in-opencv-2-3-w-code/
+https://github.com/royshil/SfM-Toy-Library
+http://www.morethantechnical.com/2012/08/09/decomposing-the-essential-matrix-using-horn-and-eigen-wcode/
+https://code.google.com/p/libmv/feeds
+https://code.google.com/p/libmv/wiki/Roadmap#Version_3.x
+
+http://nuxsfm.sourceforge.net/wiki/index.php/Computer-vision
+\end{verbatim}
+
+\chapter{Experiments Evaluation}
+\textit{This chapter presents the experimental results obtained on an artificial and real scenes by means of the algorithms described in previous chapters. In the beginning of the chapter we will present the datasets used for the evaluation and describe their characteristics. These datasets will be used to determine precision of the program. Also this chapter presents qualitative results obtained from our program as well as other existing solutions and their evaluation and comparison to reference values where available. Lastly we will compare our program to other previously mentioned programs in terms of complexity and resources consumption. }
+\section{Introduction}
+\label{sec:experiments-introduction}
+This chapter presents the experimental results obtained from the implementation of the system described in previous chapters. After each experiment a brief discussion of a results is included with the aim of giving the reader further details. First, we introduce the datasets that are being tested. Then we present evaluation of the feature detection, extraction and matching methods with the aim of selecting the best combinations for our problem. The section \ref{sec:experiments-calibrated} presents results obtained from the program when the intrinsic camera parameters are known on both ordered and unordered image sets. It also compares each implemented camera tracking algorithm and elaborates on which one is best in which scenario. In the last section \ref{sec:experiments-weakly} reader finds qualitative results for the most general case: weakly calibrated bundle adjustment.  In order to provide as precise results as possible, if not stated otherwise, all programs were compiled and run separately, without any user intervention on a machine with following specification:
+\vspace{.5cm}
+
+\begin{tabular}{ l  l }
+	Model: & MacBookPro6,1 (2010) \\
+	OS: & OS X 10.10.4 \\
+	CPU: & Intel Core i5 2.53 GHz \\
+	RAM: & 8 GB 1067 MHz DDR3 \\
+	GPU: & NVIDIA GeForce GT 330M and Intel HD Graphics  \\
+	HDD: & OCZ-AGILITY4 512 GB \\
+	Compiler: & Apple LLVM version 6.1.0 (clang-602.0.53) \\
+\end{tabular}
+
+\vspace{.5cm}
+To evaluate output camera positions as well as structure we are using a cross-platform open source 3D animation suite Blender \cite{www:blender}. The main reason for this choice was, apart from native support for PLY file format, easy extensibility with custom python scripts. Because the output of all SfM and BA programs is at least ambiguous to scale and rotation, the Precise Align extension \cite{www:blender_precise_align} is used to match cameras and structure to the 3D model. A detail on how exactly is the resulting structure matched to the 3D model is specific for each case and usually depends on landmarks in the scene. The camera position error is calculated as a root-mean-square error against reference values using formula:
+\begin{equation}
+	RMSE=\sqrt{\frac{\overset{n}{\underset{k=0}{\sum}} (x_{k_2}-x_{k_1})^2 + (y_{k_2}-y_{k_1})^2 + (z_{k_2}-z_{k_1})^2}{n}},
+	\label{eq:RMSE}
+\end{equation}
+where $n$ is a number of cameras and $x_{k}, y_k, z_k$ are the 3D camera's coordinates. This value is normalized as we match positions of the first and last camera with reference cameras and the middle camera to be as close as possible to the middle reference camera.
+
+\section{Datasets}
+In order to test our programme we have collected a number of datasets. These datasets usually offer not only images, but also intrinsic and extrinsic camera parameters and a 3D model or 3D points and lines. You may find all of these datasets along with experiment's results on the attached DVD.
+
+\subsection*{Model House}
+The University of Oxford provides a number of  datasets used in many other papers for a benchmark \cite{www:oxford_models}. Some of these datasets contain images, camera parameters, 2D geometry (interest points, line segments and matches) and 3D geometry (points, line segments and camera matrices). However, these datasets usually lack the intrinsic camera parameters apart from the Model House which we will be using. This dataset is a sequence of ten black and white images rotating 90 degrees around a model of house in a clockwise direction without any distortion and with the principal point in the centre of the images. The model also contains the reference positions of the cameras as well as 3D points and 3D lines. Out of the 3D points and lines we have created a simple 3D model that is used for visual comparison of the structure, but as this is not a reference model no qualitative results will be given.
+
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=\textwidth]{fig/experiments-model-house.pdf}
+	\end{center}
+	\caption{The Model House dataset showing first, middle and last images of the sequence.}
+	\label{fig:modelhouse}
+\end{figure}
+
+\subsection*{Temple of the Dioskouroi}
+The Temple of the Siodkouroi in Agrigento (Sicily) is a dataset packed in the \textbf{libmv} library \cite{www:libmv}. It is an ordered sequence of 15 coulored images creating a full 360 degree rotation around a 3D model of temple. The dataset contains camera calibration parameters, the 3D positions of the cameras and a tight rectangular bounding box of the temple model. 
+
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=\textwidth]{fig/experiments-temple.pdf}
+	\end{center}
+	\caption{The Temple of the Dioskouroi dataset showing first five images of the sequence.}
+	\label{fig:temple}
+\end{figure}
+
+\subsection*{The City of Sights: An Augmented Reality Stage Set}
+The City of Sights \cite{cityofsights_ISMAR2010} is a complex dataset by Graz University of Technology, Four Eyes Lab, University of California at Santa Barbara and Muncich University of Technology. This dataset was specifically designed for a variety of Augmented Reality research. The images in this datasets were captured by a robotic arm with calibrated camera. The whole scene can be downloaded as a 3D model along with the camera tracks (which were taken from a paper model of the scene). The camera movement between frames is quite small (around 0.1 mm) therefore we will be using every fifth or tenth frame. We have chosen the CS\_FARO\_12 and CS\_ART\_12 datasets which comprise of images depicting the centre of scene.
+
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=\textwidth]{fig/experiments-city-of-sights.pdf}
+	\end{center}
+	\caption{The City of Sights dataset with a 3D model (left) and a picture from the CS\_FARO\_12 dataset (right).}
+	\label{fig:cityofsights}
+\end{figure}
+
+\subsection*{Cathedral}
+The cathedral dataset is a sequence of 92 images of a front face of cathedral that are not absolutely ordered. It is ensured that any pair in sequence has enough keypoints matches, but the camera trajectory does not always move in one direction. The intrinsic camera parameters are known with a principal point at the centre of each image and the images have no distortion. A rough 3D model is known but no reference camera poses are offered.
+
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=\textwidth]{fig/experiments-cathedral.pdf}
+	\end{center}
+	\caption{The cathedral dataset with a rough 3D model (left) and a picture from the dataset (right).}
+	\label{fig:cathedral}
+\end{figure}
+
+\subsection*{Slezské divadlo, Opava}
+This dataset is a sequence of images taken by us using an iPhone with estimated camera calibration using OpenCV sample described in section \ref{sec:camera_calib}. The aim of this dataset is to demonstrate that our program (and associated utilities) offers complete solution that can reconstruct 3D model from any camera.
+
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=\textwidth]{fig/experiments-divadlo.pdf}
+	\end{center}
+	\caption{The Slezské divadlo in Opava dataset obtained using camera with estimated calibration.}
+	\label{fig:divadlo}
+\end{figure}
+
+\subsection*{Zámek Červená Lhota}
+The Zámek  Červená Lhota is collection of 235 pictures from Flickr, Google Images and other websites. Therefore the images have various camera calibration and distortion. However, we have inspected each image manually to ensure that neither is flipped horizontally nor vertically. This dataset is used to evaluate general bundle adjustment.
+
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=\textwidth]{fig/experiments-cervena-lhota.pdf}
+	\end{center}
+	\caption{Sample of the Zámek Červená Lhota dataset which contains images from various sources.}
+	\label{fig:cervena-lhota}
+\end{figure}
+
+\section{Feature Detectors, Extractors and Matchers}
+\label{sec:experiments-extractors}
+One of the key components for the SfM and BA application is selection of the keypoints in the input images and their matching for the specific application. We have conducted a number of experiments in order to evaluate the detectors, extractors and matchers available in OpenCV and SLAM\textunderscore frontend. The main goal is to select the best combination that detects the most relevant keypoints in pictures of buildings in a reasonable time. Figure \ref{fig:detectors} shows three detectors (SIFT, SURF and FAST) that are suitable for our task as they find enough relevant features in an image. 
+
+\begin{figure}[!htbp]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=\textwidth]{fig/detectors.pdf}
+	\end{center}
+	\caption{Results of the feature detection evaluation on as set of 250 various images from the Červená Lhota dataset. Graph a) shows average time necessary for processing an image using selected detector. In graph b) you can find how many features on average were detected in a single image.}
+	\label{fig:detectors}
+\end{figure}
+
+\begin{figure}[!htbp]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=\textwidth]{fig/matchers.pdf}
+	\end{center}
+	\caption{Results of the feature detection, extraction and matching evaluation on a set of 100 image pairs from the Červená Lhota dataset. The interesting combinations are labeled. Note that combination taking more than 120 seconds to compute were omitted.}
+	\label{fig:matchers}
+\end{figure}
+
+Then we have manually selected 100 image pairs from the Červená Lhota dataset and tried every feature detection, extraction and matching combination available. The results are shown in figure \ref{fig:matchers}. To select only potentially good matches ($G$), following metric was applied
+
+\begin{equation}
+	0.02 \leq G \leq 2* M
+\end{equation}
+
+where $M$ is a minimal distance found between a match pair for selected images. From the results, we can conclude that best result, in terms of performance to effectiveness ratio, is achieved using FAST detector, SIFT extractor and FLANN matcher. Figure \ref{fig:matches} shows matches for one image pair using some of the well known feature detector, extractor and matcher combinations. The picture a) shows that the ORB detector is fast, but for our application does not yeld good results. The SIFT detector and extractor performs well and can be used in the SfM and BA applications. In fact it is being used by nearly ever other program (VisualSfM, Bundler, OpenMVG). The best obtained result is depicted in c) where FAST detector and SIFT extractor were used.
+
+\begin{figure}[!htbp]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=\textwidth]{fig/matches.pdf}
+	\end{center}
+	\caption{Examples of various feature detector, extractor and matchers combinations on an image pair. There are 307 good matches in picture a) and the whole process took 0,487 seconds. The picture b) took 12.7 seconds to process and has 274 good matches. The last picture c) contains 1804 good matches and was processed in 23.853 seconds.}
+	\label{fig:matches}
+\end{figure}
+
+
+\section{Calibrated Case}
+\label{sec:experiments-calibrated}
+Once we have estimated which feature detectors, extractors and matchers are suitable for our application, we can continue evaluating the performance of the pose estimation and structure estimation. There are two cases to evaluate: when camera calibration is known and when it is not available and needs to be estimated.  Another distinction is whether the input sequence image is ordered or not. Let us start with the easier case; known camera calibration and ordered sequential image input.
+
+\subsection*{Ordered Case}
+\label{sub:ordered_case}
+Because the input is ordered, there is no need to calculate matches between every image pair, but we can build a single camera track containing all the pictures in a sequence. The suitable datasets for this case are the Model House and Temple of Dioskouroi. The first thing to evaluate is the memory and time complexity. The program was compiled and run with 10 times for each case using three different detectors; FAST, SIFT and SURF with both both cached and uncached option. On top of that each scenario was run with and without the optimizer. 
+
+The figure \ref{fig:rss_memory} shows how does the RSS memory changes throughout the run. For reader's easier orientation we have marked distinct phases of the program. One can observe how demanding, in terms of memory, is feature detection and extraction. After the keypoints are matched, the program can not immediately free all feature as it needs them to calculate fundamental matrix between the first image pair. Once done the feature can be unallocated and camera pose estimation and structure reconstruction process starts with next pair that only needs 3D - 2D correspondences.
+
+\begin{figure}[!htbp]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=\textwidth]{fig/exp_model_house_memory.pdf}
+	\end{center}
+	\caption{An example of the program run showing RSS memory on the Model House dataset using uncached SIFT extractor and detector.}
+	\label{fig:rss_memory}
+\end{figure} 
+
+The table \ref{tab:time_complexity} shows what is the RSS memory and computation time of various combinations of the program. What is rather strange is, that if cached SIFT detector and extractor are used the detection and extraction time lowers significantly, but the reconstruction time increases marginally. The fact that this affects only the SIFT detector makes it rather strange. This is probably related to memory access as the output for both cached and uncached options are the same. Also note that the time when the structure is refined by the SLAM++ optimizer is significantly smaller than when it's not, yet the result is much better (as described later in this section). Unfortunately there is no base of comparing our application with other solutions as the VisualSFM uses GPU algorithms and the OpenMVG fails with uncaught exception when attempting to get intrinsic camera parameters.
+
+\begin{table}[!htbp]
+	\begin{center}
+		\begin{tabular}{| l | l | l | l | l | l | l |}
+			\hline
+			\textbf{Detector} & \begin{tabular}[l]{@{}c@{}}\textbf{Feature}\\ \textbf{cached}\end{tabular} & \begin{tabular}[l]{@{}c@{}}\textbf{Structure}\\ \textbf{optimized}\end{tabular} & \begin{tabular}[l]{@{}c@{}}\textbf{Detection}\\ \textbf{time}\end{tabular} &  \begin{tabular}[l]{@{}c@{}}\textbf{Matching}\\ \textbf{time}\end{tabular}  & \begin{tabular}[l]{@{}c@{}}\textbf{Total}\\ \textbf{time}\end{tabular} & \begin{tabular}[l]{@{}c@{}}\textbf{Peak RSS}\\ \textbf{memory}\end{tabular}   \\ \hline 
+			FAST & yes & yes & .1210 & .6848 & 14.1492 & \\ \hline 
+			FAST & yes & no & .1092 & .6762 & 22.9874 & \\ \hline 
+		 	FAST & no & yes & 7.8928 & 3.9695 & 24.2021 & \\ \hline  
+		 	FAST & no & no & 7.8734 & 3.9907 & 34.6032 & \\ \hline  
+		 	SIFT & yes & yes & .0571 & .1536 & 20.6526 & \\ \hline  
+		 	SIFT & yes & no & .0523 & .1552 & 20.8367 & \\ \hline  
+		 	SIFT & no & yes & 5.7621 & .8463 & 9.4593 & \\ \hline  
+		 	SIFT & no & no & 5.8035 & .8546 & 19.7536 & \\ \hline  
+		 	SURF & yes & yes & .0723 & .4800 & 8.9775 & \\ \hline  
+		 	SURF & yes & no & .0671 & .4742 & 16.5755 & \\ \hline  
+		 	SURF & no & yes & 25.1957 & 1.7415 & 35.4105 & \\ \hline  
+		 	SURF & no & no & 25.2083 & 1.7537 & 44.7901 & \\ \hline  
+		\end{tabular}
+		\caption{Average time and memory complexity of the programme run on the Model House dataset. The feature are extracted using SIFT extractor and matched by FLANN matcher.}
+		\label{tab:time_complexity}
+	\end{center}
+\end{table}
+\begin{table}[!htbp]
+	\begin{center}
+		\begin{tabular}{| l | l | l | l |}
+			\hline
+			\textbf{Detector} & \textbf{Feature} &  \textbf{Matches}  & \textbf{Matches after RANSAC}  \\ \hline 
+			FAST & 4727.2 & 1867.6 & 977.7 \\ \hline 
+			SIFT & 1169.2 & 555 & 341.6 \\ \hline 
+			SURF & 2030.5 & 848.6 & 408.2 \\ \hline 
+		\end{tabular}
+		\caption{Time and memory complexity of the programme on the Model House dataset.}
+		\label{tab:keypoints_matches}
+	\end{center}
+\end{table}
+
+To give a full insight on the problem, table \ref{tab:keypoints_matches} shows how the feature, matches before and after RANSAC count changes in respect to different feature detectors. These data directly affect number of structure points and precision of the reconstruction and pose estimation. Up until this point there was no reason for any comparison between our solution and other programs. However, we can quite easily evaluate the RMSE of the pose estimation using the Blender and equation \ref{eq:RMSE}.  The results can be found in table \ref{tab:precision}. The difference between run with and without optimizer is apparent not only from the time complexity but also when it comes to precision. While the valid structure size does not change much, both the reprojection error and camera pose RMSE is improved by factor of ten if the system is optimized after each camera addition. When compared to the Visual SFM, our program creates at about the same structure size but the RMSE is double. It is worth noting that the Visual SFM does not reconstruct sequentially but instead matches each pair of images and calculates the structure from the whole system, while our solution in sequential mode only pairs each image with two other.
+
+\begin{table}[!htbp]
+	\begin{center}
+		\begin{tabular}{| l | l | l | l | l | l |}
+			\hline
+			\textbf{Program} & \textbf{Detector} & \begin{tabular}[l]{@{}c@{}}\textbf{Structure}\\ \textbf{optimized}\end{tabular} & \begin{tabular}[l]{@{}c@{}}\textbf{Structure}\\ \textbf{points}\end{tabular} &  \begin{tabular}[l]{@{}c@{}}\textbf{Reprojection}\\ \textbf{error}\end{tabular}  & \begin{tabular}[l]{@{}c@{}}\textbf{Camera pose}\\ \textbf{RMSE}\end{tabular}  \\ \hline 
+			ours & FAST & yes & 5391 & 2403.83 & 0,04564 \\ \hline 
+			ours & FAST & no & 5289  & 66365.1 &  0.45026 \\ \hline 
+			ours & SIFT & yes & 1702 & 333.498 &  \\ \hline 
+			ours & SIFT & no & 1326 & 36439.5 & \\ \hline 
+			ours & SURF & yes & 2292 & 962.111 &  \\ \hline 
+			ours & SURF & no & 2285 & 36715.3 & \\ \hline 
+			\begin{tabular}[l]{@{}c@{}} Visual SFM\\ calibrated\end{tabular} & SIFT & yes & 1835 & -  & 0.02543\\ \hline 
+			\begin{tabular}[l]{@{}c@{}} Visual SFM\\ uncalibrated\end{tabular} & SIFT & yes & 1575 & - & 0.02139 \\ \hline 
+		\end{tabular}
+		\caption{The number of valid structure points, reprojection error and RMSE of the camera pose against reference values on the Model House dataset. The VisualSFM in calibrated case had fixed shared intrinsic camera parameters. The feature are extracted using SIFT extractor and matched by FLANN matcher.}
+		\label{tab:precision}
+	\end{center}
+\end{table}
+
+\begin{figure}[!htbp]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=\textwidth]{fig/pose_comparison.pdf}
+	\end{center}
+	\caption{Visualisation of the camera pose estimation measurement.}
+	\label{fig:pose_comparison1}
+\end{figure} 
+
+The figure \ref{fig:pose_comparison1} shows visual representation of the camera poses in Blender where we have calculated how far off are they compared to the reference values. The only case where the camera poses are far off are the ones of our program without any structure refinement provided by SLAM++. Please note that this measurement is not precise as the scale is ambiguous between different programmes (and maybe even in the same program). Therefore the first and last camera's positions were matched to ensure similar scale and only the gaps between cameras differ. The figure \ref{fig:pose_comparison2} shows how do the optimized (red) and unoptimized (orange) cameras as well as structure differ. It is not quite visible in the picture, but the unoptimized structure is rotated about 15 degrees as well as shifted one tenth of the house length. The optimized structure is however quite on spot with the reference values (black dots).
+
+
+\begin{figure}[!htbp]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=\textwidth]{fig/pose_comparison2.pdf}
+	\end{center}
+	\caption{Visualisation of the camera poses and structure from optimized and unoptimized run on the Model House dataset. The black dots is the reference structure.}
+	\label{fig:pose_comparison2}
+\end{figure} 
+
+\subsection*{Unordered Case}
+While most image collections share same (and often known or easy to estimate) camera calibration, the case where this collection is sequenced and can be represented as single camera track is rather rare. The aim of this section is to evaluate two implemented methods of getting the camera tracks and how do they affect the reconstruction.
+
+TODO:  process ad write the experiments results (2 tables)
+\begin{verbatim}
+http://imagine.enpc.fr/~moulonp/publis/featureTracking_CVMP12.pdf
+http://openmvg.readthedocs.org/en/latest/openMVG/tracks/tracks/
+\end{verbatim}
+\section{Weakly Calibrated Case}
+\label{sec:experiments-weakly}
+As of now, the application requires a calibration in order to reconstruct properly. However, in this section we will be briefly evaluating other applications. This will serve as a basis for evaluation of the uncalibrated case once done.
+
+TODO: process and write the values (Červená Lhota dataset)
 
 \chapter{Conclusion and Further Work}
 \label{chapter:conclusion}
