@@ -53,8 +53,8 @@
 %---------------------------------------------------------------------------
 \projectinfo{
   %Prace
-  project=SP,            %typ prace BP/SP/DP/DR
-  year=2014,             %rok
+  project=DP,            %typ prace BP/SP/DP/DR
+  year=2015,             %rok
   date=\today,           %datum odevzdani
   %Nazev prace
   title.cs={3D Rekonstrukce historických míst z obrázků na Flickru},  %nazev prace v cestine
@@ -69,15 +69,19 @@
   supervisor= Lukáš Polok, %jmeno prijmeni skolitele
   supervisor.title.p=Ing.,   %titul pred jmenem (nepovinne)
   %supervisor.title.a={Ph.D.},    %titul za jmenem (nepovinne)
+  %Skolitel
+  consultant= Viorela Simona Ila, %jmeno prijmeni skolitele
+  consultant.title.p=Ing.,   %titul pred jmenem (nepovinne)
+  consultant.title.a={Ph.D.},    %titul za jmenem (nepovinne)
   %Klicova slova, abstrakty, prohlaseni a podekovani je mozne definovat 
   %bud pomoci nasledujicich parametru nebo pomoci vyhrazenych maker (viz dale)
   %===========================================================================
   %Klicova slova
-  keywords.cs={detekce klíčových bodů, extrakce bodů zájmu, párování bodů zájmu, počítačové vidění, monokulární vidění, stereo vidění, structure from motion, bundle adjustment}, %klicova slova v ceskem jazyce
-  keywords.en={keypoints detection, feature extraction, feature matching, computer vision, monocular vision, stereo vision, structure from motion, bundle adjustment}, %klicova slova v anglickem jazyce
+  keywords.cs={detekce klíčových bodů, extrakce bodů zájmu, párování bodů zájmu, počítačové vidění, monokulární vidění, stereo vidění, estimace pozice kamer, kalibrace kamer, structure from motion, bundle adjustment}, %klicova slova v ceskem jazyce
+  keywords.en={keypoints detection, feature extraction, feature matching, computer vision, monocular vision, stereo vision, pose estimation, camera calibration, structure from motion, bundle adjustment}, %klicova slova v anglickem jazyce
   %Abstract
-  abstract.cs={Tato práce popisuje těžkosti návrhu a vývoje aplikace pro rekonstrukci 3D modelů z 2D obrazových dat. Práce analyzuje proces 3D rekonstrukce a důkladně popisuje jednotlivé kroky. Prvním z kroků je automatizované získání obrazové sady z internetu. Je představen skript pro hromadné stahování obrázků ze služby Flickr a shrnuty požadavky na tyto obrázky pro co nejlepší 3D rekonstrukci. Práce dále popisuje rúzné detektory, extraktory a párovací algoritmy klíčových bodů v obraze s cílem najít nejvhodnější kombinaci pro rekonstrukci budov. V úvodu práce jsou představeny některé z existujících programů implementujících tento software, které budou použity pro srovnání výkonnosti a správnosti rekonstrukcí z vlastní aplikace, která bude vudoucnu implementována.}, % abstrakt v anglickem jazyce
-  abstract.en={This thesis describes challenges in design and development of a Bundle Adjustment application. It discusses the 3D reconstruction pipeline and elaborates on each step. The first step covers dataset aquisition from the internet. The script used to download such data from Flickr is described and image characteristics necessary for a good reconstruction identified. Hereafter the paper compares different feature detectors, extractors and matchers to find best suited combination for building reconstruction. In the beginning of this paper some of the existing solutions are described and will be later used for comparison once the final application is implemented.}, % abstrakt v anglickem jazyce
+  abstract.cs={Tato práce popisuje problematiku návrhu a vývoje aplikace pro rekonstrukci 3D modelů z 2D obrazových dat, označované jako bundle adjustment. Práce analyzuje proces 3D rekonstrukce a důkladně popisuje jednotlivé kroky. Prvním z kroků je automatizované získání obrazové sady z internetu. Je představena sada skriptů pro hromadné stahování obrázků ze služeb Flickr a Google Images a shrnuty požadavky na tyto obrázky pro co nejlepší 3D rekonstrukci. Práce dále popisuje různé detektory, extraktory a párovací algoritmy klíčových bodů v obraze s cílem najít nejvhodnější kombinaci pro rekonstrukci budov. Poté je vysvětlen proces rekonstrukce 3D struktury, její optimalizace a jak je tato problematika realizovaná v našem programu. Závěr práce testuje výsledky získané z implementovaného programu pro několik různých datových sad a porovnává je s výsledky ostatních podobných programů, představených v úvodu práce.}, % abstrakt v anglickem jazyce
+  abstract.en={This thesis describes challenges in design and development of a bundle adjustment application. It discusses the 3D reconstruction pipeline and elaborates on each step. The first step covers dataset acquisition from the internet. The scripts used to download such data from Flickr and Google Images are described and image characteristics necessary for a good reconstruction identified. Hereafter the paper compares different feature detectors, extractors and matchers to find best suited combination for reconstruction of historic landmarks. This is followed by description the reconstruction and optimization steps and their implementation. At the end of the thesis the implemented solution is examined on several datasets and compared with other existing solutions presented at the very beginning of the thesis.}, % abstrakt v anglickem jazyce
   %Prohlaseni
   declaration={},
   %Podekovani (nepovinne)
@@ -93,12 +97,12 @@
 %\keywords[en]{Sem budou zapsána jednotlivá klíčová slova v anglickém jazyce, oddělená čárkami.}
 
 %Prohlaseni
-\declaration{Prohlašuji, že jsem tento semestrální projekt vypracoval samostatně pod vedením Ing. Ila Viorela Simona, Ph. D. a uvedl jsem všechny literární prameny a publikace, ze kterých jsem čerpal.}
+\declaration{Prohlašuji, že jsem tuto diplomovou práci vypracoval samostatně pod vedením pana Ing. Lukáše Poloka a odborné konzultantky Ing. Viorela Simona Ila, Ph. D. a uvedl jsem všechny literární prameny a publikace, ze kterých jsem čerpal.}
 %Další informace mi poskytli...
 %Uvedl jsem všechny literární prameny a publikace, ze kterých jsem čerpal.}
 
 %Podekovani (nepovinne)
-\acknowledgment{Chtěl bych poděkovat mé vedoucí semestrální práce Ing. Ila Viorela Simona, Ph. D. za její ochotu, iniciativu a čas, který do mně a této práce investovala.}
+\acknowledgment{Chtěl bych poděkovat mému vedoucímu diplomové práce Ing. Lukáši Polokovi, Ph D. a odborné konzultantce Ing. Viorela Simona Ila, Ph.D. za jejich trpělivost, ochotu, cenné rady, iniciativu a hlavně za čas, který do mě a této práce investovali.}
 
 \begin{document}
   % Vysazeni titulnich stran

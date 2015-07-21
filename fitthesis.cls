@@ -36,6 +36,9 @@
 \usepackage{tabularx}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage[]{algorithmicx}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 \usepackage[czech,english]{babel}
 \usepackage[utf8]{inputenc} %kodovani
 \ifczech
@@ -49,6 +52,11 @@
 \else % je to pdftex !
   \usepackage[pdftex]{graphicx}
 \fi
+
+\algnewcommand\algorithmicinput{\textbf{Input:}}
+\algnewcommand\Input{\item[\algorithmicinput]}
+\algnewcommand\algorithmicoutput{\textbf{Output:}}
+\algnewcommand\Output{\item[\algorithmicoutput]}
 
 %-----------------------------------------------------------------------------
 %Sazebni obrazec
@@ -69,6 +77,8 @@
 \def\@author@EN{Author}
 \def\@supervisor@CS{Vedoucí práce}
 \def\@supervisor@EN{Supervisor}
+\def\@consultant@CS{Odborný konzultant}
+\def\@consultant@EN{Consultant}
 \def\@dep@CS{Ústav}
 \def\@dep@EN{Department of}
 \def\@abstract@CS{Abstrakt}
@@ -133,6 +143,9 @@ Práce je chráněna autorským zákonem a její užití bez udělení oprávně
 %Jmeno, prijmeni, tituly vedouciho
 \def\get@supervisor{\ifx\undefined\@supervisor@tp\else%
 \@supervisor@tp~\fi\MakeUppercase{\@supervisor}\ifx\undefined\@supervisor@ta\else,~\@supervisor@ta\fi}
+%Jmeno, prijmeni, tituly konzultanta
+\def\get@consultant{\ifx\undefined\@consultant@tp\else%
+\@consultant@tp~\fi\MakeUppercase{\@consultant}\ifx\undefined\@consultant@ta\else,~\@consultant@ta\fi}
 
 %-----------------------------------------------------------------------------
 % Projectinfo - parametrizace sablony
@@ -150,6 +163,9 @@ Práce je chráněna autorským zákonem a její užití bez udělení oprávně
 \define@key{projinfo}{supervisor}{\def\@supervisor{#1}}
 \define@key{projinfo}{supervisor.title.a}{\def\@supervisor@ta{#1}}
 \define@key{projinfo}{supervisor.title.p}{\def\@supervisor@tp{#1}}
+\define@key{projinfo}{consultant}{\def\@consultant{#1}}
+\define@key{projinfo}{consultant.title.a}{\def\@consultant@ta{#1}}
+\define@key{projinfo}{consultant.title.p}{\def\@consultant@tp{#1}}
 \define@key{projinfo}{keywords.cs}{\def\@tkeywords@CS{#1}}
 \define@key{projinfo}{keywords.en}{\def\@tkeywords@EN{#1}}
 \define@key{projinfo}{abstract.cs}{\def\@tabstract@CS{#1}}
@@ -162,7 +178,7 @@ Práce je chráněna autorským zákonem a její užití bez udělení oprávně
   title.cs={Název práce (česky)},title.en={Název práce(anglicky)}, 
   date=\today, project=BP, department=UITS, declaration=, 
   abstract.cs=, abstract.en=, keywords.cs=, keywords.en=,
-  author=Jmeno Prijmeni, supervisor=Jmeno Prijmeni
+  author=Jmeno Prijmeni, supervisor=Jmeno Prijmeni, consultant=Jmeno Prijmeni
 }%
 
 \def\projectinfo{\setkeys{projinfo}}
@@ -343,6 +359,11 @@ Práce je chráněna autorským zákonem a její užití bez udělení oprávně
 
 \mktxt{14}{\MakeUppercase{\@supervisor@CS} \hfill \get@supervisor}
 \mkuctxt{10}{\@supervisor@EN}
+
+\vspace{5mm}
+
+\mktxt{14}{\MakeUppercase{\@consultant@CS} \hfill \get@consultant}
+\mkuctxt{10}{\@consultant@EN}
 
 \vspace{10mm}
 

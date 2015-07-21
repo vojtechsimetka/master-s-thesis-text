@@ -1,265 +1,730 @@
 %=========================================================================
+\makeatletter
+\renewcommand*\env@matrix[1][*\c@MaxMatrixCols c]{%
+  \hskip -\arraycolsep
+  \let\@ifnextchar\new@ifnextchar
+  \array{#1}}
+\makeatother
 
 \chapter{Introduction}
-\textit{This chapter describes the motivation leading to the presentation of this paper and how is it related to the SLAM++ project at FIT VUT. The objectives of the project and the subjects included in this document are briefly explained. The chapter ends describing the overall structure and contents of the remaining of the paper.}
+\textit{This chapter describes the~motivation leading to~the~presentation of this thesis and~how is it related to~the~SLAM\textunderscore frontend and SLAM++ projects at Faculty of Information Technology, Brno University of Technology. The~objectives of the~project and~the~subjects included in this document are briefly explained. The~chapter ends describing the~overall structure and~contents of the~remaining of the~thesis.}
 
 \section{Motivation}
-There is an immerse need to record and preserve our knowledge and perception of the world around us. Evidence of such tendency can be track thousands of years back in human existence as a cave paintings. Later we used more advanced techniques in form of written languages, sculptures, drawings, et cetera. Nowadays we have means to record our surroundings as we perceive it in 2D using cameras. However, it has proven difficult to process such information digitally. Even automated analysis of 2D information like typeset books is not a trivial problem and far from being mastered.
+There is an~immerse need to~record and~preserve our knowledge and~perception of the~world around us. Evidence of such tendency can be track thousands of years back in human existence as a~cave paintings. Later we used more advanced techniques in form of written languages, sculptures, drawings, et cetera. Nowadays we have means to~record our surroundings as we perceive it using cameras. However, it has been proven difficult to~process such information digitally. Even automated analysis of the~2D information like typeset books is not a~trivial problem and~far from being mastered.
 
-When it comes to 3D the problem gets much more difficult. Scanning 3D object reliably is nowadays possible in laboratory conditions, but there are hard limits like the size of the object, its structure or surface and material properties. Also the laboratory equipment used is much more expensive and physically larger compared to its 2D counterpart. This paper tries to address both of these problems by allowing user to create 3D model using multiple pictures of an object of interest from various sources. Such 3D model, even though it may be inaccurate, has number of applications. It can be used by archaeologists to preserve cultural heritage, by architects for spatial planning, by entertainers to create 3D models and virtual reality or by engineers to replicate existing 3D objects.
+When it comes to~3D the~problem gets much more difficult. Scanning 3D objects reliably is nowadays possible in laboratory conditions, but there are hard limits like the~size of the~object, its structure or surface and~material properties. Also the~laboratory equipment used is much more expensive and~physically larger compared to~its 2D counterpart. This thesis tries to~address these problems by allowing user to~create 3D model from multiple pictures of an~object of interest from various sources. Such 3D model, even though it may be inaccurate, has number of applications. It can be used by archaeologists to~preserve cultural heritage, by architects for spatial planning, by entertainers to~create 3D models and~virtual reality, by engineers to~replicate existing 3D objects or in robotics to~navigate and~interact with the~3D world.
 
 \section{Tools}
 \label{sec:tools}
-The process of creating a 3D model usually consist of two parts: scanning the object and reconstruction of the model. There are three main approaches how to scan physical object: contact, active non-contact  and passive non-contact scanners. The contact 3D scanners probe the subject through physical touch. The active non-contact scanners use a light in forms of laser or X-ray to scan the object while the passive non-contact scanners are using either multiple cameras, images with varying lighting conditions or silhouettes extruded from image with contrasted background. In this thesis we will be particularly interested in scanning objects using multiple images from various cameras. The input images will be downloaded from the internet, especially the Flickr services which provides great means of finding relevant photos using tags. The pipeline of transformation from 2D image to the 3D model consists of 5 steps: 1) keypoints detection 2) feature extraction  3) feature matching 4) camera initialization and pose estimation and finally 5) structure computation. In principle, the algorithm firstly finds points of interests in every image and tries to match them. Once matched the camera position can be estimated and the structure implemented as a series of 3D points called point cloud. This part will use the SLAM++ framework \cite{www:slam} as it implements many of the algorithms used in Bundle Adjustment like Nonlinear Least Square solver. Because the process is quite difficult, the resulting 3D structure contains a lot of noise and has to be filtered and segmented before a polygonal model can be created. There is number of tools available for either manual processing of point cloud data, like MeshLab \cite{www:meshlab}, or the whole process can be automatized using framework like the PCL \cite{www:pcl}. 
+The process of creating a~3D models usually consists of two parts: scanning the~object and~reconstruction of the~model. There are three main approaches how to~scan physical object: contact, active non-contact  and~passive non-contact scanners. The~contact 3D scanners probe the~subject through physical touch. The~active non-contact scanners use a~light in forms of laser or X-ray to~scan the~object while the~passive non-contact scanners are using either multiple images from different angles, images with varying lighting conditions or silhouettes extruded from image with contrasted background. In this thesis we will be particularly interested in scanning objects using multiple images from various cameras. The~pipeline of the~transformation from 2D images to~the~3D models consists of 6 steps: 1) keypoints detection 2) feature extraction  3) feature matching 4) feature and camera tracks building 5) camera initialization and~pose estimation 6) structure computation and~finally 7) structure refinement. In principle, the~algorithm firstly finds points of interests in every image and~tries to~match them. Once matched the~camera positions can be estimated and~the~structure implemented as a~series of 3D points called point cloud. Up till this point we use the~SLAM\textunderscore frontend framework \cite{www:slam_frontend} which implements some of the~pose estimation algorithms. The~SLAM++ will then be used for bundle adjustment (BA) as it offers a~Nonlinear Least Square solver. Because the~process is quite difficult, the~resulting 3D structure contains a~lot of noise and~has to~be filtered and~segmented before a~polygonal model can be created. There is number of tools available for either manual processing of point cloud data, like MeshLab \cite{www:MeshLab}, or the~whole process can be automatized using framework like the~Point Cloud Library (PCL) \cite{www:pcl} These tool will be detailed in chapter \ref{chapter:the-state-of-the-art}. 
 
 \section{Objectives}
-This thesis aims to identify challenges and propose solution of 3D reconstruction from a set of 2D images taken by various cameras leading to creation of a software that can do so automatically. The objective is to reduce the correspondence problem between each two images and the study of camera modelling and calibration. An accurate estimation of the camera model and correspondence allows us to compute three-dimensional information from a two-dimensional image sequence. In order to eliminate artefacts the input set of images, obtained from internet, will have to be filtered to contain only daytime images from summer season.
+This thesis aims to~identify challenges and~propose solution of three-dimensional reconstruction from a~set of two-dimensional images leading to~creation of a~software that can do so automatically. The~objective is to~reduce the~correspondence problem between each two images and~study the~camera modelling and~calibration. An~accurate estimation of the~camera model and~correspondence allows us to~compute three-dimensional information from a~two-dimensional image sequence. In order to~eliminate artefacts the~input set of images, especially the~ones obtained from internet, will have to~be filtered to~contain only daytime images, without any repetitive watermarks, the~image set should be consistent season-wise and~contain as little reflective surfaces as possible. Also we are trying to~avoid images that are too generic and~contain little to~none feature. Another key goal of this thesis is providing the reader with a complex insight on existing software, how does it work and what are the reconstruction approaches. Lastly formulating and explaining the problem, and the background, using suitable mathematical apparatus.
 
-The study of the geometry involved in multiple camera vision systems should allow us to present an application that can from a set of two-dimensional images reconstruct 3D scene depicted by the images.
+The study of the~geometry involved in multiple camera vision systems should allow us to~present an~application that can from a~set of two-dimensional images reconstruct 3D scene depicted by the~images.
 
 \section{Overall Structure}
-The thesis consist of 4 chapters and a bibliography at the end of the document.
+The thesis consists of 6 chapters.
 
-Chapter \ref{chapter:the-state-of-the-art} introduces reader to the current state of the art algorithms used in the process of estimation three-dimensional structure from two-dimensional image sequences. Firstly, it discusses existing bundle adjustment solutions, like VisualSFM, Photosynth and Bundler, and elaborates on the output of these programs. Later they will be used as a benchmark for the implemented application. The programs mentions, will be used for the final application performance and effectiveness evaluation. Lastly the chapter focuses on the state-of-the-art features detectors, extractors and matchers, built in the SLAM++, and aims to compare theirs efficiency and performance. The comparison is then discussed and best combination in terms of performance and effectiveness chosen for the planned application.
+The chapter \ref{chapter:the-state-of-the-art} introduces the~reader to~the~current state of the~art libraries and~programs used in the~process of the~estimation of the~three-dimensional structure from two-dimensional image sequences. Firstly, it discusses existing bundle adjustment (BA) and~structure from motion (SfM) solutions, like VisualSFM, Photosynth, OpenMVG and~Bundler, and~elaborates on the~output of these programs and~libraries. Later some of them will be used as a~benchmark for the~implemented application. Some of the~mentioned programs, will be used for the~final application performance and~effectiveness evaluation. Lastly the~chapter focuses on the~state-of-the-art feature detectors, extractors and~matchers, built in the~SLAM\textunderscore frontend (and OpenCV) and~aims to~compare theirs efficiency and~performance.
 
-In the chapter \ref{chapter:methodology} the whole 3D reconstruction process is thoroughly discussed and step by step explained. The steps that are already implemented, like dataset acquisition or feature detection, extraction and matching, are in detail described. The rest of the pipeline is also outlined to give the reader idea what are the next steps to be implemented. 
+In the~chapter \ref{chapter:methodology} the~whole 3D reconstruction process is thoroughly discussed and~step by step explained. First the~general pipeline is outlined and~each step briefly explained.  Second, the~camera model is presented and~how the~distinct camera parameters affect the~reconstruction. The~chapter also focuses on algorithms for structure evaluation and~pose estimation as well as the~3D reconstruction approaches.
 
-Finally, chapter \ref{chapter:conclusion} summarizes this document by discussing achieved goals and outlining the future work to be done within the Masters thesis.
+The chapter \ref{chapter:implementation} introduces the~design of our application. It covers the~whole pipeline starting with the~datasets acquisition and~camera calibration scripts and~programs which outputs are the~inputs for our software. However, the~main focus of this chapter is on the~key data structures and~algorithms we have designed and~implemented as well as the~one provided by the~SLAM\textunderscore frontend and~SLAM++ frameworks.
 
-\chapter{The State of the Art}
+The chapter \ref{chapter:experiments} evaluates the~implemented solution on an~artificial and~real scenes by means of the~algorithms described in chapter \ref{chapter:implementation}. In the~beginning of the~chapter the~datasets used for the~evaluation are introduced and~their distinct characteristics described. Next, the~chapter evaluates different feature detectors, extractors and~matchers and~elaborates which are suitable for our task and~why. Lastly, the~chapter presents qualitative results obtained from our program as well as other existing solutions, their evaluation and~comparison to~reference values where available as well as some complexity and~resources consumption evaluation.
+
+Finally, chapter \ref{chapter:conclusion} summarizes this document by discussing achieved goals and~outlining the~further work.
+
+\chapter{The State of the~Art}
 \label{chapter:the-state-of-the-art}
-\textit{The following chapter presents to the reader existing implementation of the bundle adjustment technique. Applications described  will be used as a benchmark for the final solution once it is presented. The rest of the chapter focuses on state of the art detectors, extractors and matchers that are now accessible through the SLAM++ framework. All of them are subjected to the survey and the goal is to select the best combination in terms of performance and effectiveness for reconstruction of historic landmarks.}
+\textit{The following chapter presents to~the~reader existing implementation of the~bundle adjustment and~structure from motion techniques. Some of the~applications and~libraries described will be used as a~benchmark for the~final solution. The~rest of the~chapter focuses on the~state of the~art detectors, extractors and~matchers that are now accessible through the~SLAM\textunderscore frontend framework and~will be further surveyed in the~chapter \ref{chapter:experiments} in order to~choose which are best suited for our problem, reconstruction of historic landmarks.}
 
 \section{Existing 3D Reconstruction Applications}
 \label{sec:existing_3D_reconstruction_solutions}
-There are two image-based 3D reconstruction techniques based on estimating the position of the 3D points in the environment; structure from motion (SfM) and bundle adjustment (BA). The structure from motion tracks image feature from image sequences obtained by a moving camera. The problem requires camera calibration or an automatic camera parameters re-estimation. If the input image sequence consists of images from multiple uncalibrated cameras (like images from Flickr), the 3D reconstruction technique is called bundle adjustment. Both of these techniques are similar, but the bundle adjustment estimates, apart from camera poses, the calibration parameters known in SfM.
+There are two image-based 3D reconstruction techniques based on estimating the~position of the~3D points in the~environment; structure from motion (SfM) and~bundle adjustment (BA). The~structure from motion tracks the~image feature from the~image sequences obtained by a~moving camera. The~problem requires camera calibration or an~automatic camera parameters re-estimation. If the~input image sequence consists of images from multiple cameras with unknown, and~often different camera, calibration (like images from Flickr), the~3D reconstruction technique is called bundle adjustment. Both of these techniques are similar, but the~bundle adjustment estimates, apart from camera poses, the~calibration parameters.
 
-Bundle adjustment and structure from motion are very similar with simultaneous localization and mapping in robotics (SLAM). In order to deal with the inherent uncertainty, they are formulated as estimation problems and can be elegantly solved using nonlinear least squares (NLS). This is in general not an easy task, and remains a bottleneck in many large-scale robotics and computer vision applications. Without a careful approach, its complexity can scale quadratically with the size of the problem.
-% Citation of the Ila's work
+Bundle adjustment and~structure from motion are very similar with simultaneous localization and~mapping in robotics (SLAM). In order to~deal with the~inherent uncertainty, they are formulated as estimation problems and~can be elegantly solved using nonlinear least squares (NLS). This is in general not an~easy task, and~remains a~bottleneck in many large-scale computer vision applications.
+% Citation of the~Ila's work
 
-The problem of creating 3D reconstruction from set of images has been addressed by many research groups. In this section we will talk about few of the widely known solutions. All of the programs discussed implement a subset of the bundle adjustment pipeline briefly introduced in section \ref{sec:tools}.
+The problem of creating 3D reconstruction from a set of images has been addressed by many research groups. In this section we will talk about few of the~widely known solutions. All of the~programs discussed implement a~subset of the~bundle adjustment pipeline briefly introduced in section \ref{sec:tools}.
 
 \subsection*{Photosynth}
-Photosynth is a software application developed by Microsoft. It is based on Photo Tourism, a research project by University of Washington graduate student Noah Snavely. Formerly the Photosynth was a 3D reconstruction software, however, in the current version output of the application is not a point cloud nor 3D model but an animation of morphing images or panorama. While it still works with images from various sources, the best result is achieved by importing photos from a single camera. Once imported, user has to choose the camera trajectory from four predefined options: spin, panorama, wall or walk. 
+Photosynth is a~software application developed by Microsoft. It is based on Photo Tourism, a~research project by University of Washington graduate student Noah Snavely. Formerly the~Photosynth was a~3D reconstruction software, however, in the~current version the~output of the~web application is not a~point cloud nor 3D model but an~animation of morphing images or panorama. While it still works with images from various sources, the~best result is achieved by importing photos from a~single camera. Once imported, user has to~choose the~camera trajectory from four predefined options: spin, panorama, wall or walk. 
 
-The Photosynth technology is using an interest point detection and matching algorithm developed by Microsoft Research which is similar in function to SIFT. Detected features are then matched between images and by analyzing subtle differences in the relationships between the features (angle, distance, etc.), the program identifies the 3D position of each feature, as well as the position and angle at which each photograph was taken. Everything is processed by Microsoft's servers and, once finished, pushed to the website or desktop/mobile application. There are little to none information about the whole process as this is a commercialized technology. \cite{www:photosynth}
+The Photosynth technology is using an~interest point detection and~matching algorithm developed by Microsoft Research which is similar in function to~SIFT detector. Detected features are then matched between images and~by analysing subtle differences in the~relationships between the~features (angle, distance, etc.), the~program identifies the~3D position of each feature, as well as the~position and~angle at which each photograph was taken. Everything is processed by Microsoft's servers and, once finished, pushed to~the~website or desktop/mobile application. There are little to~none information about the~whole process as this is a~commercialized technology. \cite{www:photosynth}
 
 \begin{figure}[ht]
 	\begin{center}
 		\includegraphics[keepaspectratio,width=\textwidth]{fig/Photosynth.png}
 	\end{center}
-	\caption{The Photosynth output of the Červená Lhota Castle in transition between several morphed images.}
+	\caption{The Photosynth output for the~Červená Lhota Castle (will be introduced in section \ref{sec:experiments-datasets}) in transition between several morphed images.}
 	\label{fig:photosynth}
 \end{figure}
 
 \subsection*{VisualSFM}
-The Chungchang Wu's Visual Structure from Motion System is a GUI application for 3D reconstruction using structure from motion (SFM). The reconstruction system is modular and integrates several of other projects: SIFT on GPU(SiftGPU), Multicore Bundle Adjustment, and Towards Linear-time Incremental Structure from Motion. VisualSFM runs fast by exploiting multicore parallelism for feature detection, feature matching, and bundle adjustment. For dense reconstruction, the program supports Yasutaka Furukawa's PMVS/CMVS tool chain, and can prepare data for Michal Jancosek's CMP-MVS. In addition, the output of VisualSFM is natively supported by Mathias Rothermel and Konrad Wenzel's SURE.
+The Chungchang Wu's Visual Structure from Motion System \cite{www:visual_sfm} is a~GUI application for 3D reconstruction using structure from motion. The~reconstruction system is modular and~integrates several of other projects: SIFT on GPU (SiftGPU), Multicore Bundle Adjustment, and~Towards Linear-time Incremental Structure from Motion. VisualSFM runs fast by exploiting multicore parallelism for feature detection, feature matching, and~bundle adjustment. For dense reconstruction, the~program supports Dr. Yasutaka Furukawa's Patch-based Multi-view Stereo Software (PMVS)\cite{pmvs} and Clustering Views for Multi-view Stereo (CMVS)\cite{cmvs} tool chain. It can also prepare data for Michal Jancosek's CMPVS \cite{book:cmpmvs, www:cmpmvs} - Multi-View Reconstruction Software which can create textured polygonal model given camera parameters and set of perspective images. In addition, the~output of VisualSFM is natively supported by Mathias Rothermel and~Konrad Wenzel's Photogrammetric Surface Reconstruction from Imagery - SURE \cite{www:sure}.
 
-The software follows the overall 3D reconstruction pipeline; It detects features using SIFT detector and SIFT extractor, matches feature pairs with the N-View Match, estimates the camera model for each image, removes images' distortion and then runs the dense reconstruction. Outputs of feature extraction and matching are stored as a binary files and are loaded if provided to save processing time. This enables use of other than built-in extractors and matcher, at least for the sparse reconstruction. \cite{www:visual_sfm}
+The software follows the~overall 3D reconstruction pipeline; It detects features using SIFT detector and~SIFT extractor, matches feature pairs, creates camera tracks, estimates the~camera model for each image, removes images' distortion and~then runs the~dense reconstruction. Most of these parts are done using other libraries mentioned before. The output files of feature extraction and~matching are stored as a~binary files and~are loaded if provided to~save processing time. This enables use of other than built-in extractors and~matcher, but the format is not widely supported. The whole model is then stored in the N-View Match file format (NVM \cite{www:nvm}) which can contain number of models with cameras, 3D points and associated PLY models (polygon file format, also known as Stanford Triangle Format \cite{ply-format}). Tutorial on a 3D reconstruction using VisualSFM can be found in appendix \ref{visualsfm:reconstruction}.
 
 \begin{figure}[ht]
 	\begin{center}
 		\includegraphics[keepaspectratio,width=\textwidth]{fig/VisualSFM.png}
 	\end{center}
-	\caption{The VisualSFM application GUI with sparse reconstruction of the Červená Lhota Castle.}
+	\caption{The VisualSFM application GUI with sparse reconstruction of the~Červená Lhota Castle (will be introduced in section \ref{sec:experiments-datasets}).}
 	\label{fig:visualsfm}
 \end{figure}
 
 \subsection*{Bundler}
-Bundler is first well known Structure from Motion (SfM) system for unordered image collections from Noah Snavely. One of the first version of this Bundler system was used in the Photo Tourism project that was aqired by Microsoft and is now part of Photosynth. 
+Bundler is the oldest structure from motion system for unordered image collections used by professional public made by Noah Snavely. One of the~first versions of this Bundler system was used in the~Photo Tourism project that was aqired by Microsoft and~is now part of Photosynth. 
 
-As other applications discussed, Bundler takes a set of images, image features, and image matches as input, and produces a 3D reconstruction of camera and sparse scene geometry as output. In order to get sparse point clouds, one has to run Bundler to get camera parameters, use the Bundle2PMVS program to convert the results into PMVS2 input and then run PMVS2. The system reconstructs the scene incrementally, a few images at a time, using a modified version of the Sparse Bundle Adjustment package of Lourakis and Argyros as the underlying optimization engine. Bundler has been successfully run on many Internet photo collections, as well as more structured collections. \cite{www:bundler}
+As other applications discussed, Bundler takes a~set of images, image features, and~image matches as input, and~produces a~3D reconstruction of camera and~sparse scene geometry as output. In order to~get sparse point clouds, one has to~run Bundler to~get camera parameters, use the~build-in Bundle2PMVS program to~convert the~results into the PMVS input and~then run the Dr. Yasataka Furukawa's PMVS software mentioned earlier. The Bundler reconstructs the~scene incrementally, a~few images at a~time, using a~modified version of the~Sparse Bundle Adjustment (SBA) package of Lourakis and~Argyros \cite{www:sba} as the~underlying optimization engine. Bundler has been successfully run on many Internet photo collections, as well as more structured collections \cite{www:bundler}. However, it is a rather old piece of software that does not run without modifications on new systems.
 
-The bundler was modified and used in Photo Tourism \cite{article:photo_tourism} \cite{article:photo_tourism2} project that aims to browse large collections of photographs in 3D. The algorithm behind Photo Tourism was further modified to be used in reconstruction of entire cities. The project Rome in a Day  \cite{article:rome_in_a_day} \cite{article:reconstructing_rome} \cite{article:rome_in_a_day2} reconstructs the city of Rome from more than two million photographs.
+The bundler was modified and~used in the Photo Tourism \cite{article:photo_tourism} \cite{article:photo_tourism2} project that aims to~browse large collections of photographs in 3D. The~algorithm behind Photo Tourism was further modified to~be used in reconstruction of entire cities. The~project Rome in a~Day  \cite{article:rome_in_a_day} \cite{article:reconstructing_rome} \cite{article:rome_in_a_day2} reconstructs the~city of Rome from more than two million photographs.
 
-\subsection*{SLAM\textunderscore frontend}
-The SLAM\textunderscore frontend, developed at the Faculty of Information Technology at Brno University of Technology, is a framework for the bundle adjustment and structure from motion applications. The whole framework (SLAM++ and SLAM\textunderscore frontend) will be further discussed later in this thesis (section \ref{sec:slam}), but right now we want to present implemented applications that are performing the bundle adjustment, respectively structure from motion, algorithms. Right now there are three finished applications:
+\subsection*{libmv}
+The libmv \cite{www:libmv} is a multiple view reconstruction and tracking library that aims to some-when in future take a raw video footage or photographs and produce full camera calibration information and dense 3D models. It consist of multiple modules which allow to resolve part of the SfM process. This library has been incorporated as a module to the open source 3D creative suite program Blender \cite{www:blender}. However, last update for this library was 4 years ago and while the library is now part of the Blender software, it is still not available with last code change in January 2014.
+
+\subsection*{OpenMVG}
+The OpenMVG \cite{openMVG} is another library for multiple view geometry. The core design is based on the libmv but unlike libmv this project is still very much alive and ongoing. Apart from core functionality the library also provides few samples and ready to use software as a toolchains processing: feature matchin in un-ordered photo collection, SfM pipelines and color harmonization of photo collection. The SfM pipeline follows the pipeline introduced earlier and is implemented as a Python script. Part of the library is a database of intrinsic camera calibration for various cameras which is automatically extracted from the image's Exif data (Exchangeable image file format). Even though the database contains almost 3500 records for distinct cameras, it does not include any version of Canon  or iPhone cameras that we have used. The library itself, given camera calibration in the Exif data, outputs sparse point cloud and with camera poses for both ordered and unordered image collections. However, if the Exif data are missing it fails with uncaught exception and for many other image collections fails after the keypoints matching.
+
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=\textwidth]{fig/openmvg.pdf}
+	\end{center}
+	\caption{Sample of the OpenMVG SfM pipeline output as a 3D model (left) for the default image collection Sceaux Castle, France (on the right)).}
+	\label{fig:openvmg}
+\end{figure}
+
+\subsection*{Autodesk 123D Catch}
+The Autodesk 123D Catch \cite{123dcatch} is part of a complex application bundle from Autodesk. It is not a standalone application but rather a client available for Windows desktop, iOS, Android and Windows Phone. Therefore there is little known about the 3D reconstruction approaches, but the application is user friendly and so far the only one that can be used without any advanced computer knowledge. The application gives a brief manual how should the set of input images look and provides simple guides to ensure that the object is scanned from each side. After the pictures are taken, they are uploaded to the Autodesk's servers where all the computation happens. Once the processing finishes, the user is notified for review of the 3D model which he/she can save within the application (and with paid version even export). Unfortunately we have encountered number of problems on the iOS version, where the model creation failed without any feedback repeatedly, the program complained that there is not enough images (the minimum amount required is 8 but such information is nowhere to be found) and lastly quite often fails to show the model for review. However, if nothing breaks the system is straight forward and easy to follow. What we lack (at least in the iOS version) is the ability to upload pictures taken before outside of the application, higher limit on how many pictures can be processed (current limit is 40) and an OS X version (every other application of the 123D bundle is available for OS X).
+
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=\textwidth]{fig/123d.pdf}
+	\end{center}
+	\caption{3D model (right) obtained from the Autodesk 123D Catch application on iOS.}
+	\label{fig:openvmg}
+\end{figure}
+
+\subsection*{Sketchup and Blender}
+While we are mainly interested in an automated process of creating 3D models from a set of 2D pictures, it is worth mentioning that there are solutions for creating 3D model to match 2D images manually. Both the SketchUp \cite{sketchup, sketchup-modeling} and Blender \cite{www:blender} offer such functionality. The process is rather simple and consists of mapping the $x, y$ and $z$ axes to the picture and than drawing over it. Once done, next picture is matched and rest of the visible structure drawn. The figure \ref{fig:sketchup} shows the process of creating a simple 3D model in SketchUp.
+
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=\textwidth]{fig/sketchup_modelhouse.pdf}
+	\end{center}
+	\caption{Creating a simple 3D model of the Model House (will be introduced later in section \ref{sec:experiments-datasets}) in SketchUp.}
+	\label{fig:sketchup}
+\end{figure}
+
+\subsection*{SLAM\textunderscore frontend and SLAM++}
+The SLAM\textunderscore frontend  and SLAM++ developed at the~Faculty of Information Technology at Brno University of Technology, are libraries for the~bundle adjustment and~structure from motion applications. The SLAM++ is a~library containing several methods used in problems like bundle adjustment, structure from motion, simultaneous localization and~mapping (SLAM) and~many others. The~core of the library is a general graph optimizer along with several problem solvers, nonlinear least squares solvers and~block linear solvers. It is written in C++ and~it is very fast due to~the~fact that it exploits the~block structure the~problems and~offers very fast solutions to~manipulate block matrices within iterative nonlinear solvers (this will be detailed in the section \ref{sec:bundle-adjustment}).
+
+The SLAM\textunderscore frontend \cite{www:slam_frontend} is a~collection of applications that take as input image files or any other sensor data files and~generate inputs for the SLAM++ block-sparse linear algebra SLAM solver. Apart form SLAM++, it requires OpenCV. The~SLAM\textunderscore frontend is also an~easy to~use interface for implementing custom structure from motion or bundle adjustment application. It provides means to~load set of images and~detect, extract and~match feature. The~framework provides templates for custom estimators, such that one can implement camera pose estimator for a~BA application. Right now there are three finished applications:
 
 \begin{itemize}
-	\item The \textbf{Mono app} which reconstructs 3D scene from a video made by single camera which camera calibration is known.
+	\item The~\textbf{Mono app} which reconstructs 3D scene from an~ordered image dataset made by single camera with known intrinsic camera parameters.
 	
-	\item The \textbf{Spheron app} reconstruct the 3D scene from a spheron camera with known calibration.
+	\item The~\textbf{Spheron app} reconstruct the~3D scene from a~spheron camera with known intrinsic camera parameters.
 	
-	\item Lastly, the \textbf{Stereo app} uses a stereo vision to reconstruct the 3D scene from a pair of horizontally displaced calibrated cameras.
+	\item Lastly, the~\textbf{Stereo app} uses a~stereo vision to~reconstruct the~3D scene from a~pair of horizontally displaced cameras with known intrinsic camera parameters .
 \end{itemize}
 
-Apart from the applications listed above, two other are under development: the Activity app and the Uncalibrated app which is the subject of this thesis and will be implemented in the future.
+Apart from the~applications listed above, two other are under development: the~Activity app and~the~Uncalibrated app which is the~subject of this thesis and~which implementation will be described in chapter \ref{chapter:implementation}.
 
 \section{Detectors}
 \label{sec:detectors}
-A successful 3D reconstruction stands and falls on good features detection.The quality and robustness of features is (usually) much more important then their quantity which will be demonstrated by the Dense detector later in this section. The ideal feature detector finds salient image regions such that they are repeatedly detected despite change of viewpoint; more generally it is robust to all possible image transformations. Therefore, it does not detect any points in uniform and uninteresting surfaces like sky or texture-less walls. The best detector to be used depends heavily on the requested task. In our application features we are interested in are edges and corners of buildings and their distinct parts.
+A successful 3D reconstruction stands and~falls on good feature detection.The quality and~the robustness of feature is usually much more important then their quantity which will be demonstrated later in this section. The~ideal feature detector finds salient image regions such that they are repeatedly detected despite change of viewpoint; more generally it is robust to~all possible image transformations. Therefore, it does not detect any points in uniform and~uninteresting surfaces like sky or texture-less walls. The~best detector to~be used depends heavily on the~requested task. In our application feature we are interested in are edges and~corners of buildings and~their distinct parts.
 
-We can divide types of image features into following categories (please note that a detector can detect features from multiple categories):
-% CITATION NEEDED!!!
+We can divide types of image feature into following categories (please note that a~detector can detect feature from multiple categories):
 \begin{itemize}
-	\item \textbf{Edge} is a point where there is a sudden change between adjacent pixels (strong gradient magnitude). Generally an edge can be of almost any arbitrary shape and may include junctions. Locally edges have a one-dimensional structure.
-	\item \textbf{Interest point} has a local two dimensional structure. We can think of it as two-dimensional edge, in fact early algorithms were used to detect interest points as edges and then selected the interest points by further calculation. In some literature you the interest points may be referred to as corners.
-	\item \textbf{Blobs} provide a complementary description of image structures in terms of regions, as opposed to corners that are more point-like. A term regions of interest or interest points are sometimes used as the blob descriptors often contain a preferred point (a local maximum or a center of gravity). Blobs allows detection of smooth areas in an image that might not be detected as an edge or corner.
-	\item \textbf{Ridges} are in computer vision a set of curves whose points are have a local maximum in at least one dimension. This notion captures the intuition of geographical ridges. Ridge detection is usually much harder then Edge, Interest point or Blob detection.
+	\item \textbf{Edge} is a~point where there is a~sudden change between adjacent pixels (strong gradient magnitude). Generally an~edge can be of almost any arbitrary shape and~may include junctions. Locally edges have a~one-dimensional structure.
+	\item \textbf{Interest point} has a~local two dimensional structure. We can think of it as two-dimensional edge, in fact early algorithms were used to~detect interest points as edges and~then selected the~interest points by further calculation. In some literature you the~interest points may be referred to~as corners.
+	\item \textbf{Blobs} provide a~complementary description of image structures in terms of regions, as opposed to~corners that are more point-like. A~term regions of interest or interest points are sometimes used as the~blob descriptors often contain a~preferred point (a local maximum or a~center of gravity). Blobs allows detection of smooth areas in an~image that might not be detected as an~edge or corner.
+	\item \textbf{Ridges} are in computer vision a~set of curves whose points are have a~local maximum in at least one dimension. This notion captures the~intuition of geographical ridges. Ridge detection is usually much harder then Edge, Interest point or Blob detection.
 \end{itemize}
 
-The detector algorithms used are implemented in the Open source Computer Vision (OpenCV) \cite{www:opencv} library which is used by the SLAM++. The OpenCV was designed for computational efficiency with a strong focus on real-time applications. It contains number of algorithms from computer vision and is being recognised. In the remainder of this section feature detectors wrapped in the SLAM++ will be presented. Each detector will be run on the same set of images with historic landmarks in order to evaluate the effectiveness and speed. Then a summary of the results will be presented.
- 
+The detector algorithms used are implemented in the~Open source Computer Vision (OpenCV) \cite{www:opencv} library but other implementations exist (eg. VLFeat \cite{vlfeat}). The~OpenCV was designed with a~strong focus on real-time applications and contains number of algorithms from computer vision. In the~remainder of this section feature detectors wrapped in the~SLAM\textunderscore frontend will be presented and briefly compared as we will evaluate their performance for our problem in section \ref{sec:experiments-extractors}.
+
+	
 \begin{itemize}
-	\item A \textbf{Scale Invariant Feature Transform (SIFT)} keypoint is image region with an orientation. The detector uses as a keypoints image structures  which resemble blobs. The use of the detector is licenced which is one of the reasons why we would like to use a different detecter. However, as expected, the detector performs very well and is used by other SfM software we discussed earlier. \cite{article:sift}
+	\item[1.] The~\textbf{Harris Corner Detector} is one of the~most known feature detectors . It can identify similar regions between images that are related through affine transformations and~have different illuminations. Even though the~Harris Corner Detector is fast, it does not select enough keypoints and~therefore is not suitable for the~3D building reconstruction. \cite{www:harris}
 	
-	\item The \textbf{Speeded Up Robust Features (SURF)} detector is modification of the SIFT detector. It addresses slow processing of the SIFT while maintaining reasonable efficiency. While it can surely be used in the SfM application, from our experiments we discovered that the increased performance greatly decreases feature detection for (in our case) important structures.  \cite{www:surf}
+	\item[2.] The~\textbf{Good feature to~Track (GFTT)} detector is modified version of the~Harris Corner Detector described earlier. It is still classified as a~corner detector, however, the~scoring function differs. Compared to~the~Harris, the~algorithm was slightly slower, with higher amount of feature. Nevertheless, both of these algorithms do not perform well enough for our problem. \cite{article:gftt}
 	
-	\item The \textbf{Features from Accelerated Segment Test (FAST)} aims to rapidly increase performance of feature detection while sustaining feature quality of SIFT-like detectors. The algorithm detects corners in the image and should be used with SIFT or SURF extractor for best performance. As the FAST select in our case three times more features hundred times faster than SIFT (resp. 50 times faster than SURF) we market this as one of the interesting detectors for the final implementation. \cite{article:fast}
+	\item[3.] A~\textbf{Scale-invariant feature transform} (or SIFT) is an algorithm in computer vision to detect and describe local features in images. The algorithm was published by David Lowe in 1999. The~algorithm uses as a~keypoints image structures which resemble blobs. The~use of the~detector is licensed which is an~argument against using of this detector in our application. However, as expected, the~detector performs very well and~is used in many other SfM and BA tools presented earlier. \cite{article:sift}
 	
+	\item[4.] The~\textbf{Speeded Up Robust feature (SURF)} detector is modification of the~SIFT detector. It addresses the slow processing of the~SIFT while maintaining reasonable efficiency. While it can surely be used in the~SfM application, from our experiments we discovered that the~increased performance greatly decreases feature detection for (in our case) important structures.  \cite{www:surf}
 	
-	\item The \textbf{Robust Invariant Scalable Keypoints (BRISK)} detector uses scale-space pyramid layers of octaves and intra-octaves to detect corners in an image. The algorithm uses FAST feature detector score and was developed to get the better of SIFT and SURF detectors. However, in our case the performance gain is not worth decreased feature quality. \cite{article:brisk}
+	\item[5.] The~\textbf{Feature from Accelerated Segment Test (FAST)} aims to~rapidly increase performance of feature detection while sustaining feature quality of SIFT-like detectors. The~algorithm detects corners in the~image and~should be used with SIFT or SURF extractor for best performance. In our case,  the~FAST selects three times more feature and it is hundred times faster than SIFT (resp. 50 times faster than SURF) we mark this as one of the~interesting detectors for the~final implementation. \cite{article:fast}
 	
-	\item \textbf{Dense Sampling} uses a regular grid to find a keypoints in the image. This results in good coverage of the entire object or scene and a constant amount of feature per image area. The dense sampling is fast as the detector selects all points on a grid without analysis of the surrounding. On the downside, dense sampling cannot reach the same level of repeatability as obtained with interest points, unless sampling is performed extremely densely, but then the number of features quickly grows unacceptably large. The dense sampling is therefore not useful in the SfM model estimation, but can be used for a dense reconstruction once sparse structure is calculated. \cite{article:dense}
+	\item[6.] The~\textbf{Robust Invariant Scalable Keypoints (BRISK)} detector uses scale-space pyramid layers of octaves and~intra-octaves to~detect corners in an~image. The~algorithm uses FAST feature detector score and~was developed to~get the~better of SIFT and~SURF detectors. However, in our case the~performance gain is not worth decreased feature quality. \cite{article:brisk}
 	
-	\item One of the most known feature detectors is the \textbf{Harris Corner Detector} . It can identify similar regions between images that are related through affine transformations and have different illuminations. Even though the Harris Corner Detector is fast, it does not select enough keypoints and therefore is not suitable for the 3D building reconstruction. \cite{www:harris}
+	\item[7.] \textbf{Dense Sampling} uses a~regular grid to~find a~keypoints in the~image. This results in good coverage of the~entire object or scene and~a~constant amount of feature per image area. The~dense sampling is fast as the~detector selects all points on a~grid without analysis of the~surrounding. On the~downside, dense sampling cannot reach the~same level of repeatability as obtained with interest points, unless sampling is performed extremely densely, but then the~number of feature quickly grows unacceptably large. The~dense sampling is therefore not useful in the~SfM model estimation, but can be used for a~dense reconstruction once sparse structure is calculated. \cite{article:dense}
 	
-	\item The \textbf{Good Features to Track (GFTT)} detector is modified version of the Harris Corner Detector described earlier. It is still classified as a corner detector, however, the scoring function differs. Compared to the Harris, the algorithm was slightly slower, with higher amount of features. Nevertheless, both of these algorithms do not perform well enough for our problem. \cite{article:gftt}
+	\item[8] The~\textbf{Oriented FAST and~Rotated BRIEF (ORB)} detector originated from the~OpenCV Labs. Its goal was to~offer robustness of a~SIFT and~SURF, while maintaining fast processing time like FAST and~BRIEF combination. While this may be true, for our problem the~ORB detector does not perform well enough. The~feature found rarely belong to~a~building and~usually chunks around trees and~vegetation. \cite{www:orb}\cite{article:orb}
 	
-	\item The \textbf{Oriented FAST and Rotated BRIEF (ORB)} detector originated from the OpenCV Labs. Its goal was to offer robustness of a SIFT and SURF, while maintaining fast processing time like FAST and BRIEF combination. While this may be true, for our problem the ORB detector does not perform well enough. The feature found rarely belong to a building and usually chunks around trees and vegetation. \cite{www:orb}\cite{article:orb}
-	
-	\item The \textbf{Maximally Stable Extremal Regions} is a blob detector. For our task this detector performs poorly and takes even more time than SIFT detector.
+	\item[8.] The~\textbf{Maximally Stable Extremal Regions} is a~blob detector. For our task this detector performs poorly and~takes even more time than SIFT detector.
 \end{itemize}
 
 \section{Extractors}
 \label{sec:extractors}
-In order to work further with the keypoints detected in previous step, the keypoints have to be analysed and transformed into so called feature descriptor. The process consist of inspecting local image patch around the keypoint to be extracted. This extraction may involve quite considerable amounts of image processing and involves reducing the amount of resources required to describe the original data. The result is known as a feature descriptor or a feature vector. Among the information that may be stored within feature descriptor, one can mention local histograms. In addition to such attribute information, the keypoints detection step may also provide complementary attributes, such as the edge orientation, gradient magnitude in edge detection and the polarity or the strength of the blob in blob detection. The authors of detectors usually specify which extractor should work best for their detection algorithm, some even provide their own. Nevertheless, we tried all combinations with detectors to get the best results for our application. However, note that all extractors were used with the default parameters. Final results when, for our problem, better parameters are set may differ.
+In order to~work further with the~keypoints detected in previous step, the~keypoints have to~be analysed and~transformed into so called feature descriptors (often only the term feature or descriptors is used). The~process consists of inspecting local image patch around the~keypoint to~be extracted. This extraction may involve quite considerable amounts of image processing and~involves reducing the~amount of resources required to~describe the~original data. The~result is known as a~feature descriptor or a~feature vector. Among the~information that may be stored within feature descriptor, one can mention local histograms. In addition to~such attribute information, the~keypoints detection step may also provide complementary attributes, such as the~edge orientation, gradient magnitude in edge detection and~the~polarity or the~strength of the~blob in blob detection. The~authors of detectors usually specify which extractor should work best for their detection algorithm, some even provide their own.
 
-There are two types of descriptors in the OpenCV that are now available in Slam++ frontend; a) descriptors using floating point and b) descriptors storing information as a binary data in unsigned char type.
+There are two types of descriptors in OpenCV library; a) descriptors using floating point and~b) descriptors storing information as a~binary data in unsigned char type.
 \begin{itemize}
 	\item[a)] \textbf{Float} descriptors:
 	
 	\begin{itemize}
-		\item \textbf{SIFT:} The scale-invariant feature transform of a neighbourhood is a 128-dimensional vector of histograms of image gradients. The region, at the appropriate scale and orientation, is divided into a $4\times 4$ square grid, each cell of which yields a histogram with 8 orientation bins. The SIFT extractor is advised to be used with the SIFT, SURF and FAST detector.
-		\item \textbf{SURF:} The speeded up robust feature extractor uses either 128 or 64-dimensional vector of histograms of image gradients.An oriented quadratic grid of $4 \times 4$ square sub-regions is laid over the keypoint and a wavelet response computed for each square. According to literature the SIFT, SURF and FAST detector can be used with the SURF extractor. \cite{www:sift_surf}
+		\item \textbf{SIFT:} The~scale-invariant feature transform of a~neighbourhood is a~128-dimensional vector of histograms of image gradients. The~region, at the~appropriate scale and~orientation, is divided into a~$4\times 4$ square grid, each cell of which yields a~histogram with 8 orientation bins. The~SIFT extractor is advised to~be used with the~SIFT, SURF and~FAST detector.
+		\item \textbf{SURF:} The~speeded up robust feature extractor uses either 128 or 64-dimensional vector of histograms of image gradients.An oriented quadratic grid of $4 \times 4$ square sub-regions is laid over the~keypoint and~a~wavelet response computed for each square. According to~literature the~SIFT, SURF and~FAST detector can be used with the~SURF extractor. \cite{www:sift_surf}
 	\end{itemize}
 	
 	\item[b)] \textbf{Binary} descriptors:
 	
 	\begin{itemize}
-		\item \textbf{BRIEF:} The Binary Robust Independent Elementary Feature descriptor is a 128, 256 or 512-dimensional bitstring which is a good compromise between speed, storage efficiency and recognition rate. The descriptor is much smaller (16, 32 or 64 bytes) compared to floating point descriptors, while maintaining a good performance compared to SURF or U-SURF. \cite{article:brief}
+		\item \textbf{BRIEF:} The~Binary Robust Independent Elementary Feature descriptor is a~128, 256 or 512-dimensional bitstring which is a~good compromise between speed, storage efficiency and~recognition rate. The~descriptor is much smaller (16, 32 or 64 bytes) compared to~floating point descriptors, while maintaining a~good performance compared to~SURF or U-SURF. \cite{article:brief}
 		
-		\item \textbf{ORB:} Unlike BRIEF, Oriented FAST and Rotated BRIEF (ORB) is comparatively scale and rotation invariant while still employing the very efficient Hamming distance metric for matching. As such, it is preferred for real-time applications, but may be suitable for some offline applications as well. \cite{www:orb}\cite{article:orb}
+		\item \textbf{ORB:} Unlike BRIEF, Oriented FAST and~Rotated BRIEF (ORB) is comparatively scale and~rotation invariant while still employing the~very efficient Hamming distance\cite{hamming_distance} metric for matching. As such, it is preferred for real-time applications, but may be suitable for some offline applications as well. \cite{www:orb}\cite{article:orb}
 		
-		\item \textbf{FREAK:} The Fast Retina Keypoint extractor aims to be faster and more robust than SIFT and SURF. It uses a novel keypoint descriptor inspired by the human visual system to compute cascade of binary strings.\cite{article:freak}
+		\item \textbf{FREAK:} The~Fast Retina Keypoint extractor aims to~be faster and~more robust than SIFT and~SURF extractors. It uses a~novel keypoint descriptor inspired by the~human visual system to~compute cascade of binary strings.\cite{article:freak}
 		
-		\item \textbf{BRISK:}  The  Binary Robust Invariant Scalable Keypoints extractor uses a 64-byte binary descriptor composed as a binary string by concatenating the results of simple brightness comparison tests. \cite{article:brisk}
+		\item \textbf{BRISK:}  The~ Binary Robust Invariant Scalable Keypoints extractor uses a~64-byte binary descriptor composed as a~binary string by concatenating the~results of simple brightness comparison tests. \cite{article:brisk}
 	\end{itemize}
 \end{itemize}
 
 \section{Matchers}
 \label{sec:matchers}
-So far we are able to find points of interest in an image and describe them in such a way that they are effectively stored but still contain information about the point and its local image patch. Once descriptors are extracted from two or more images, we want to match points present more then one image. This is called nearest neighbour search which is an optimization problem for finding closest (or most similar) points. There are two approaches to this problem that are implemented in the OpenCV: Brute-Force and FLANN-based matching.
+So far we are able to~find points of interest in an~image and~describe them in such a~way that they are effectively stored but still contain information about the~point and~its local image patch. Once descriptors are extracted from two or more images, we want to~match points present in more then one image. This is effectively a nearest neighbour search\cite{nearest_neighbour_search} which is an~optimization problem for finding closest (or most similar) points. There are two approaches to~this problem that are implemented in the~OpenCV: a) Brute-Force and~b)~Approximate Nearest Neighbour (ANN)-based matching.
 
-The Brute-Force matcher is simple and naive approach. It takes the descriptor of one feature from the first image set and matches it with all other feature from the second image set. During the process a distance of some sort is calculated and the match with best metric selected. There are number of metrics implemented in the OpenCV to be used with different descriptors but we, once again, tried all the combinations in order to get best result for our problem. The algorithm promises best possible matches, but due to the fact that it tries to match each pair of feature, can take a lot of time to process. 
+\begin{itemize}
+	\item[a)] The Brute-Force matcher is simple and~naive approach. It takes the~descriptor of one feature from the~first image set and~matches it with all other feature from the~second image set. During the~process a~distance of some sort is calculated and~the~match with best metric selected. There are number of metrics implemented in the~OpenCV to~be used with different descriptors but we, once again, tried all the~combinations in order to~get best result for our problem. The~algorithm promises best possible matches, but due to~the~fact that it tries to~match each pair of feature, can take a~lot of time to~process. 
 
-The Fast Library for Approximate Nearest Neighbors (FLANN) implemented in OpenCV, performs a fast approximate nearest neighbour searches in high dimensional spaces. It uses the Hierachical K-means Tree for generic feature matching. Nearest neighbors are discovered by choosing to examine the branch-not-taken nodes along the way. \cite{www:flann}
+	\item[b)] The Fast Library for Approximate Nearest Neighbors (FLANN) implemented in OpenCV, performs a~fast ANN searches in high dimensional spaces. It uses the~Hierachical K-means Tree for generic feature matching. Nearest neighbors are discovered by choosing to~examine the~branch-not-taken nodes along the~way. \cite{www:flann}
+\end{itemize}
 
 \chapter{Methodology}
 \label{chapter:methodology}
-\textit{This chapter thoroughly describes the so far implemented part of the process of 3D reconstruction from a set of images. Steps that are not yet implemented are outlined and briefly discussed. The reader will be introduced to the dataset aquisition from the internet especially Flickr. Then we will briefly talk about the implemented feature detection, extraction and matching in context of 3D reconstruction. The next section discusses the 3D reconstruction approaches leading to the uncalibrated one which will be implemented. Finally we introduce the SLAM++ framework and it is application in this project.}
+\textit{This chapter thoroughly describes the whole 3D reconstruction process. First, the general pipeline is outlined and each step briefly discussed. Second, the~camera model is presented. The reader will learn about the intrinsic and extrinsic camera parameters, distortion and how does it relate to the camera pose. Next we talk about the epipolar geometry and fundamental matrix which allows us to obtain the camera poses and reconstruct the scene up to some degree of ambiguity. The main focus of the chapter is on the 3D reconstruction. We start with the 3D reconstruction approaches and what form of reconstruction can be achieved in various scenarios. The chapter continues with the stereoscopic and multiple-view camera calibration and finishes of with bundle adjustment. That is the refinement of estimated 3D model and camera calibrations.}
 
-\section{Three-dimensional Structure Estimation Pipeline}
-The pipeline (depicted in figure \ref{fig:pipeline}) for the to be implemented application consists of 7 distinct steps:
-\begin{itemize}
-	\item[1)] \textbf{Dataset aquisition.} First step in the bundle adjustment pipeline is selection of a input data. Specific requirements on the data varies throughout different software, however, we can generalize some properties of such set of images. The set has to contain images that are overlapping one another. Only such images are used in the reconstruction as they provide points seen by multiple cameras and therefore the 3D position can be calculated.
-	\item[2)] \textbf{Keypoints detection.} Keypoints are parts of the image that are significant in some way. The significance is usually caused by a sudden change in gradient on relatively small part of the image. These points will be used to estimate the 3D representation. We will focus more on keypoints detection in section \ref{sec:detectors}. 
-	\item[3)] \textbf{Feature extraction.} The detected keypoints are rarely used as provided by the detector as they do not provide enough information about the point itself. A set of calculations is applied in order to extract data from the surroundings of such point and enrich information about the keypoint. Resulting structure is called feature and contains all data required for next step. At this point the input image does not have to be kept in memory anymore.
-	\item[4)] \textbf{Feature matching.} Now that we have keypoints represented as feature we want to establish a visual correspondence between a set of keypoints from two closely related images. This is done by so called feature matching and was discussed in detail in section \ref{sec:matchers}. Up to this day, feature matching is the last step we've managed to implement in our application.
-	\item[5)] \textbf{Camera initialization and pose estimation.} Once we know correspondence between two closely related images, we can estimate the parameters of the camera(s). If not known, the camera matrix can be calculated and the relation between the points in 3D.
-	\item[6)] \textbf{Structure computation.} Next step is to calculate the model's 3D structure from the points seen by different cameras. The quality of the structure is greatly affected by errors from previous steps.
-	\item[7)] \textbf{Visualization.} Lastly the resulting 3D structure in form of point cloud is visualized.The visualization can be either just a set of images cleverly arranged to give impression of 3D, cloud of 3D points or polygonal model. In this thesis we will not be interested in the visualization of the resulting model, however we see this as an important part of the bundle adjustment pipeline. As of now there are no plans to implement visualization of a final sparse reconstruction, but the SLAM++ fremework provides a means to visualize the resulting sparse point cloud. 
-\end{itemize}
-
-\begin{figure}[ht]
+\begin{figure}[t]
 	\begin{center}
 		\includegraphics[keepaspectratio,width=\textwidth]{fig/pipeline.pdf}
 	\end{center}
-	\caption{The three-dimensional structure from two-dimensional images estimation pipeline to be implemented in the final application.}
+	\caption{The three-dimensional structure from two-dimensional images estimation pipeline to~be implemented in the~final application.}
 	\label{fig:pipeline}
 \end{figure}
 
-\subsection*{Dataset Generation}
-Creating a dataset is a crucial part of the process of estimating three-dimensional structures from two-dimensional image sequences. The dataset has to contain enough images with a feature pairs to be vialable for reconstruction. We also want to filter out images taken during the night or throughout various seasons as the depicted object and its surroundings may change significantly.
+\section{Three-dimensional Structure Estimation Pipeline}
+\label{sec:pipeline}
+The pipeline of the 3D reconstruction application (depicted in figure \ref{fig:pipeline}) consists of 7 distinct steps:
+\begin{itemize}
+	\item[1.] \textbf{Dataset aquisition.} First step in the~3D reconstruction pipeline is the selection of input data. Specific requirements on the~data varies throughout different software, however, we can generalize some properties of such set of images. The~set has to~contain images that are overlapping one another, depict mostly static scene, are not too general (for example an image sequence along one face of a building with multiple similarly looking windows) and contain little to none reflection. Only such images are used in the~reconstruction as they provide points seen by multiple cameras and~therefore the~3D position can be calculated.
+	\item[2.] \textbf{Feature detection and extraction.} Keypoints are parts of the~image that are significant in some way. The~significance is usually caused by a~sudden change in gradient on relatively small part of the~image. These points will be used to~estimate the~3D representation. The~detected keypoints are rarely used as provided by the~detector as they do not provide enough information about the~point itself. A~set of calculations is applied in order to~extract data from the~surroundings of such point and~enrich information about the~keypoint. Resulting structure is called feature and~contains all data required for next step. At this point the~input image does not have to~be kept in memory any more.
+	\item[3.] \textbf{Feature matching.} Now that we have keypoints represented as feature we want to~establish a~visual correspondence between a~set of keypoints from two closely related images. This is done by so called feature matching and~was discussed in detail in section \ref{sec:matchers}.
+	\item[4.] \textbf{Feature and camera track building.} The problem of feature points tracking is to follow the position of a characteristic point in a set of images. These multi-view correspondences are called tracks. Track identification in a set of images (ordered, or not) is an important task in not only our application but in many other computer vision problems. Another part of this problem is building camera tracks - estimating sequences or bunches of cameras which together form a model and selecting initial camera pair.
+	\item[5.] \textbf{Camera pose estimation.} Once correspondence between some two images are known, the camera pose can be estimate. This can be divided into two cases: 1) this is first camera pair in the scene (initialization) 2) there are already some cameras and structure points in scene, and the new camera pose can be estimated from 2D - 3D correspondences.
+	\item[6.] \textbf{Structure computation.} Next step is to~calculate 3D structure from camera poses obtained earlier. This is also incremental process which consist of initialization for the first camera pair and addition of new structure points to an existing structure for each newly added camera.
+	\item[7.] \textbf{Structure refinement.} The structure and camera poses in the scene are subject to errors caused by reprojection ambiguity, distortion etc. Therefore the structure needs to be refined to minimize the impact of such errors.
+	\item[8.] \textbf{Visualization and further processing.} Lastly the~resulting 3D structure in form of point cloud is visualized. In this thesis we will not be interested in the~visualization of the~resulting model, however we see this as an~important part of the~bundle adjustment pipeline. As of now there are no plans to~implement visualization of a~final sparse reconstruction, but the output of our application is a 3D point cloud with camera poses in a PLY format that can be displayed in many 3D editing applications (eg. Blender introduced earlier). There are also means to further process the output in order to create a polygonal model (either manually using programs like MeshLab, Blender, SketchUp or automatically using programs and libraries; eg. Point Cloud Library \cite{www:pcl} or PMVS and CMVS mentioned earlier). 
+\end{itemize}
 
-With this in mind we've decided to download images from Flickr webpage. Flickr is well known and widely used web service for sharing pictures. The advantage of this service, in comparison to other picture sharing websites, is the ability to tag the photo. Each image can contain a number of tags describing it. Most of the pictures uploaded contain information about the place where the photo was taken and can be aggregated by that tag. A tool, Flickr downloader, we designed allows downloading images with specified tag from Flickr in batches. It is an easy to use Python script expecting two parameters; number of photos to be downloaded and a tag to be browsed. The script connects to the Flickr webpage, downloads the search results page, cyclically opens each photo page and downloads the image. The downloaded images are stored to the \texttt{downloaded} output folder.
+\section{Camera Model}
+Before we explain the reconstruction process, it is important to explain how is the camera modelled. For purpose of this thesis we will be using the pin-hole camera model (or sometimes projective camera model) which is a widely used in many computer vision applications. It is simple and accurate enough for most applications. The name comes from the type of camera, like a camera obscura, that collects light through a small hole to the inside of a dark box or room. In the pin-hole camera model, light passes through a single point, the camera center $C$ before it is projected onto an image plane. Figure \ref{fig:cameramodel} shows an illustration where the image plane is drawn in front of the camera center. The image plane in an actual camera would be upside down behind the camera center, but the model is the same.
 
-While the Flickr yelds good results for well known places in countries like USA or western Europe, there is not enough images in the Czech Republic yet. This is the reason why we have, for now, decided to use different services, like Google image search, as well. The datasets aquired were manually filtered to eliminate irrelevant images and limit the selection to daytime photos taken in summer.
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=\textwidth]{fig/camera-model.pdf}
+	\end{center}
+	\caption{The pin-hole camera model showing projection of 3D point $M$ on the image plane as a 2D point $m$. An oriented central projective camera.}
+	\label{fig:cameramodel}
+\end{figure}
 
-\subsection*{Feature Detection, Extraction and Matching}
-Once we have a desired dataset we compute the feature pairs. An interface between the SLAM++ and the OpenCV was created which allowed use of the feature detectors, extractors and matchers described in chapter \ref{chapter:the-state-of-the-art}. The interface is a C++ template so there is no overhead. The extractors are defined using the \texttt{typedef} keyword and naming convention follows this scheme: \texttt{FeatureExtractor\_OpenCV\_[detector]\_[extractor]}.
+The projection properties of a pin-hole camera can be derived from this illustration and the assumption that the image axis is aligned with the x and y axis of a 3D coordinate system. The optical axis of the camera then coincides with the z axis and the projection follows from similar triangles. By adding rotation and translation to put a 3D point in this coordinate system before projecting, the complete projection transform follows.
 
-In the building reconstruction the repeated features are common. Many objects, such as clock towers with nearly identical sides, or domes with strong radial symmetries, pose challenges for structure from motion. When similar but distinct features are mistakenly equated, the resulting 3D reconstructions can have errors ranging from phantom walls and superimposed structures to a complete failure to reconstruct. This can be partially solved by a good selection of the feature detecting, extracting and matching algorithms. In section \ref{sec:matchers} we have identified some combinations that yeld good feature matches and therefore are suitable for the Structure from Motion algorithms on building reconstruction. We will use these algorithms in the uncalibrated app once it is finished.
+With a pin-hole camera, a 3D point $M$ is projected to an image point $m$ (both expressed in homogeneous coordinates) as
 
-\section{3D Reconstruction Approaches}
-Based on the image source we can distinguish between three types of vision: Stereoscopic, Monocular and Uncalibrated. The type of the vision defines the difficulty of the 3D reconstruction problem. \cite{book:multiple_view_geometry}
+\begin{equation}
+	\lambda m= PM
+	\label{eq:point-projection}
+\end{equation}
+\begin{equation}
+	\lambda
+	\begin{pmatrix}
+		x \\
+		y \\
+		1 \\
+	\end{pmatrix}
+	=
+	\begin{bmatrix}
+		p_{1,1} & p_{1,2} & p_{1,3}  & p_{1,4} \\
+		p_{2,1} & p_{2,2} & p_{2,3}  & p_{2,4} \\
+		p_{3,1} & p_{3,2} & p_{3,3}  & p_{3,4} \\
+	\end{bmatrix}
+	\begin{pmatrix}
+		X \\
+		Y \\
+		Z \\
+		1 \\
+	\end{pmatrix}
+\end{equation}
+
+where $\lambda$ is the distance of $M$ from the focal plane of the camera. The projection matrix $P$ is a $3 \times 4$ matrix defined:
+\begin{equation}
+	P_{3 \times 4}= K_{3 \times 3}A_{3 \times 4}
+\end{equation}
+
+where $K$ is intrinsic camera matrix which describes some of the properties of the physical camera and represents 2D transformation on the image plane. The camera matrix have 5 degrees of freedom (DOF). We write
+\begin{equation}
+	K_{3 \times 3} = 
+	\begin{bmatrix}
+		f/s_x & f/s_x ~cot \phi & c_x \\
+		0 & f/s_y & c_y \\
+		0 & 0  & 1 \\
+	\end{bmatrix}
+\end{equation}
+where $f$ is the camera focal distance in millimeters, $c_x, c_y$ are coordinates of camera's principal point (image centre) in pixels, $s_x$ resp $s_y$ is width resp height of the pixel footprint on the camera photosensor in millimeters and $\phi$ is the angle between the axis (usually $\pi /2$). The ratio $s_y/s_x$ is called aspect ratio and is usually close to 1.
+
+Matrix $A$ then refers to the extrinsic camera parameters and describes the camera position(3 DOF) and rotation (3 DOF) on the 3D coordinate system (see figure \ref{fig:cameramodel}).
+
+\begin{equation}
+	A_{3 \times 4} = [R_{3 \times 3} |t_{1 \times 3}] =
+	\begin{bmatrix}[ccc|c]
+		r_{1,1} & r_{1,2} & r_{1,3} & t_{x} \\
+		r_{2,1} & r_{2,2} & r_{2,3} & t_{y} \\
+		r_{3,1} & r_{3,2} & r_{3,3} & t_{z} \\
+	\end{bmatrix}
+\end{equation}
+This matrix describes how to transform points in world coordinates to camera coordinates. The vector $t$ can be interpreted as the position of the world origin in camera coordinates, and the columns of $R$ represent the directions of the world-axes in camera coordinates. The important thing to remember about the extrinsic matrix is that it describes how the world is transformed relative to the camera. \cite{www:extrinsic-camera, www:visual-3D-modeling, solem}
+
+\begin{figure}[!htbp]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=\textwidth]{fig/distortion.pdf}
+	\end{center}
+	\caption{Illustration of radial distortion effect.}
+	\label{fig:dist}
+\end{figure}
+
+The previously described model is an ideal camera without any lens distortion. However, real cameras suffer from distortion. The most common distortion is a radial distortion (depicted in figure \ref{fig:dist}) that can be characterized by following equation (distortion around $(0,0)$)
+\begin{equation}
+	\begin{bmatrix}
+		x_{dist} \\
+		y_{dist} \\
+	\end{bmatrix}
+	= (1 + k_1(x^2_{undist}, y^2_{undist}) + k_2(x^2_{undist}, y^2_{undist})^2)
+	\begin{bmatrix}
+		x_{undist} \\
+		y_{undist} \\
+	\end{bmatrix}
+	\label{distortion}
+\end{equation}
+where $k_1,k_2$ are distortion parameters. In our program will only model radial distortion.
+
+\section{Epipolar Geometry}
+Lets have a scene where either: 1) scene is static and camera moves, or 2) there is multiple pictures of same scene taken at exactly same time which is ultimately the same as case~1. Given two distinct images of the scene taken from different positions we can re-project a point (for example a detected feature) from one camera into the 3D space. Because the point has one degree of freedom, it can be observed somewhere on a line in the second camera. And similarly a point in second camera is projected somewhere on a line in the first camera. These lines are called the epipolar lines. A line connecting centres of both cameras is called baseline and the intersection with the image plane the epipole. All epipolar lines in each image intersect in the epipole. The corresponding epipolar lines from camera 1 and camera 2 (conjugate epipolar lines) constrains the search of correspondences. \cite{www:multi-view-geometry-presentation, www:extrinsic-camera, www:visual-3D-modeling, book:multiple_view_geometry}
+
+\begin{figure}[!htbp]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=\textwidth]{fig/epipolar-lines.pdf}
+	\end{center}
+	\caption{An illustration of epipolar line in camera 2 for point $m$ in camera 1.}
+	\label{fig:epipolar-lines}
+\end{figure}
+
+\begin{figure}[!htbp]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=\textwidth]{fig/epipolar-lines2.pdf}
+	\end{center}
+	\caption{An illustration of constraint given by epipolar lines to the search of correspondence problem (the red and blue lines in each image are in pairs conjugate epipolar lines).}
+	\label{fig:epipolar-lines2}
+\end{figure}
+
+The epipolar lines can be obtain from a fundamental matrix. The fundamental matrix $F$ is a $3 \times 3$ matrix defined as
+\begin{equation}
+	\begin{bmatrix}
+		x_1 & y_1 & 1 \\
+	\end{bmatrix}
+	F
+	\begin{bmatrix}
+		x_2 \\
+		y_2 \\
+		1 \\
+	\end{bmatrix}
+	= 0
+	\label{eq:fundamental-matrix}
+\end{equation}
+for any $(x_1, y_1) \leftrightarrow (x_2, y_2)$ correspondence, $(x_1, y_1)$ in image 1 and $(x_2, y_2)$ in image 2. If we fix the $(x_2, y_2)$ we get an epipolar line for the first image by
+\begin{equation}
+	\begin{bmatrix}
+		x_1 & y_1 & 1 \\
+	\end{bmatrix}
+	F
+	\begin{bmatrix}
+		x_2 \\
+		y_2 \\
+		1 \\
+	\end{bmatrix}
+	=
+	\begin{bmatrix}
+		x_1 & y_1 & 1 \\
+	\end{bmatrix}
+	\begin{bmatrix}
+		a \\
+		b \\
+		c \\
+	\end{bmatrix}
+	= 0
+\end{equation}
+which gives us the epipolar line equation
+\begin{equation}
+	ax_1 + by_1 + c = 0
+\end{equation}
+
+Even though the fundamental matrix is a $3 \times 3$ matrix, it only has 7 degrees of freedom (one constraint is scale second is the existence of epipole, the derivation can be found in \cite{book:multiple_view_geometry}). Now that we know the characteristics of the fundamental matrix we can estimate it using several algorithms, following is the eight-point algorithm \cite{cvfx, elements-of-computer-vision, book:multiple_view_geometry} (requires at least 8 correspondences):
+\begin{itemize}
+	\item[1.] Obtain feature correspondences 
+	\item[2.] Normalize correspondence to have standard deviation=1 and mean=0
+	\item[3.] Given $n$ correspondences, $n \geq 8$, create an equation for each correspondence $i, 1 \leq i \leq n$:
+	\begin{equation}
+		m_{i_1} F m_{i_2} = 
+		\begin{bmatrix}
+			x_{i_1} & y_{i_1} & 1 \\
+		\end{bmatrix}
+		\begin{bmatrix}
+			f_{1,1} & f_{1,2} & f_{1,3} \\
+			f_{2,1} & f_{2,2} & f_{2,3} \\
+			f_{3,1} & f_{3,2} & f_{3,3} \\
+		\end{bmatrix}
+		\begin{bmatrix}
+			x_{i_2} \\
+			y_{i_2} \\
+			1 \\
+		\end{bmatrix}
+		= 0
+	\end{equation}
+	and create the system:
+	\begin{equation}
+		A_{n \times 9}F_{1 \times 9}=
+		\begin{bmatrix}
+			x_{1_1} x_{1_2} & x_{1_1} y_{1_2}  & x_{1_1}  & y_{1_1} x_{1_2} & y_{1_1} y_{1_2}  & y_{1_1}  & x_{1_2} & y_{1_2}  & 1 \\
+			. & . & . & . & . & . & . & . & .\\
+			. & . & . & . & . & . & . & . & .\\
+			. & . & . & . & . & . & . & . & .\\
+			x_{n_1} x_{n_2} & x_{n_1} y_{n_2}  & x_{n_1}  & y_{n_1} x_{n_2} & y_{n_1} y_{n_2}  & y_{n_1}  & x_{n_2} & y_{n_2}  & 1 \\
+		\end{bmatrix}
+		\begin{bmatrix}
+			f_{1,1} \\
+			f_{1,2} \\
+			. \\
+			. \\
+			. \\
+			f_{3,3} \\
+		\end{bmatrix}
+		= 0
+	\end{equation}
+	\item[4.] Compute single value decomposition of A
+		\begin{equation}
+			A = UDV^T
+		\end{equation}
+	\item[5.] Let $F$ be the last column of $V$ and reshape $F$ to be  $F'_{3 \times 3}$.
+	\item[6.] Compute SVD of $F'=U'D'V'^T$, zero out lowest singular value of $D'$ then recompute $F = U'D'V'^T$
+	\item[7.] Re-normalize $F$
+\end{itemize}
+
+\section{Three-dimensional Reconstruction Approaches}
+Based on the~image source we can distinguish between three types of vision: Stereoscopic, Monocular and~Uncalibrated. The~type of the~vision defines the~difficulty of the~3D reconstruction problem. \cite{book:multiple_view_geometry}
 
 \subsection*{Stereoscopic Vision}
-The stereoscopic vision is similar to human binocular vision. Two cameras, displaced horizontally from one another are used to obtain view of the scene, simulating human vision. By comparing both images, the relative depth information can be obtained, which is proportional to the differences in distance to the objects. If the images are undistorted, and camera parameters known, we can easily calculate the 3D relative position of the points. Figure \ref{fig:stereo} shows how the depth can be calculated using following equation:
+The stereoscopic vision is similar to~human binocular vision. Two cameras, displaced horizontally from one another are used to~obtain view of the~scene, simulating human vision. By comparing both images, the~relative depth information can be obtained, which is proportional to~the~differences in distance to~the~objects. If the~images are undistorted, and~camera parameters known, we can easily calculate the~3D relative position of the~points. Figure \ref{fig:stereo} shows how the~depth can be calculated using following equation:
 
 \begin{equation}
 	z=\frac{f b}{x_L - x_R}
 \end{equation}
 
-If the cameras are calibrated then the reconstruction is straightforward as the depth is the only thing required to calculate the position of the point in 3D.
+If the~cameras are calibrated then the~reconstruction is straightforward as the~depth is the~only thing required to~calculate the~position of the~point in 3D.
 
 \begin{figure}[ht]
 	\begin{center}
 		\includegraphics[keepaspectratio,width=9cm]{fig/stereo.pdf}
 	\end{center}
-	\caption{An illustration of obtaining the depth information from stereo image.}
+	\caption{An illustration of obtaining the~depth information from stereo image.}
 	\label{fig:stereo}
 \end{figure}
 
 \subsection*{Monocular Vision}
-The monocular vision consists of one camera moving in space. Because we have only one camera, we can't easily calculate the depth as in stereoscopic vision, but we need to estimate the camera position first. Firstly we detect feature in images and match them. Now that we have paired points in images, we can begin to estimate the camera position. At least three image pairs are needed in order to calculate the camera pose, other points can increase the accuracy of the solution. Once camera position is known, the 3D structure can be calculated. However, because the picture is distorted and pixels have limited precision the structure will introduce some error. In order to minimize the reprojection error, we run a bundle adjustment algorithm.
+The monocular vision consists of one camera moving in space. Because we have only one camera, we can't easily calculate the~depth as in stereoscopic vision, but we need to~estimate the~camera position first. Firstly we detect feature in images and~match them. Now that we have paired points in images, we can begin to~estimate the~camera position. At least three image pairs are needed in order to~calculate the~camera pose, other points can increase the~accuracy of the~solution. Once camera position is known, the~3D structure can be calculated. However, because the~picture is distorted and~pixels have limited precision the~structure will introduce some error. In order to~minimize the~reprojection error, we run a~bundle adjustment algorithm.
 
 \begin{figure}[ht]
 	\begin{center}
 		\includegraphics[keepaspectratio,width=\textwidth]{fig/mono.pdf}
 	\end{center}
-	\caption{An illustration of the process of 3D reconstruction using a monocular vision. a) detect features b) match them and estimate camera pose c) add other points with next iteration. This image was taken from the Monocular camera 3D reconstruction presentation by Ing. Marek Šolony.}
+	\caption{An illustration of the~process of 3D reconstruction using a~monocular vision. a) detect feature b) match them and~estimate camera pose c) add other points with next iteration. This image was taken from the~Monocular camera 3D reconstruction presentation by Ing. Marek Šolony.}
 	\label{fig:mono}
 \end{figure}
 
 \subsection*{Uncalibrated Vision}
-Until this point the camera parameters were known or could have been easily estimated. However, when dealing with images downloaded from the internet, we don't have such information. This makes the problem much more complex and to find the solution we not only need to estimate camera position but also its parameters. The principle of reconstruction is similar as in the monocular vision, but we need 8 points instead of 3 to calculate the two-dimension to three-dimension transformation. Once the camera calibration and position is known, we can undistort the images and calculate the 3D structure in similar fashion as in the monocular.
+Until this point the~intrinsic camera parameters were known or could have been easily estimated. However, when dealing with images downloaded from the~internet, we don't have such information. This makes the~problem much more complex and~to find the~solution we not only need to~estimate camera position but also its intrinsic parameters. The~principle of reconstruction is similar as in the~monocular vision, but we need at least 8 points instead of 3 to~calculate the~two-dimension to~three-dimension transformation.
 
-\section{SLAM++ and SLAM\textunderscore frontend}
-\label{sec:slam}
-The SLAM++ is a library containing several methods used in problems like bundle adjustment (BA), structure from motion (SfM), simultaneous localization and mapping (SLAM) and many others. The library includes general graph optimizer along with several problem solvers, nonlinear least squares solvers and block linear solvers.  It is written in C++ and it is very fast due to the fact that it exploits the block structure the problems and offers very fast solutions to manipulate block matrices within iterative nonlinear solvers.
+\section{Stereo and Multi-view Stereo Camera Calibration}
+The epipolar geometry can be described analytically in several ways, depending on the amount of the knowledge about the system. We can identify three general cases:
+\begin{itemize}
+	\item[1.] Neither intrinsic nor extrinsic camera parameters are known, the epipolar geometry i described by fundamental matrix. This is called projective reconstruction and is unambiguous up to a projective transformation. By providing other restrictions on the model we can improve the ambiguity.
+	\item[2.] Only intrinsic camera parameters are known, the epipolar geometry is described by the essential matrix. The reconstruction is ambiguous to scale and and a rigid transformation corresponding to the arbitrariness in fixing the world reference frame - reconstruction up to a similarity called euclidean or metric.
+	\item[3.] Both intrinsic and extrinsic camera parameters are known, the epipolar geometry is described by the projection matrices. The reconstruction is unambiguous. This case will not be further discussed as this is not the goal of this thesis.
+\end{itemize}
 
-SLAM\textunderscore frontend \cite{www:slam_frontend} is a collection of applications that take as input image files or any other sensor data files and generate inputs for SLAM++ block-sparse linear algebra SLAM solver. Apart form SLAM++, it requires OpenCV. The SLAM\textunderscore frontend is also an easy to use interface for implementing custom structure from motion or bundle adjustment application. It provides means to load set of images and detect, extract and match feature. The framework provides templates for custom estimators, such that one can easily implement camera pose estimator for a BA application.
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=9cm]{fig/stereo2.pdf}
+	\end{center}
+	\caption{Illustration of stereo system camera for camera calibration.}
+	\label{fig:stereo2}
+\end{figure}
 
-\chapter{Math}
-camera definition (intrinsic, extrinsic)
-\begin{verbatim}
-http://dsp.stackexchange.com/questions/2736/step-by-step-camera-pose-estimation-for-visual-tracking-and-planar-markers
-http://docs.opencv.org/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html#solvepnpransac
-https://en.wikipedia.org/wiki/Camera_resectioning
-\end{verbatim}
-, projection, homography, fundamental, essential matrix...
+The goal of the camera calibration is to, given two cameras, estimate their calibration matrices $P_1$ and $P_2$. Let there be a system with two cameras pointing at the same object with enough 3D points visible in both cameras \ref{fig:stereo2}. 
+\subsection*{1. Projective Reconstruction}
+We start with the most general case, the projective reconstruction. First we need to calculate the fundamental matrix $F$ between these two cameras which gives us the transformation between points in both images, described by equation \ref{eq:fundamental-matrix}. Let
+\begin{equation}
+	P_1= K_1[I|0] =
+	\begin{bmatrix}
+		f/s_x & f/s_x ~cot \phi & c_x \\
+		0 & f/s_y & c_y \\
+		0 & 0  & 1 \\
+	\end{bmatrix}
+	\begin{bmatrix}[ccc|c]
+		1 & 0 & 0 & 0 \\
+		0 & 1 & 0 & 0 \\
+		0 & 0 & 1 & 0 \\
+	\end{bmatrix}
+\end{equation}
+be the first camera matrix. Then we search the
+\begin{equation}
+	P_2 = K_2[R|t] 
+\end{equation}
+Now we can easily calculate the epipoles $e_1, e_2$ as
+\begin{equation}
+  \begin{aligned}
+	e_1 &\sim P(-R^T t) = K_1 [I|0]
+	\begin{bmatrix}
+		-R^T t \\
+		1 \\
+	\end{bmatrix} \sim K_1 R^Tt \\
+	e_2 &\sim K_2[R|t]
+	\begin{bmatrix}
+		0 \\
+		0 \\
+		0 \\
+		1 \\
+	\end{bmatrix} \sim K_2 t
+  \end{aligned}
+\end{equation}
+If the intrinsic camera carameters are unknown, the projection matrix $P_2$ can be estimated using epipolar lines
+\begin{equation}
+	P_2 = 
+	\begin{bmatrix}
+		\begin{bmatrix}
+			e_2 \\ 
+		\end{bmatrix}_{\times} F + e_2 v^T | \lambda e_2 \\
+	\end{bmatrix}
+\end{equation}
+where $v$ is a $3 \times 1$ vector and $\lambda$ any non-zero scalar value. 
+\subsection*{2. Euclidean reconstruction}
+However, if the intrinsic camera matrices $K_1, K_2$ are known, we can transform the corresponding points.
+\begin{equation}
+  \begin{aligned}
+	m'_1 &= K_1^{-1} m_1 \\
+	m'_2 &= K_2^{-1} m_2
+  \end{aligned}
+	\label{eq:calib-x}
+\end{equation}
+Then the camera matrices can be written in form:
+\begin{equation}
+  \begin{aligned}
+	P_1 &= [I|0]
+	P_2 &= [R|t] 
+  \end{aligned}
+\end{equation}
+The fundamental matrix can now be either recalculated from transformed correspondences given by equation \ref{eq:calib-x} or modified using the calibration matrices into special form called the essential matrix $E$.
+\begin{equation}
+	E = K_1^{-T} F K_2^{-1}
+\end{equation}
+The rotation matrix $R$ and translation vector $t$ is then obtained by a singular value decomposition of $F = UDV^T$ which gives us four options:
+\begin{equation}
+  \begin{aligned}
+	P_2 &= \{[UWV^T | \pm u_3],~[UW^T V^T | \pm u_3]\} \\
+	W &= 
+	\begin{bmatrix}
+		0 & -1 & 0 \\	
+		1 & 0 & 0 \\	
+		0 & 0 & 1 \\	
+	\end{bmatrix}
+  \end{aligned}
+\end{equation}
+\begin{figure}[!htbp]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=\textwidth]{fig/calibration-options.pdf}
+	\end{center}
+	\caption{Four possible options of camera calibration when the intrinsic camera parameters are known.}
+	\label{fig:caliboptions}
+\end{figure}
+where $u_3$ is the last column of $U$. By triangulation we can resolve which of these four options is the correct one (selected 3D point is in front of the camera as shown in figure \ref{fig:caliboptions}). \cite{cvfx, elements-of-computer-vision, book:multiple_view_geometry}
+
+\section{Bundle Adjustment}
+\label{sec:bundle-adjustment}
+The bundle adjustment is an optimization problem which tries to simultaneously refine 3D coordinates describing the scene geometry as well as the parameters of the cameras to minimize the reprojection error. So as an input we have $K$ cameras $P$ and $N$ 3D points $M$ and we are trying to minimize metric
+\begin{equation}
+  \begin{aligned}
+	&\underset{P_i M_j}{\min} \overset{K}{\underset{i=1}{\sum}} \overset{N}{\underset{j=1}{\sum}} x_{i,j} d(P_i M_j ,m_{i,j}) \\
+	& x_{ij} = 
+	\begin{cases}
+		1 & \text{if point } j \text{ is seen by camera } i \\
+		0 & \text{otherwise}
+	\end{cases} \\
+	\end{aligned}
+	\label{eq:bundle-adjustment}
+\end{equation}
+where $d$ is a distance between two 3D points (so $d(P_i M_j ,m_{ij})$ is actually a reprojection error). Lets assume that all 3D points are seen by all cameras, than we can form a system of equations $\lambda_{ij} m_{ij} = P_i M_i$ (equation \ref{eq:point-projection}) which is called the measurement matrix $W$ of size $3K \times N$.
+\begin{equation}
+	\begin{bmatrix}
+		\lambda_{1,1} m_{1,1} & . & . & . & \lambda_{1,N} m_{1,N} \\
+		. & . & . & . &. \\
+		. & . & . & . &. \\
+		. & . & . & . &. \\
+		\lambda_{K,1} m_{K,1} & . & . & . & \lambda_{K,N} m_{K,N} \\
+	\end{bmatrix}_{3K \times N}
+	= 
+	\begin{bmatrix}
+		P_{1} \\
+		. \\
+		. \\
+		. \\
+		P_{K} \\
+	\end{bmatrix}_{3K \times 4}
+	\begin{bmatrix}
+		M_{1} & . & . & . & M_{N} \\
+	\end{bmatrix}_{4 \times N}
+\end{equation}
+The representation of the measurement matrix on the right hand side gives a restriction that the matrix is at most rank 4. This restriction, along with sparsity of such matrix and sequentiality of the camera track, greatly decreases the complexity of the problem (interest reader may find different approaches in \cite{cvfx, book:multiple_view_geometry}). The overall algorithm for the bundle adjustment is as follows
+\begin{itemize}
+	\item[1.] Normalize the 2D correspondences.
+	\item[2.] Initialize with $\lambda_{i,j} = 1$.
+	\begin{itemize}
+		\item[a.] Solve for $P_i, M_j$.
+		\item[b.] Compute new $\lambda_{i,j}$.
+		\item[c.] Repeat while the values are changing marginally.
+	\end{itemize}
+\end{itemize}
+
+In case with known intrinsic camera parameters, the system we want to solve has 6 degrees of freedom (3 for rotation and 3 for translation), if the intrinsic parameters are unknown the problem has at least 9 DOF (3 rotation, 3 translation and assuming the pixels are square 3 for intrinsic, up to 6). It is worth noting, that the bundle adjustment does not solve the projection ambiguity for some matrix $H$:
+\begin{equation}
+	\lambda m = (P_i H) (H^{-1} X)
+\end{equation}
 
 \chapter{Implementation}
-flickr downloader, 
-\section{Camera Calibration}
-\label{sec:camera_calib} 
-data structures, frontend etc...
-\begin{verbatim}
-http://www.morethantechnical.com/2012/02/07/structure-from-motion-and-3d-reconstruction-on-the-easy-in-opencv-2-3-w-code/
-https://github.com/royshil/SfM-Toy-Library
-http://www.morethantechnical.com/2012/08/09/decomposing-the-essential-matrix-using-horn-and-eigen-wcode/
-https://code.google.com/p/libmv/feeds
-https://code.google.com/p/libmv/wiki/Roadmap#Version_3.x
+\label{chapter:implementation}
+\textit{This chapter describes the implementation of the 3D reconstruction pipeline outlined in previous chapter. More than on the implementation details, we will focus on the overall design and customization capabilities. The chapter starts with our approach on automated generation of datasets from internet sources. We also provide a means to create datasets from pictures taken by the user and we use the OpenCV calibration library to get the intrinsic camera calibration. Because this application will be included in the SLAM\textunderscore frontend and at some point released for the general public, the section \ref{sec:implementation-core} presents the key data structures, algorithms and overall pipeline. The thesis finishes with the outline on further processing of the resulting point cloud and camera poses.}
 
-http://nuxsfm.sourceforge.net/wiki/index.php/Computer-vision
-\end{verbatim}
+\section{Dataset Generation and Camera Calibration}
+\label{sec:camera_calib}
+Creating a~dataset is a~crucial part of the~process of estimating three-dimensional structures from two-dimensional image sequences. The~dataset has to~contain enough images with a~feature pairs to~be viable for reconstruction. We also want to~filter out images taken during the~night or throughout various seasons as the~depicted object and~its surroundings may change significantly. Another problems are too generic photos and photos with reflection, which may degenerate the reconstruction (an example of this phenomenon is in figure \ref{fig:degenerated-dataset}). The last problem, unique to the datasets from unknown sources, is an existence of a watermark, text or other 2D manipulation of these pictures.
+
+With this in mind we have decided to~download images from Flickr webpage. Flickr\footnote{Flickr, a Yahoo company $|$ Flickr - Photo Sharing! \url{https://www.flickr.com}} is well known and~widely used web service for sharing pictures. The~advantage of this service, in comparison to~other picture sharing websites, is the~ability to~tag the~photo. Each image can contain a~number of tags describing it. Most of the~pictures uploaded contain information about the~place where the~photo was taken and~can be aggregated by that tag. A~tool, Flickr downloader, we designed allows downloading images with specified tag from Flickr in batches. It is an~easy to~use Python script expecting two parameters; number of photos to~be downloaded and~a~tag to~be browsed. The~script connects to~the~Flickr webpage, downloads the~search results page, cyclically opens each photo page and~downloads the~image. The~downloaded images are stored to~the~\texttt{downloaded} output folder.
+
+While the~Flickr yields good results for well known places in countries like USA or western Europe, there is not enough images in the~Czech Republic yet. This is the~reason why we have, for now, decided to~use different services, like Google Image \footnote{Google Image search engine \url{https://images.google.com}} search, as well. We have designed a second script that works similarly to the Flicker downloader and downloads images from the Google Image search. It is worth noting that such datasets may contain photos subject to copyright. The~datasets acquired were manually filtered to~eliminate irrelevant images,~limit the~selection to~daytime photos taken in summer.
+
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=\textwidth]{fig/degenerated-dataset.pdf}
+	\end{center}
+	\caption{An example of a degenerated reconstruction as a result of too generic photos of the building. Even though there was 7 (out 40)  photos of the whole building (as illustrated on the left), from any other position the photos could contain at most distance between 2 windows. The resulting reconstruction (on the right) is therefore degenerated and contains only one column of windows instead of four.}
+	\label{fig:degenerated-dataset}
+\end{figure}
+
+However, sometimes a user may find it useful to use a dataset containing pictures he/she has taken. It is likely, that such collection of photos was taken by a single camera and this camera can be further used. Even though the ultimate goal of our program is to process photos from different cameras and estimate their calibration, the reconstruction process is much faster and more precise if the intrinsic camera parameters are known. For this purpose we have used the OpenCV calibration sample, that given at least three images of calibration pattern calculates the intrinsic camera parameters for as as well as radial distortion coefficients of the image.
+
+\section{Core of the Application}
+\label{sec:implementation-core}
+The implemented application is part of the SLAM\textunderscore frontend framework and uses many of the classes and functions provided along with the SLAM++ optimizer. The application implements the pipeline introduced earlier starting from step 2, feature detection, and ending with the step 7, optimization of the estimated 3D structure and camera poses. The core of the application is a data structure \texttt{Model System} which encapsulates the information about cameras, feature correspondences, 3D structure and operations on top of them. 
+\begin{itemize}
+	\item[1.] \textbf{Cameras.} Each camera is described by its intrinsic camera parameters (matrix $K$), extrinsic camera parameters (matrix $[R|t]$), normalized, undistorted coordinates of the keypoints in the image (list of $(x, y)$ pixel coordinates), radial distortion coefficients and filename of the image. Because the whole system is iterative, new cameras are added to the system gradually and stored in a linear container. The camera structure also provides number of additional information that are used once the system is dumped into the optimizer (like IDs of the vertices).
+	\item[2.] \textbf{Feature correspondences.} In order to build camera tracks and select initial pair of cameras, we need to store and process how many feature correspondences (from now on referred as matches) there is between every image pair. Once such information is known we can create a list of camera pairs, starting with the initial pair, where each other pair adds to the scene either one new camera or just new structure points as a result of newly known relation between two cameras already present in the system. The selection of the initial pair and creation of such list will be described later. For now it is worth noting that the matrix of such camera pairs is diagonally symmetrical and sparse as many cameras probably don't share enough matches. An illustration of such matrix for real dataset is in figure \ref{fig:matches-matrix}.
+	\item[3.] \textbf{Structure points.} The last important data structure is a collection of the structure points. The problem we are facing here, is the tracking of the 3D point observed by several cameras as some 2D keypoint. Therefore, the structure point is in our system described by its 3D coordinate, list of observations (pairs camera ID, keypoint ID), vertex ID in the optimizer and several flags indicating whether the 3D point is valid and if it needs to be optimized.
+\end{itemize}
+
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=5cm]{fig/matches-matrix.pdf}
+	\end{center}
+	\caption{The matrix of matches showing number of feature correspondences between each two images for the Guilford Cathedral dataset. Each column and row in the matrix represents some image, and the darker the color of the cell is, the more feature correspondences there is for given image pair. It is a square shaped, sparse and diagonally symmetric matrix. }
+	\label{fig:matches-matrix}
+\end{figure}
+
+
+Now that the reader is familiar with the key data structures, we can continue explaining the rest of the pipeline from section \ref{sec:pipeline}. The core of the pipeline is in the method \texttt{run()} in the \texttt{UncalibratedProcessingLoop} class.
+
+\begin{itemize}
+\item[\textbf{2.}] \textbf{Keypoints Detection and Feature Extraction.}
+So at this point we have an input dataset of photos (and possibly intrinsic camera parameters). The next step in the pipeline is keypoint detection and extraction of the feature descriptors. The \texttt{UncalibratedProcessingLoop} class is effectively a template taking the type of the feature detector as a template parameter. This allows us, with little to none overhead, change the type of detector and extractor. Because not all of the detectors described earlier were build in the SLAM\textunderscore frontend, an~interface between the~SLAM++ and~the~OpenCV was created. The~interface is again a~\texttt{C++} template so there is no overhead. The~distinct extractors are defined using the~\texttt{typedef} keyword and~naming convention follows this scheme: \texttt{FeatureExtractor\textunderscore OpenCV\textunderscore[detector]\textunderscore[extractor]} (eg. \texttt{FeatureExtractor\textunderscore OpenCV\textunderscore SIFT\textunderscore SIFT}). The detected keypoints are stored in the camera class described earlier, but because the feature descriptors are only needed for matching, they can be inserted to a temporal list and cleared later.
+
+\item[\textbf{3.}] \textbf{Feature Matching.}
+After extracting keypoints from each image we need to determine which keypoints from distinct images represent same structure point. These correspondences will be obtained using the FLANN matcher (but again one can provide different matcher as a template parameter). The matches are then filtered to remove outliers and, if enough matches persist, stored in the matrix of matches. At this point it is worth discussing the impact of ordered versus unordered datasets. If the dataset is order (there is enough matches between each consequent images), we may choose not to match every image to each other. Instead single a path of matches is crating, matching only consequent images. The benefit of this solution is much lower time and space complexity ($\textrm O(n)$ opposed to $\textrm O(n^2)$). However, every structure point will then only have at most 3 observations which greatly decreases the structure refinement constraints. 
+
+\begin{algorithm}[ht]
+\begin{algorithmic}[1]
+	\Input{Matrix of matches $N \times N$, where $N$ is the number of images.}
+	\Output{Linear list of pairs $(i_1, i_2)$, where image $i_1$ represents camera which already is in the system (except for initial pair) and image $i_2$ is newly added camera or camera existing in the system but matches between $i_1$ and $i_2$ were not yet registered in the system.}
+	\Statex
+	\State Select initial pair of images $(i_1, i_2), 1 \leq i_1 \leq N, 1 \leq i_2 \leq N, i_1 \neq i_2$
+	\State Add pair $(i_1, i_2)$ to \textbf{result}
+	\State Add camera $i_1$, $i_2$ to list \textbf{todo}
+	\For{each camera $i$ from \textbf{todo}}
+		\For{each image pair $(i, j), 1 \leq j \leq N$, $i \neq j$}
+			\If {$|(i, j)| \neq 0$}
+				\State Add pair $(i, j)$ to \textbf{tmp\textunderscore result}
+				\State Add camera $j$ to list \textbf{todo}
+			\EndIf			
+		\EndFor
+		\State Sort \textbf{tmp\textunderscore result} descending by the number of matches.
+		\State Add all new pairs from \textbf{tmp\textunderscore result} to \textbf{result}
+		\State Clear \textbf{tmp\textunderscore result}
+	\EndFor
+\end{algorithmic}
+\caption{Creating camera track}
+\label{matching-algorithm}
+\end{algorithm}
+
+\item[\textbf{4.}] \textbf{Camera Track Building.}
+If the dataset is unordered we are facing problem of selecting first image pair and building camera track of correspondences. The matches matrix, apart from storing matches between two images, also calculates statistics for each image like; total number of matches, count of images with non-zero matches with this image etc. Using these statistics it is just a matter of selecting correct metric in order to get most suitable initial image pair and assemble camera tracks. The algorithm \ref{matching-algorithm} describes this procedure. Because we had to have information about correspondences between all cameras to build the camera tracks and select initial pair, until this point the algorithm was not iterative (clearly this only applies for unordered image sets). The following steps are iterative for each newly added camera or information about correspondences. 
+
+\item[\textbf{5.}] \textbf{Camera Pose Estimation.}
+The camera pose estimation can be divided into two cases: a) the calibrated case and b) the uncalibrated case. Both of these cases consist of the initialization phase for the first image pair and iterative addition of a new camera as described in previous chapter. The calibrated case pose estimation is straightforward: 1) First pair pose estimation from essential matrix and 2) Pose estimation from $2D \leftrightarrow 3D$. It is just a matter of calling adequate functions we have implemented and storing the estimated extrinsic parameters of the cameras. Similarly for the uncalibrated case, though this is not fully implemented yet. After first iteration we can clear all of the feature descriptors (the memory impact can be seen in figure \ref{fig:rss_memory}).
+
+\item[\textbf{6.}] \textbf{Structure Computation.}
+Now that the camera poses are known, we can triangulate the keypoints correspondences and get their 3D projection. This part, again, differs for the calibrated and uncalibrated case, and different triangulation methods must be used. However, one can not just triangulate every keypoint correspondence as this would lead to a possible duplicity of structure points. This problem can be avoided by building of the feature tracks, but because our system is incremental a different approach was chosen. When introducing new structure point to the system, the ID of the structure point is added to the corresponding keypoint in both images. Therefore, when one of these keypoints is matched again with a keypoint from another camera, instead of creating new structure point, new observation is added to the already existing structure point. By doing this we ensure that each structure point contains the full feature track. This is an equivalent of the algorithm described in article \cite{feature-tracking} and used for example in the OpenMVG library.
+
+\item[\textbf{7.}]  \textbf{Structure Refinement.} At this point we have a system containing cameras with estimated calibration and some 3D structure points visible from these cameras. Now we try to optimize the system to minimize the metric from equation \ref{eq:bundle-adjustment}. This is achieved using the SLAM++ bundle adjustment optimizer (again, any other optimizer with same interface can be supplied through the template arguments). The \texttt{ModelSystem} class which contains the whole system, provides a set of methods for building the graph to be optimized. These functions consist of two parameters; reference to the optimizer object and index of the camera data to be added. These methods are; \texttt{addCamVertex()}, \texttt{addIntrinsicsVertex()}, \texttt{addStructureVertices()}. The latter adds the 3D point coordinate of the structure point (if not existing in the system already) and for each observation it adds the edge telling which camera with which intrinsic sees this point. The last method, \texttt{getOptimizedData()}, extracts the optimized data from the optimizer and updates the 3D system. This step ends with filtering the 3D points too far away from the point cloud centre.
+
+\end{itemize}
+It is worth noting that many implementation details and problems were omitted (eg. dealing with distortion, keypoint normalization, mapping between optimizer and system data etc.) and the interested reader is invited to consult the source codes and generated program documentation. Also the overall system was designed with the future removal of OpenCV from the SLAM\textunderscore frontend framework. All interfaces are free of any OpenCV code and every function containing OpenCV code marked with note.
+
+\section{Visualization and Further Processing}
+The goal of our program was to estimate the camera poses and sparse reconstruction. As of now, this is exactly the output of the program. The structure with cameras is stored in the PLY format and can be viewed by several 3D editing programs. The estimated camera calibration is saved in a single text file shared for every camera. Nevertheless, we acknowledge the sparse reconstruction as a temporal goal. For time being, until the application is further developed, we provide a script that runs the PMVS dense reconstruction sequence on the output of our program and input dataset. We are currently researching best ways to further process the output ultimately leading to a textured polygonal model. Such processing would include dense reconstruction, filtration of the dense point cloud, surface reconstruction with some probabilistic method and texture mapping. Following can be achieved even now, manually, with the MeshLab and Blender programs. The full process can be found in the appendix \ref{app:surface-reconstruction}.
+
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=\textwidth]{fig/visualisation.pdf}
+	\end{center}
+	\caption{Two reconstructed scenes by our program visualised in MeshLab. White points are the 3D structure points, red dots are positions of cameras.}
+	\label{fig:visualisation}
+\end{figure}
 
 \chapter{Experiments Evaluation}
-\textit{This chapter presents the experimental results obtained on an artificial and real scenes by means of the algorithms described in previous chapters. In the beginning of the chapter we will present the datasets used for the evaluation and describe their characteristics. These datasets will be used to determine precision of the program. Also this chapter presents qualitative results obtained from our program as well as other existing solutions and their evaluation and comparison to reference values where available. Lastly we will compare our program to other previously mentioned programs in terms of complexity and resources consumption. }
+\label{chapter:experiments}
+\textit{This chapter presents the~experimental results obtained on an~artificial and~real scenes by means of the~algorithms described in previous chapters. In the~beginning of the~chapter we will present the~datasets used for the~evaluation and~describe their characteristics. These datasets will be used to~determine precision of the~program. Also this chapter presents qualitative results obtained from our program as well as other existing solutions and~their evaluation and~comparison to~reference values where available. Lastly we will compare our program to~other previously mentioned programs in terms of complexity and~resources consumption. }
 \section{Introduction}
 \label{sec:experiments-introduction}
-This chapter presents the experimental results obtained from the implementation of the system described in previous chapters. After each experiment a brief discussion of a results is included with the aim of giving the reader further details. First, we introduce the datasets that are being tested. Then we present evaluation of the feature detection, extraction and matching methods with the aim of selecting the best combinations for our problem. The section \ref{sec:experiments-calibrated} presents results obtained from the program when the intrinsic camera parameters are known on both ordered and unordered image sets. It also compares each implemented camera tracking algorithm and elaborates on which one is best in which scenario. In the last section \ref{sec:experiments-weakly} reader finds qualitative results for the most general case: weakly calibrated bundle adjustment.  In order to provide as precise results as possible, if not stated otherwise, all programs were compiled and run separately, without any user intervention on a machine with following specification:
+This chapter presents the~experimental results obtained from the~implementation of the~system described in previous chapters. After each experiment a~brief discussion of a~results is included with the~aim of giving the~reader further details. First, we introduce the~datasets that are being tested. Then we present evaluation of the~feature detection, extraction and~matching methods with the~aim of selecting the~best combinations for our problem. The~section \ref{sec:experiments-calibrated} presents results obtained from the~program when the~intrinsic camera parameters are known on both ordered and~unordered image sets. It also compares each implemented camera tracking algorithm and~elaborates on which one is best in which scenario. In the~last section \ref{sec:experiments-weakly} reader finds qualitative results for the~most general case: weakly calibrated bundle adjustment.  In order to~provide as precise results as possible, if not stated otherwise, all programs were compiled and~run separately, without any user intervention on a~machine with following specification:
 \vspace{.5cm}
 
 \begin{tabular}{ l  l }
@@ -267,68 +732,69 @@ This chapter presents the experimental results obtained from the implementation 
 	OS: & OS X 10.10.4 \\
 	CPU: & Intel Core i5 2.53 GHz \\
 	RAM: & 8 GB 1067 MHz DDR3 \\
-	GPU: & NVIDIA GeForce GT 330M and Intel HD Graphics  \\
+	GPU: & NVIDIA GeForce GT 330M and~Intel HD Graphics  \\
 	HDD: & OCZ-AGILITY4 512 GB \\
 	Compiler: & Apple LLVM version 6.1.0 (clang-602.0.53) \\
 \end{tabular}
 
 \vspace{.5cm}
-To evaluate output camera positions as well as structure we are using a cross-platform open source 3D animation suite Blender \cite{www:blender}. The main reason for this choice was, apart from native support for PLY file format, easy extensibility with custom python scripts. Because the output of all SfM and BA programs is at least ambiguous to scale and rotation, the Precise Align extension \cite{www:blender_precise_align} is used to match cameras and structure to the 3D model. A detail on how exactly is the resulting structure matched to the 3D model is specific for each case and usually depends on landmarks in the scene. The camera position error is calculated as a root-mean-square error against reference values using formula:
+To evaluate output camera positions as well as structure we are using a~cross-platform open source 3D animation suite Blender \cite{www:blender}. The~main reason for this choice was, apart from native support for PLY file format, easy extensibility with custom python scripts. Because the~output of all SfM and~BA programs is at least ambiguous to~scale and~rotation, the~Precise Align extension \cite{www:blender_precise_align} is used to~match cameras and~structure to~the~3D model. A~detail on how exactly is the~resulting structure matched to~the~3D model is specific for each case and~usually depends on landmarks in the~scene. The~camera position error is calculated as a~root-mean-square error against reference values using formula:
 \begin{equation}
 	RMSE=\sqrt{\frac{\overset{n}{\underset{k=0}{\sum}} (x_{k_2}-x_{k_1})^2 + (y_{k_2}-y_{k_1})^2 + (z_{k_2}-z_{k_1})^2}{n}},
 	\label{eq:RMSE}
 \end{equation}
-where $n$ is a number of cameras and $x_{k}, y_k, z_k$ are the 3D camera's coordinates. This value is normalized as we match positions of the first and last camera with reference cameras and the middle camera to be as close as possible to the middle reference camera.
+where $n$ is a~number of cameras and~$x_{k}, y_k, z_k$ are the~3D camera's coordinates. This value is normalized as we match positions of the~first and~last camera with reference cameras and~the~middle camera to~be as close as possible to~the~middle reference camera.
 
 \section{Datasets}
-In order to test our programme we have collected a number of datasets. These datasets usually offer not only images, but also intrinsic and extrinsic camera parameters and a 3D model or 3D points and lines. You may find all of these datasets along with experiment's results on the attached DVD.
+\label{sec:experiments-datasets}
+In order to~test our programme we have collected a~number of datasets. These datasets usually offer not only images, but also intrinsic and~extrinsic camera parameters and~a~3D model or 3D points and~lines. You may find all of these datasets along with experiment's results on the~attached DVD.
 
 \subsection*{Model House}
-The University of Oxford provides a number of  datasets used in many other papers for a benchmark \cite{www:oxford_models}. Some of these datasets contain images, camera parameters, 2D geometry (interest points, line segments and matches) and 3D geometry (points, line segments and camera matrices). However, these datasets usually lack the intrinsic camera parameters apart from the Model House which we will be using. This dataset is a sequence of ten black and white images rotating 90 degrees around a model of house in a clockwise direction without any distortion and with the principal point in the centre of the images. The model also contains the reference positions of the cameras as well as 3D points and 3D lines. Out of the 3D points and lines we have created a simple 3D model that is used for visual comparison of the structure, but as this is not a reference model no qualitative results will be given.
+The University of Oxford provides a~number of  datasets used in many other papers for a~benchmark \cite{www:oxford_models}. Some of these datasets contain images, camera parameters, 2D geometry (interest points, line segments and~matches) and~3D geometry (points, line segments and~camera matrices). However, these datasets usually lack the~intrinsic camera parameters apart from the~Model House which we will be using. This dataset is a~sequence of ten black and~white images rotating 90 degrees around a~model of house in a~clockwise direction without any distortion and~with the~principal point in the~centre of the~images. The~model also contains the~reference positions of the~cameras as well as 3D points and~3D lines. Out of the~3D points and~lines we have created a~simple 3D model that is used for visual comparison of the~structure, but as this is not a~reference model no qualitative results will be given.
 
 \begin{figure}[ht]
 	\begin{center}
 		\includegraphics[keepaspectratio,width=\textwidth]{fig/experiments-model-house.pdf}
 	\end{center}
-	\caption{The Model House dataset showing first, middle and last images of the sequence.}
+	\caption{The Model House dataset showing first, middle and~last images of the~sequence.}
 	\label{fig:modelhouse}
 \end{figure}
 
-\subsection*{Temple of the Dioskouroi}
-The Temple of the Siodkouroi in Agrigento (Sicily) is a dataset packed in the \textbf{libmv} library \cite{www:libmv}. It is an ordered sequence of 15 coulored images creating a full 360 degree rotation around a 3D model of temple. The dataset contains camera calibration parameters, the 3D positions of the cameras and a tight rectangular bounding box of the temple model. 
+\subsection*{Temple of the~Dioskouroi}
+The Temple of the~Siodkouroi in Agrigento (Sicily) is a~dataset made by the vision department of Muddlebury university in cooperation with Microsoft. One can either use the a 16 view sparse ring around the temple model, 47 view ring or a 312 views hemisphere. The~dataset contains camera calibration parameters, the~3D positions of the~cameras and latitude, longitude angles for each image. The site also offers an evaluation of various multi-view stereo programs and once our software is able to create polygonal model we should submit our solution. \cite{dataset-temple}
 
 \begin{figure}[ht]
 	\begin{center}
 		\includegraphics[keepaspectratio,width=\textwidth]{fig/experiments-temple.pdf}
 	\end{center}
-	\caption{The Temple of the Dioskouroi dataset showing first five images of the sequence.}
+	\caption{The Temple of the~Dioskouroi dataset showing first five images of the~sequence.}
 	\label{fig:temple}
 \end{figure}
 
-\subsection*{The City of Sights: An Augmented Reality Stage Set}
-The City of Sights \cite{cityofsights_ISMAR2010} is a complex dataset by Graz University of Technology, Four Eyes Lab, University of California at Santa Barbara and Muncich University of Technology. This dataset was specifically designed for a variety of Augmented Reality research. The images in this datasets were captured by a robotic arm with calibrated camera. The whole scene can be downloaded as a 3D model along with the camera tracks (which were taken from a paper model of the scene). The camera movement between frames is quite small (around 0.1 mm) therefore we will be using every fifth or tenth frame. We have chosen the CS\_FARO\_12 and CS\_ART\_12 datasets which comprise of images depicting the centre of scene.
+\subsection*{The City of Sights: An~Augmented Reality Stage Set}
+The City of Sights \cite{cityofsights_ISMAR2010} is a~complex dataset by Graz University of Technology, Four Eyes Lab, University of California at Santa Barbara and~Muncich University of Technology. This dataset was specifically designed for a~variety of Augmented Reality research. The~images in this datasets were captured by a~robotic arm with calibrated camera. The~whole scene can be downloaded as a~3D model along with the~camera tracks (which were taken from a~paper model of the~scene). The~camera movement between frames is quite small (around 0.1 mm) therefore we will be using every fifth or tenth frame.
 
 \begin{figure}[ht]
 	\begin{center}
 		\includegraphics[keepaspectratio,width=\textwidth]{fig/experiments-city-of-sights.pdf}
 	\end{center}
-	\caption{The City of Sights dataset with a 3D model (left) and a picture from the CS\_FARO\_12 dataset (right).}
+	\caption{The City of Sights dataset with a~3D model (left) and~a~picture from the~CS\_FARO\_12 dataset (right).}
 	\label{fig:cityofsights}
 \end{figure}
 
-\subsection*{Cathedral}
-The cathedral dataset is a sequence of 92 images of a front face of cathedral that are not absolutely ordered. It is ensured that any pair in sequence has enough keypoints matches, but the camera trajectory does not always move in one direction. The intrinsic camera parameters are known with a principal point at the centre of each image and the images have no distortion. A rough 3D model is known but no reference camera poses are offered.
+\subsection*{Guilford Cathedral}
+The Guilford Cathedral dataset is a~sequence of 92 images of a~front face of cathedral that are not absolutely ordered. It is ensured that any pair in sequence has enough keypoints matches, but the~camera trajectory does not always move in one direction. The~intrinsic camera parameters are known with a~principal point at the~centre of each image and~the~images have no distortion. A~rough 3D model is known but no reference camera poses are offered.
 
 \begin{figure}[ht]
 	\begin{center}
 		\includegraphics[keepaspectratio,width=\textwidth]{fig/experiments-cathedral.pdf}
 	\end{center}
-	\caption{The cathedral dataset with a rough 3D model (left) and a picture from the dataset (right).}
+	\caption{The Guilford Cathedral dataset with a~rough 3D model (left) and~a~picture from the~dataset (right).}
 	\label{fig:cathedral}
 \end{figure}
 
 \subsection*{Slezské divadlo, Opava}
-This dataset is a sequence of images taken by us using an iPhone with estimated camera calibration using OpenCV sample described in section \ref{sec:camera_calib}. The aim of this dataset is to demonstrate that our program (and associated utilities) offers complete solution that can reconstruct 3D model from any camera.
+This dataset is a~sequence of images taken by us using an~iPhone with estimated camera calibration using OpenCV sample described in section \ref{sec:camera_calib}. The~aim of this dataset is to~demonstrate that our program (and associated utilities) offers complete solution that can reconstruct 3D model from any camera.
 
 \begin{figure}[ht]
 	\begin{center}
@@ -339,25 +805,25 @@ This dataset is a sequence of images taken by us using an iPhone with estimated 
 \end{figure}
 
 \subsection*{Zámek Červená Lhota}
-The Zámek  Červená Lhota is collection of 235 pictures from Flickr, Google Images and other websites. Therefore the images have various camera calibration and distortion. However, we have inspected each image manually to ensure that neither is flipped horizontally nor vertically. This dataset is used to evaluate general bundle adjustment.
+The Zámek  Červená Lhota is collection of 235 pictures from Flickr, Google Images and~other websites. Therefore the~images have various camera calibration and~distortion. However, we have inspected each image manually to~ensure that neither is flipped horizontally nor vertically. This dataset is used to~evaluate general bundle adjustment.
 
 \begin{figure}[ht]
 	\begin{center}
 		\includegraphics[keepaspectratio,width=\textwidth]{fig/experiments-cervena-lhota.pdf}
 	\end{center}
-	\caption{Sample of the Zámek Červená Lhota dataset which contains images from various sources.}
+	\caption{Sample of the~Zámek Červená Lhota dataset which contains images from various sources.}
 	\label{fig:cervena-lhota}
 \end{figure}
 
-\section{Feature Detectors, Extractors and Matchers}
+\section{Feature Detectors, Extractors and~Matchers}
 \label{sec:experiments-extractors}
-One of the key components for the SfM and BA application is selection of the keypoints in the input images and their matching for the specific application. We have conducted a number of experiments in order to evaluate the detectors, extractors and matchers available in OpenCV and SLAM\textunderscore frontend. The main goal is to select the best combination that detects the most relevant keypoints in pictures of buildings in a reasonable time. Figure \ref{fig:detectors} shows three detectors (SIFT, SURF and FAST) that are suitable for our task as they find enough relevant features in an image. 
+One of the~key components for the~SfM and~BA application is selection of the~keypoints in the~input images and~their matching for the~specific application.  In the~building reconstruction the~repeated feature are common. Many objects, such as clock towers with nearly identical sides, or domes with strong radial symmetries, pose challenges for structure from motion. When similar but distinct feature are mistakenly equated, the~resulting 3D reconstructions can have errors ranging from phantom walls and~superimposed structures to~a~complete failure to~reconstruct. This can be partially solved by a~good selection of the~feature detecting, extracting and~matching algorithms. We have conducted a~number of experiments in order to~evaluate the~detectors, extractors and~matchers available in OpenCV and~SLAM\textunderscore frontend. The~main goal is to~select the~best combination that detects the~most relevant keypoints in pictures of buildings in a~reasonable time. Figure \ref{fig:detectors} shows three detectors (SIFT, SURF and~FAST) that are suitable for our task as they find enough relevant feature in an~image.
 
 \begin{figure}[!htbp]
 	\begin{center}
 		\includegraphics[keepaspectratio,width=\textwidth]{fig/detectors.pdf}
 	\end{center}
-	\caption{Results of the feature detection evaluation on as set of 250 various images from the Červená Lhota dataset. Graph a) shows average time necessary for processing an image using selected detector. In graph b) you can find how many features on average were detected in a single image.}
+	\caption{Results of the~feature detection evaluation on as set of 250 various images from the~Červená Lhota dataset. Graph a) shows average time necessary for processing an~image using selected detector. In graph b) you can find how many feature on average were detected in a~single image.}
 	\label{fig:detectors}
 \end{figure}
 
@@ -365,66 +831,66 @@ One of the key components for the SfM and BA application is selection of the key
 	\begin{center}
 		\includegraphics[keepaspectratio,width=\textwidth]{fig/matchers.pdf}
 	\end{center}
-	\caption{Results of the feature detection, extraction and matching evaluation on a set of 100 image pairs from the Červená Lhota dataset. The interesting combinations are labeled. Note that combination taking more than 120 seconds to compute were omitted.}
+	\caption{Results of the~feature detection, extraction and~matching evaluation on a~set of 100 image pairs from the~Červená Lhota dataset. The~interesting combinations are labeled. Note that combination taking more than 120 seconds to~compute were omitted.}
 	\label{fig:matchers}
 \end{figure}
 
-Then we have manually selected 100 image pairs from the Červená Lhota dataset and tried every feature detection, extraction and matching combination available. The results are shown in figure \ref{fig:matchers}. To select only potentially good matches ($G$), following metric was applied
+Then we have manually selected 100 image pairs from the~Červená Lhota dataset and~tried every feature detection, extraction and~matching combination available. The~results are shown in figure \ref{fig:matchers}. To select only potentially good matches ($G$), following metric was applied
 
 \begin{equation}
-	0.02 \leq G \leq 2* M
+	0.02 \leq |G| \leq 2* |M|
 \end{equation}
 
-where $M$ is a minimal distance found between a match pair for selected images. From the results, we can conclude that best result, in terms of performance to effectiveness ratio, is achieved using FAST detector, SIFT extractor and FLANN matcher. Figure \ref{fig:matches} shows matches for one image pair using some of the well known feature detector, extractor and matcher combinations. The picture a) shows that the ORB detector is fast, but for our application does not yeld good results. The SIFT detector and extractor performs well and can be used in the SfM and BA applications. In fact it is being used by nearly ever other program (VisualSfM, Bundler, OpenMVG). The best obtained result is depicted in c) where FAST detector and SIFT extractor were used.
+where $|M|$ is a~minimal distance found between a~match pair for selected images. From the~results, we can conclude that best result, in terms of performance to~effectiveness ratio, is achieved using FAST detector, SIFT extractor and~FLANN matcher. Figure \ref{fig:matches} shows matches for one image pair using some of the~well known feature detector, extractor and~matcher combinations. The~picture a) shows that the~ORB detector is fast, but for our application does not yeld good results. The~SIFT detector and~extractor performs well and~can be used in the~SfM and~BA applications. In fact it is being used by nearly ever other program (VisualSfM, Bundler, OpenMVG). The~best obtained result is depicted in c) where FAST detector and~SIFT extractor were used.
 
 \begin{figure}[!htbp]
 	\begin{center}
 		\includegraphics[keepaspectratio,width=\textwidth]{fig/matches.pdf}
 	\end{center}
-	\caption{Examples of various feature detector, extractor and matchers combinations on an image pair. There are 307 good matches in picture a) and the whole process took 0,487 seconds. The picture b) took 12.7 seconds to process and has 274 good matches. The last picture c) contains 1804 good matches and was processed in 23.853 seconds.}
+	\caption{Examples of various feature detector, extractor and~matchers combinations on an~image pair. There are 307 good matches in picture a) and~the~whole process took 0,487 seconds. The~picture b) took 12.7 seconds to~process and~has 274 good matches. The~last picture c) contains 1804 good matches and~was processed in 23.853 seconds.}
 	\label{fig:matches}
 \end{figure}
 
 
 \section{Calibrated Case}
 \label{sec:experiments-calibrated}
-Once we have estimated which feature detectors, extractors and matchers are suitable for our application, we can continue evaluating the performance of the pose estimation and structure estimation. There are two cases to evaluate: when camera calibration is known and when it is not available and needs to be estimated.  Another distinction is whether the input sequence image is ordered or not. Let us start with the easier case; known camera calibration and ordered sequential image input.
+Once we have estimated which feature detectors, extractors and~matchers are suitable for our application, we can continue evaluating the~performance of the~pose estimation and~structure estimation. There are two cases to~evaluate: when camera calibration is known and~when it is not available and~needs to~be estimated.  Another distinction is whether the~input sequence image is ordered or not. Let us start with the~easier case; known camera calibration and~ordered sequential image input.
 
 \subsection*{Ordered Case}
 \label{sub:ordered_case}
-Because the input is ordered, there is no need to calculate matches between every image pair, but we can build a single camera track containing all the pictures in a sequence. The suitable datasets for this case are the Model House and Temple of Dioskouroi. The first thing to evaluate is the memory and time complexity. The program was compiled and run with 10 times for each case using three different detectors; FAST, SIFT and SURF with both both cached and uncached option. On top of that each scenario was run with and without the optimizer. 
+Because the~input is ordered, there is no need to~calculate matches between every image pair, but we can build a~single camera track containing all the~pictures in a~sequence. The~suitable datasets for this case are the~Model House and~Temple of Dioskouroi. The~first thing to~evaluate is the~memory and~time complexity. The~program was compiled and~run with 10 times for each case using three different detectors; FAST, SIFT and~SURF with both both cached and~uncached option. On top of that each scenario was run with and~without the~optimizer. 
 
-The figure \ref{fig:rss_memory} shows how does the RSS memory changes throughout the run. For reader's easier orientation we have marked distinct phases of the program. One can observe how demanding, in terms of memory, is feature detection and extraction. After the keypoints are matched, the program can not immediately free all feature as it needs them to calculate fundamental matrix between the first image pair. Once done the feature can be unallocated and camera pose estimation and structure reconstruction process starts with next pair that only needs 3D - 2D correspondences.
+The figure \ref{fig:rss_memory} shows how does the~RSS memory changes throughout the~run. For reader's easier orientation we have marked distinct phases of the~program. One can observe how demanding, in terms of memory, is feature detection and~extraction. After the~keypoints are matched, the~program can not immediately free all feature as it needs them to~calculate fundamental matrix between the~first image pair. Once done the~feature can be unallocated and~camera pose estimation and~structure reconstruction process starts with next pair that only needs 3D - 2D correspondences.
 
 \begin{figure}[!htbp]
 	\begin{center}
 		\includegraphics[keepaspectratio,width=\textwidth]{fig/exp_model_house_memory.pdf}
 	\end{center}
-	\caption{An example of the program run showing RSS memory on the Model House dataset using uncached SIFT extractor and detector.}
+	\caption{An example of the~program run showing RSS memory on the~Model House dataset using uncached SIFT extractor and~detector.}
 	\label{fig:rss_memory}
 \end{figure} 
 
-The table \ref{tab:time_complexity} shows what is the RSS memory and computation time of various combinations of the program. What is rather strange is, that if cached SIFT detector and extractor are used the detection and extraction time lowers significantly, but the reconstruction time increases marginally. The fact that this affects only the SIFT detector makes it rather strange. This is probably related to memory access as the output for both cached and uncached options are the same. Also note that the time when the structure is refined by the SLAM++ optimizer is significantly smaller than when it's not, yet the result is much better (as described later in this section). Unfortunately there is no base of comparing our application with other solutions as the VisualSFM uses GPU algorithms and the OpenMVG fails with uncaught exception when attempting to get intrinsic camera parameters.
+The table \ref{tab:time_complexity} shows what is the~RSS memory and~computation time of various combinations of the~program. What is rather strange is, that if cached SIFT detector and~extractor are used the~detection and~extraction time lowers significantly, but the~reconstruction time increases marginally. The~fact that this affects only the~SIFT detector makes it rather strange. This is probably related to~memory access as the~output for both cached and~uncached options are the~same. Also note that the~time when the~structure is refined by the~SLAM++ optimizer is significantly smaller than when it's not, yet the~result is much better (as described later in this section). Unfortunately there is no base of comparing our application with other solutions as the~VisualSFM uses GPU algorithms and~the~OpenMVG fails with uncaught exception when attempting to~get intrinsic camera parameters.
 
 \begin{table}[!htbp]
 	\begin{center}
 		\begin{tabular}{| l | l | l | l | l | l | l |}
 			\hline
 			\textbf{Detector} & \begin{tabular}[l]{@{}c@{}}\textbf{Feature}\\ \textbf{cached}\end{tabular} & \begin{tabular}[l]{@{}c@{}}\textbf{Structure}\\ \textbf{optimized}\end{tabular} & \begin{tabular}[l]{@{}c@{}}\textbf{Detection}\\ \textbf{time}\end{tabular} &  \begin{tabular}[l]{@{}c@{}}\textbf{Matching}\\ \textbf{time}\end{tabular}  & \begin{tabular}[l]{@{}c@{}}\textbf{Total}\\ \textbf{time}\end{tabular} & \begin{tabular}[l]{@{}c@{}}\textbf{Peak RSS}\\ \textbf{memory}\end{tabular}   \\ \hline 
-			FAST & yes & yes & .1210 & .6848 & 14.1492 & \\ \hline 
-			FAST & yes & no & .1092 & .6762 & 22.9874 & \\ \hline 
+			FAST & yes & yes & 0.1210 & 0.6848 & 14.1492 & \\ \hline 
+			FAST & yes & no & 0.1092 & 0.6762 & 22.9874 & \\ \hline 
 		 	FAST & no & yes & 7.8928 & 3.9695 & 24.2021 & \\ \hline  
 		 	FAST & no & no & 7.8734 & 3.9907 & 34.6032 & \\ \hline  
-		 	SIFT & yes & yes & .0571 & .1536 & 20.6526 & \\ \hline  
-		 	SIFT & yes & no & .0523 & .1552 & 20.8367 & \\ \hline  
-		 	SIFT & no & yes & 5.7621 & .8463 & 9.4593 & \\ \hline  
-		 	SIFT & no & no & 5.8035 & .8546 & 19.7536 & \\ \hline  
-		 	SURF & yes & yes & .0723 & .4800 & 8.9775 & \\ \hline  
-		 	SURF & yes & no & .0671 & .4742 & 16.5755 & \\ \hline  
+		 	SIFT & yes & yes & 0.0571 & 0.1536 & 20.6526 & \\ \hline  
+		 	SIFT & yes & no & 0.0523 & 0.1552 & 20.8367 & \\ \hline  
+		 	SIFT & no & yes & 5.7621 & 0.8463 & 9.4593 & \\ \hline  
+		 	SIFT & no & no & 5.8035 & 0.8546 & 19.7536 & \\ \hline  
+		 	SURF & yes & yes & 0.0723 & 0.4800 & 8.9775 & \\ \hline  
+		 	SURF & yes & no & 0.0671 & 0.4742 & 16.5755 & \\ \hline  
 		 	SURF & no & yes & 25.1957 & 1.7415 & 35.4105 & \\ \hline  
 		 	SURF & no & no & 25.2083 & 1.7537 & 44.7901 & \\ \hline  
 		\end{tabular}
-		\caption{Average time and memory complexity of the programme run on the Model House dataset. The feature are extracted using SIFT extractor and matched by FLANN matcher.}
+		\caption{Average time and~memory complexity of the~programme run on the~Model House dataset. The~feature are extracted using SIFT extractor and~matched by FLANN matcher.}
 		\label{tab:time_complexity}
 	\end{center}
 \end{table}
@@ -437,19 +903,19 @@ The table \ref{tab:time_complexity} shows what is the RSS memory and computation
 			SIFT & 1169.2 & 555 & 341.6 \\ \hline 
 			SURF & 2030.5 & 848.6 & 408.2 \\ \hline 
 		\end{tabular}
-		\caption{Time and memory complexity of the programme on the Model House dataset.}
+		\caption{Time and~memory complexity of the~programme on the~Model House dataset.}
 		\label{tab:keypoints_matches}
 	\end{center}
 \end{table}
 
-To give a full insight on the problem, table \ref{tab:keypoints_matches} shows how the feature, matches before and after RANSAC count changes in respect to different feature detectors. These data directly affect number of structure points and precision of the reconstruction and pose estimation. Up until this point there was no reason for any comparison between our solution and other programs. However, we can quite easily evaluate the RMSE of the pose estimation using the Blender and equation \ref{eq:RMSE}.  The results can be found in table \ref{tab:precision}. The difference between run with and without optimizer is apparent not only from the time complexity but also when it comes to precision. While the valid structure size does not change much, both the reprojection error and camera pose RMSE is improved by factor of ten if the system is optimized after each camera addition. When compared to the Visual SFM, our program creates at about the same structure size but the RMSE is double. It is worth noting that the Visual SFM does not reconstruct sequentially but instead matches each pair of images and calculates the structure from the whole system, while our solution in sequential mode only pairs each image with two other.
+To give a~full insight on the~problem, table \ref{tab:keypoints_matches} shows how the~feature, matches before and~after RANSAC count changes in respect to~different feature detectors. These data directly affect number of structure points and~precision of the~reconstruction and~pose estimation. Up until this point there was no reason for any comparison between our solution and~other programs. However, we can quite easily evaluate the~RMSE of the~pose estimation using the~Blender and~equation \ref{eq:RMSE}.  The~results can be found in table \ref{tab:precision}. The~difference between run with and~without optimizer is apparent not only from the~time complexity but also when it comes to~precision. While the~valid structure size does not change much, both the~reprojection error and~camera pose RMSE is improved by factor of ten if the~system is optimized after each camera addition. When compared to~the~Visual SFM, our program creates at about the~same structure size but the~RMSE is double. It is worth noting that the~Visual SFM does not reconstruct sequentially but instead matches each pair of images and~calculates the~structure from the~whole system, while our solution in sequential mode only pairs each image with two other.
 
 \begin{table}[!htbp]
 	\begin{center}
 		\begin{tabular}{| l | l | l | l | l | l |}
 			\hline
 			\textbf{Program} & \textbf{Detector} & \begin{tabular}[l]{@{}c@{}}\textbf{Structure}\\ \textbf{optimized}\end{tabular} & \begin{tabular}[l]{@{}c@{}}\textbf{Structure}\\ \textbf{points}\end{tabular} &  \begin{tabular}[l]{@{}c@{}}\textbf{Reprojection}\\ \textbf{error}\end{tabular}  & \begin{tabular}[l]{@{}c@{}}\textbf{Camera pose}\\ \textbf{RMSE}\end{tabular}  \\ \hline 
-			ours & FAST & yes & 5391 & 2403.83 & 0,04564 \\ \hline 
+			ours & FAST & yes & 5391 & 2403.83 & 0.04564 \\ \hline 
 			ours & FAST & no & 5289  & 66365.1 &  0.45026 \\ \hline 
 			ours & SIFT & yes & 1702 & 333.498 &  \\ \hline 
 			ours & SIFT & no & 1326 & 36439.5 & \\ \hline 
@@ -458,7 +924,7 @@ To give a full insight on the problem, table \ref{tab:keypoints_matches} shows h
 			\begin{tabular}[l]{@{}c@{}} Visual SFM\\ calibrated\end{tabular} & SIFT & yes & 1835 & -  & 0.02543\\ \hline 
 			\begin{tabular}[l]{@{}c@{}} Visual SFM\\ uncalibrated\end{tabular} & SIFT & yes & 1575 & - & 0.02139 \\ \hline 
 		\end{tabular}
-		\caption{The number of valid structure points, reprojection error and RMSE of the camera pose against reference values on the Model House dataset. The VisualSFM in calibrated case had fixed shared intrinsic camera parameters. The feature are extracted using SIFT extractor and matched by FLANN matcher.}
+		\caption{The number of valid structure points, reprojection error and~RMSE of the~camera pose against reference values on the~Model House dataset. The~VisualSFM in calibrated case had fixed shared intrinsic camera parameters. The~feature are extracted using SIFT extractor and~matched by FLANN matcher.}
 		\label{tab:precision}
 	\end{center}
 \end{table}
@@ -467,59 +933,59 @@ To give a full insight on the problem, table \ref{tab:keypoints_matches} shows h
 	\begin{center}
 		\includegraphics[keepaspectratio,width=\textwidth]{fig/pose_comparison.pdf}
 	\end{center}
-	\caption{Visualisation of the camera pose estimation measurement.}
+	\caption{Visualisation of the~camera pose estimation measurement.}
 	\label{fig:pose_comparison1}
 \end{figure} 
-
-The figure \ref{fig:pose_comparison1} shows visual representation of the camera poses in Blender where we have calculated how far off are they compared to the reference values. The only case where the camera poses are far off are the ones of our program without any structure refinement provided by SLAM++. Please note that this measurement is not precise as the scale is ambiguous between different programmes (and maybe even in the same program). Therefore the first and last camera's positions were matched to ensure similar scale and only the gaps between cameras differ. The figure \ref{fig:pose_comparison2} shows how do the optimized (red) and unoptimized (orange) cameras as well as structure differ. It is not quite visible in the picture, but the unoptimized structure is rotated about 15 degrees as well as shifted one tenth of the house length. The optimized structure is however quite on spot with the reference values (black dots).
-
-
 \begin{figure}[!htbp]
 	\begin{center}
 		\includegraphics[keepaspectratio,width=\textwidth]{fig/pose_comparison2.pdf}
 	\end{center}
-	\caption{Visualisation of the camera poses and structure from optimized and unoptimized run on the Model House dataset. The black dots is the reference structure.}
+	\caption{Visualisation of the~camera poses and~structure from optimized and~unoptimized run on the~Model House dataset. The~black dots are the~reference structure.}
 	\label{fig:pose_comparison2}
 \end{figure} 
 
-\subsection*{Unordered Case}
-While most image collections share same (and often known or easy to estimate) camera calibration, the case where this collection is sequenced and can be represented as single camera track is rather rare. The aim of this section is to evaluate two implemented methods of getting the camera tracks and how do they affect the reconstruction.
+The figure \ref{fig:pose_comparison1} shows visual representation of the~camera poses in Blender where we have calculated how far off are they compared to~the~reference values. The~only case where the~camera poses are far off are the~ones of our program without any structure refinement provided by SLAM++. Please note that this measurement is not precise as the~scale is ambiguous between different programmes (and maybe even in the~same program). Therefore the~first and~last camera's positions were matched to~ensure similar scale and~only the~gaps between cameras differ. The~figure \ref{fig:pose_comparison2} shows how do the~optimized (red) and~unoptimized (orange) cameras as well as structure differ. It is not quite visible in the~picture, but the~unoptimized structure is rotated about 15 degrees as well as shifted one tenth of the~house length. The~optimized structure is however quite on spot with the~reference values (black dots).
 
-TODO:  process ad write the experiments results (2 tables)
+\subsection*{Unordered Case}
+While most image collections share same (and often known or easy to~estimate) camera calibration, the~case where this collection is sequenced and~can be represented as single camera track is rather rare. The~aim of this section is to~evaluate two implemented methods of getting the~camera tracks and~how do they affect the~reconstruction.
+
+TODO:  process ad write the~experiments results (2 tables)
 \begin{verbatim}
 http://imagine.enpc.fr/~moulonp/publis/featureTracking_CVMP12.pdf
 http://openmvg.readthedocs.org/en/latest/openMVG/tracks/tracks/
 \end{verbatim}
 \section{Weakly Calibrated Case}
 \label{sec:experiments-weakly}
-As of now, the application requires a calibration in order to reconstruct properly. However, in this section we will be briefly evaluating other applications. This will serve as a basis for evaluation of the uncalibrated case once done.
+As of now, the~application requires a~calibration in order to~reconstruct properly. However, in this section we will be briefly evaluating other applications. This will serve as a~basis for evaluation of the~uncalibrated case once done.
 
-TODO: process and write the values (Červená Lhota dataset)
+TODO: process and~write the~values (Červená Lhota dataset)
 
-\chapter{Conclusion and Further Work}
+\chapter{Conclusion and~Further Work}
 \label{chapter:conclusion}
-\textit{This chapter presents the conclusion of the term project work. Further work is also outlined as this topic will be further developed as a part of the Masters thesis.}
+\textit{This chapter presents the~conclusion of the~masters thesis work. Further work is also outlined providing the application will continue as a part of the SLAM\textunderscore frontend framework.}
 
 \section{Conclusion}
-This term project has focused on the study of a means to estimate three-dimensional information from a two-dimensional image sequence. Usually, the first step is to create appropriate dataset. We summarized requirements on such dataset, identified what qualities the images should have and what sort of images should be filtered out. We provided a simple tool that allows downloading images in batches from the Flickr service and explained why we have decided to use additional sources of images as well. 
+This thesis has focused on the~study of a~means to~estimate three-dimensional information from a~two-dimensional image sequence. Usually, the~first step is to~create appropriate dataset. We summarized requirements on such dataset, identified what qualities the~images should have and~what sort of images should be filtered out. We have provided a~simple tool that allows downloading images in batches from the~Flickr and Google Images services and~explained why we have decided to~use additional image sources as well. 
 
-Another step in the 3D reconstruction is detection of the feature. A number of feature detectors were introduced and their characteristics described. We conducted a series of experiments which goal was to understand qualities of feature detection in context of the building reconstruction. Then the reader was introduced to the issue of extraction of the feature descriptors from the image. The extractors implemented in OpenCV were described and compared one to another. We finished the chapter with feature matching algorithms. All combinations of feature detectors, extractors and matchers were tested on a 100 image pair input set and the result evaluated. We have selected the best combination, FAST detector, SIFT extractor and FLANN matcher, for our problem which maintains a good ratio between performance and efficiency.
+Another step in the~3D reconstruction is detection of the~feature. A~number of feature detectors were introduced and~their characteristics described. We have conducted a~series of experiments which goal was to~understand qualities of feature detection in context of the~building reconstruction. Then the~reader was introduced to~the~issue of extraction of the~feature descriptors from the~image. The~extractors implemented in OpenCV were described and~compared one to~another. This section was enclosed by the feature matching algorithms, which provided us with a means to estimate relations between image pairs. All combinations of feature detectors, extractors and~matchers were tested on a~100 image pair input set and~the~results evaluated. The ultimate goal of this experiment was to select the best combination for our problem maintaining a good ratio between performance and and number of good matches. Ultimately the combination FAST detector, SIFT extractor and~FLANN matcher was selected, however few other promise fair results and are often used when evaluating the whole system.
 
-The problem of 3D information estimation was discussed and three different approaches of non-contact scanning outlined. We started with the stereo vision, where the depth can be directly computed from the image disparity. The problem gets more difficult when only one camera scans the 3D space. This approach, monocular vision, uses feature to calculate camera position and reconstruct the 3D structure. Lastly we talked about the uncalibrated approach, where the scene is being reconstructed from a number of images made by multiple cameras, each having a different calibration matrix. The pose estimation was outlined and difficulties with such approach identified.
+The problem of 3D information estimation was discussed and~three different approaches of non-contact scanning outlined. We started with the~stereoscopic vision, where the~depth can be directly computed from the~image disparity. The~problem gets more difficult when only one camera scans the~3D space. This approach, monocular vision, uses feature to~calculate camera position and~reconstruct the~3D structure. Lastly we talked about the~uncalibrated approach, where the~scene is being reconstructed from a~number of images made by multiple cameras, each having possibly a~different intrinsic camera parameters. The problem of pose estimation, structure reconstruction and optimization was presented as a mathematical model followed by our implementation.
 
-Lastly we have talked about existing solutions that are implementing the uncalibrated approach. Three different programs (Photosynth, VisualSFM and Bundler) were introduced and briefly evaluated. These programs will be matched against the final application implemented within the Masters thesis to evaluate its capabilities and performance.
+Lastly we have talked about existing solutions that are implementing the~monocular or uncalibrated approach. Several different programs (eg. VisualSFM, OpenMVG, 123d Catch, Photosynth) were introduced and briefly evaluated. Some of these program are used to compare the robustness and computational complexity of our program. The outputs of  was evaluated. If possible the results of these programs and our solution were compared to the ground truth as well. From the results we see that our solution is comparable to other existing software. The SLAM++ optimizer can minimise the pose estimation error by up to scale factor of ten while contributing to the total processing time by less then 10\%. 
 
 \section{Further Work}
-The research and work presented in this paper proposes the following subjects for further work:
+The research and~work presented in this paper proposes the~following subjects for further work:
 \begin{itemize}
-	\item Completion of the feature detection and matching part of the uncalibrated app. As of now, the program can detect and match feature, however, it would be useful to store such information in a binary form to be able to use it as a input for the VisualSFM. This would allow us to test how does the reconstruction improve with a different detector.
+	\item Completion of the~uncalibrated scenario. As of now, the~program can reconstruct 3D structure if the intrinsic camera parameters are known.
 	
-	\item The feature detection and matching should be further tested in order to find best combination. For now only default parameters were used, which gave an overall idea of the algorithms performance, but with different parameters some of them may perform even better.
+	\item Removing OpenCV code. OpenCV is an enormous computer vision library which is constantly evolving and introducing new feature. The side effect of this phenomenon is limited backwards compatibility and frequent changes to some interfaces. It is hard to maintain the functionality for multiple versions of the OpenCV library. The omnipresent conversion between Eigen data structures and OpenCV  adds and overhead.
 	
-	\item A further steps should be implemented into the uncalibrated app including, among others, camera calibration and pose estimation and the 3D structure reconstruction. The result of this step will be sparse point cloud that can be visualized using software like Meshlab.
+	\item Improving the overall performance of the application. The application works sequentially on the CPU. But many of the problems can be parallelized and transferred on the GPU. To name few: keypoints detection and feature extraction, feature matching.
 	
-	\item With the application being able to create sparse reconstruction, further description of the math behind the problem needs to be provided. This includes but is not limited to fundamental matrix estimation, camera calibration and epipolar geometry.
+	\item Extending the application functionality to dense reconstruction and automated surface reconstruction.
 	
-	\item Because Flickr service does not contain enough data from Czech Republic, a script to download pictures from different internet sources like Google Images would be useful. Once images are downloaded, it would be advantageous to filter these data using some application or a custom made program.
+	\item Introducing additional sources of the images. and filtering the input datasets automatically to remove images with watermarks, night-time pictures, edited pictures etc.
+	
+	\item Implementation of other models of camera lens distortion on top of the radial distortion.
 \end{itemize}
 %=========================================================================
