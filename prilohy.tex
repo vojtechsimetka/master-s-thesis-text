@@ -2,9 +2,9 @@
 \begin{itemize}
 	\item \textbf{thesis.pdf} - PDF version of the thesis text.
 	\item \textbf{tex/} - \LaTeX ~source codes of the thesis text.
-	\item \textbf{src/} - Source codes of our program described in chapter \ref{chapter:implementation}.
-	\item \textbf{datasets/} - Collected image datasets described in the section \ref{sec:experiments-datasets} and some other.
-	\item \textbf{experiments/} - Experimental results used in chapter \ref{chapter:experiments}.
+	\item \textbf{src/} - Source codes of our program described in chapter~\ref{chapter:implementation}.
+	\item \textbf{datasets/} - Collected image datasets described in the section~\ref{sec:experiments-datasets} and some other.
+	\item \textbf{experiments/} - Experimental results used in chapter~\ref{chapter:experiments}.
 	\item \textbf{third\textunderscore party/} - Other Structure from Motion and Bundle Adjustment application sources.
 	\item \textbf{samples/} (works only if whole content of the DVD is copied to a local directory)
 	\begin{itemize}
@@ -18,10 +18,17 @@
 	\item \textbf{bin/} - Location of a binary version of the program after running \texttt{install.sh}.
 \end{itemize}
 \chapter{Poster}
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[keepaspectratio,width=10cm]{fig/poster.pdf}
+	\end{center}
+	\caption{Preview of poster presenting our program.}
+	\label{fig:posteri}
+\end{figure}
 \chapter{Installation and Sparse Reconstruction}
 \chapter{Dense Reconstruction with VisualSFM}
 \label{visualsfm:reconstruction}
-The VisualSFM is an amazing collection of software that can create dense reconstruction from random images of a static scene. The application has a graphical user interface depicted in figure \ref{fig:visualsfm-gui}.
+The VisualSFM is an amazing collection of software that can create dense reconstruction from random images of a static scene. The application has a graphical user interface depicted in figure~\ref{fig:visualsfm-gui}.
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[keepaspectratio,width=\textwidth]{fig/visualsfm-gui.pdf}
@@ -35,7 +42,7 @@ The whole process of reconstruction follows:
 	\item[1.] Choose \textbf{File} $\rightarrow$ \textbf{Open+ Multi Images}, navigate yourself to the dataset and select desired photos. After a while the photos should load into the system and should be displayed in a matrix.
 	\item[2.] Next we need to compute keypoints and feature correspondences. Click \includegraphics[keepaspectratio,width=.5cm]{fig/visualsfm-compute-matches.png} or choose \textbf{SfM} $\rightarrow$ \textbf{Pairwise Matching} $\rightarrow$ \textbf{Compute Missing Match}. The system will now detect keypoints and calculate matches for all new photos. These feature and matches are implicitly cached in separate files \texttt{.sift} and \texttt{.mat}. Please note that this step may take a significant amount of time. The progress is shows in the \textbf{Log Window}.
 	\item[3.] Click on the button \includegraphics[keepaspectratio,width=.5cm]{fig/visualsfm-sparse-reconstruction.png} or choose \textbf{SfM} $\rightarrow$ \textbf{Reconstruct Sparse} to compute sparse reconstruction. The view should change slightly showing the reconstructed 3D scene. The program may not create single model for the input dataset, but you can browse distinct models by pressing up and down arrow keys (model number is indicated in the window name between first pair of square brackets).
-	\item[4.] Last step is running the dense reconstruction. Click \includegraphics[keepaspectratio,width=.5cm]{fig/visualsfm-dense-reconstruction.png} or choose \textbf{SfM} $\rightarrow$ \textbf{Reconstruct Dense}. You will be prompted to choose working directory and once all the files are saved to this directory, the PMVS2 dense reconstruction starts. Note that the dense reconstruction is a complex problem and takes a lot of time. Once finished, you can toggle between sparse and dense with hotkey \textbf{tabulator}. An example of sparse and dense reconstruction is in the figure \ref{fig:visualsfm-sparse-dense}.
+	\item[4.] Last step is running the dense reconstruction. Click \includegraphics[keepaspectratio,width=.5cm]{fig/visualsfm-dense-reconstruction.png} or choose \textbf{SfM} $\rightarrow$ \textbf{Reconstruct Dense}. You will be prompted to choose working directory and once all the files are saved to this directory, the PMVS2 dense reconstruction starts. Note that the dense reconstruction is a complex problem and takes a lot of time. Once finished, you can toggle between sparse and dense with hotkey \textbf{tabulator}. An example of sparse and dense reconstruction is in the figure~\ref{fig:visualsfm-sparse-dense}.
 \end{itemize}
 The output, dense structure of each model is stored in folder \texttt{models} in a PLY format. The estimated camera calibrations can be found in the text file \texttt{cameras\textunderscore v2.txt}. The camera centres are stored in the PLY format as  \texttt{centers-[model\textunderscore ID].ply} containing the 3D locations for every camera in each model.
 \begin{figure}[h]
@@ -75,7 +82,7 @@ The VisualSFM offers many hidden functionality useful for reconstructing the 3D 
 This chapter describes the process of creation textured 3D polygonal model from dense point cloud. It assume that the user have a 3D dense reconstruction in a format produced by VisualSFM. The process start in MeshLab:
 \begin{itemize}
 	\item[1.] In MeshLab, select \textbf{File} $\rightarrow$ \textbf{OpenProject} and choose file \texttt{bundle.rd.out} in the dense reconstruction data folder. Next prompt requires the \texttt{list.txt} from the same folder. 
-	\item[2.] Right now the sparse point cloud is opened which is not what we want. Click the icon \includegraphics[keepaspectratio,width=.5cm]{fig/meshlab-layers.png} or \textbf{View} $\rightarrow$ \textbf{Show Layer Dialog}. A new toolbar will appear on the right of the screen. Click on the model with the right mouse button and from the context menu select \textbf{Delete Current Mesh} (as depicted in figure \ref{fig:meshlab-1}).
+	\item[2.] Right now the sparse point cloud is opened which is not what we want. Click the icon \includegraphics[keepaspectratio,width=.5cm]{fig/meshlab-layers.png} or \textbf{View} $\rightarrow$ \textbf{Show Layer Dialog}. A new toolbar will appear on the right of the screen. Click on the model with the right mouse button and from the context menu select \textbf{Delete Current Mesh} (as depicted in figure~\ref{fig:meshlab-1}).
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[keepaspectratio,width=9cm]{fig/meshlab-1.pdf}
