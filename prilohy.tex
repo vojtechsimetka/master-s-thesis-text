@@ -1,20 +1,14 @@
-\chapter{Contend of the DVD}
+\chapter{Content of the DVD}
 \begin{itemize}
 	\item \textbf{thesis.pdf} - PDF version of the thesis text.
 	\item \textbf{tex/} - \LaTeX ~source codes of the thesis text.
 	\item \textbf{src/} - Source codes of our program described in chapter~\ref{chapter:implementation}.
 	\item \textbf{datasets/} - Collected image datasets described in the section~\ref{sec:experiments-datasets} and some other.
+	\item \textbf{scripts/} - Some of the scripts used in evaluation of our programme.
 	\item \textbf{experiments/} - Experimental results used in chapter~\ref{chapter:experiments}.
 	\item \textbf{third\textunderscore party/} - Other Structure from Motion and Bundle Adjustment application sources.
-	\item \textbf{samples/} (works only if whole content of the DVD is copied to a local directory)
-	\begin{itemize}
-		\item \textbf{calibrated\textunderscore ordered/} - Runs predefined scenario with known intrinsic camera parameters on ordered image collection.
-		\item \textbf{calibrated\textunderscore unordered/} - Runs predefined scenario with known intrinsic camera parameters on unordered image collection.
-		\item \textbf{calibrated\textunderscore custom/} - Runs structure from motion on a custom dataset (images must be in folder \texttt{dataset}) from one camera where the calibration pictures of checker board must be provided in folder \texttt{calibration}.
-		\item \textbf{uncalibrated/} - Runs predefined scenario with unknown camera calibration on unordered image collection.
-		\item \textbf{uncalibrated\textunderscore custom/} - Runs the program on a custom dataset (on images in folder \texttt{dataset}) with unknown calibration.
-	\end{itemize}
 	\item \textbf{install.sh} - Installation script (requires OpenCV and cmake to be installed).
+	\item \textbf{README} - Read me file describing the program interface and simple samples.
 	\item \textbf{bin/} - Location of a binary version of the program after running \texttt{install.sh}.
 \end{itemize}
 \chapter{Poster}
@@ -25,7 +19,7 @@
 	\caption{Preview of poster presenting our program.}
 	\label{fig:posteri}
 \end{figure}
-\chapter{Installation and Sparse Reconstruction}
+
 \chapter{Dense Reconstruction with VisualSFM}
 \label{visualsfm:reconstruction}
 The VisualSFM is an amazing collection of software that can create dense reconstruction from random images of a static scene. The application has a graphical user interface depicted in figure~\ref{fig:visualsfm-gui}.

@@ -1,57 +1,41 @@
-@MISC {www:meshlab,
-	author = "{WWW pages}",  
-	title = "{M}esh{L}ab [online]",
-	year =         "[cit. 2014-12-7]",
-	howpublished=  "\url{http://meshlab.sourceforge.net}",
-}
-   
-@MISC {www:pcl,
-	author = "{WWW pages}",  
-	title = "{PCL} - {P}oint {C}loud {L}ibrary ({PCL}) [online]",
-	year = "[cit. 2014-12-7]",
-	howpublished = "\url{http://pointclouds.org}",
-}
-   
-@MISC {www:slam,
-	author = "{WWW pages}",  
-	title = "{SLAM}++ $|$ {S}ource{F}orge.net [online]",
-	year = "[cit. 2014-12-7]",
-	howpublished = "\url{http://sourceforge.net/projects/slam-plus-plus/}",
+@InProceedings{PCL,
+  author    = {Radu Bogdan Rusu and Steve Cousins},
+  title     = {{3D is here: Point Cloud Library (PCL)}},
+  booktitle = {{IEEE International Conference on Robotics and Automation (ICRA)}},
+  month     = {May 9-13},
+  year      = {2011},
+  address   = {Shanghai, China}
 }
 
-@MISC {www:slam_frontend,
-	author = "{WWW pages}",  
-	title = "{SLAM\textunderscore frontend} $|$ {S}ource{F}orge.net [online]",
-	year = "[cit. 2014-12-16]",
-	howpublished = "\url{http://sourceforge.net/projects/slamfrontend/}",
+@article{meshlab,
+  author       = "Cignoni, Paolo and Corsini, Massimiliano and Ranzuglia, Guido",
+  title        = "MeshLab: an Open-Source 3D Mesh Processing System",
+  journal      = "ERCIM News",
+  number       = "73",
+  pages        = "45--46",
+  month        = "April",
+  year         = "2008",
+  url          = "\url{http://vcg.isti.cnr.it/Publications/2008/CCR08}"
 }
    
-@MISC {www:bundler,
-	author = "{WWW pages}",  
-	title = "{B}undler - {S}tructure from {M}otion ({S}f{M}) for {U}nordered {I}mage {C}ollections  [online]",
-	year = "[cit. 2014-12-8]",
-	howpublished = "\url{http://www.cs.cornell.edu/~snavely/bundler/}",
-}
-   
-@MISC {www:visual_sfm,
-	author = "{WWW pages}",  
-	title = "{V}isual{SFM} : {A} {V}isual {S}tructure from {M}otion {S}ystem [online]",
-	year = "[cit. 2014-12-8]",
-	howpublished = "\url{http://ccwu.me/vsfm/index.html}",
-}
-
-@MISC {www:photosynth,
-	author = "{WWW pages}",  
-	title = " {P}hotosynth - {C}apture your world in 3{D}. [online]",
-	year = "[cit. 2014-12-8]",
-	howpublished = "\url{https://photosynth.net}",
-}
-
-@MISC {www:orb,
-	author = "{WWW pages}",  
-	title = "{ORB} ({O}riented {FAST} and {R}otated {BRIEF}) — {O}pen{CV} 3.0.0-dev documentation. [online]",
-	year = "[cit. 2014-12-14]",
-	howpublished = "\url{http://docs.opencv.org/trunk/doc/py\_tutorials/py\_feature2d/py\_orb/py\_orb.html}",
+@article{bundler,
+ author = {Snavely, Noah and Seitz, Steven M. and Szeliski, Richard},
+ title = {Photo Tourism: Exploring Photo Collections in 3D},
+ journal = {ACM Trans. Graph.},
+ issue_date = {July 2006},
+ volume = {25},
+ number = {3},
+ month = jul,
+ year = {2006},
+ issn = {0730-0301},
+ pages = {835--846},
+ numpages = {12},
+ url = {http://doi.acm.org/10.1145/1141911.1141964},
+ doi = {10.1145/1141911.1141964},
+ acmid = {1141964},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+ keywords = {image-based modeling, image-based rendering, photo browsing, structure from motion},
 }
 
 @INPROCEEDINGS{article:orb, 
@@ -65,46 +49,50 @@ keywords={computer vision;image matching;object detection;object recognition;tra
 doi={10.1109/ICCV.2011.6126544}, 
 ISSN={1550-5499},}
 
-@MISC {www:harris,
-	author = "{WWW pages}",  
-	title = "{H}arris corner detector — {O}pen{CV} 2.4.9.0 documentation. [online]",
-	year = "[cit. 2014-12-14]",
-	howpublished = "\url{http://docs.opencv.org/doc/tutorials/features2d/trackingmotion/ harris\_detector/harris\_detector.html}",
+@article{surf,
+ author = {Bay, Herbert and Ess, Andreas and Tuytelaars, Tinne and Van Gool, Luc},
+ title = {Speeded-Up Robust Features (SURF)},
+ journal = {Comput. Vis. Image Underst.},
+ issue_date = {June, 2008},
+ volume = {110},
+ number = {3},
+ month = jun,
+ year = {2008},
+ issn = {1077-3142},
+ pages = {346--359},
+ numpages = {14},
+ url = {http://dx.doi.org/10.1016/j.cviu.2007.09.014},
+ doi = {10.1016/j.cviu.2007.09.014},
+ acmid = {1370556},
+ publisher = {Elsevier Science Inc.},
+ address = {New York, NY, USA},
+ keywords = {Camera calibration, Feature description, Interest points, Local features, Object recognition},
 }
 
-@MISC {www:surf,
-	author = "{WWW pages}",  
-	title = "{SURF}: {S}peeded {U}p {R}obust {F}eatures. [online]",
-	year = "[cit. 2014-12-14]",
-	howpublished = "\url{http://www.vision.ee.ethz.ch/~surf/papers.html}",
+@inproceedings{flann,
+  author    = {Marius Muja and David G. Lowe},
+  title     = {Fast Approximate Nearest Neighbors with Automatic Algorithm Configuration},
+  booktitle = {International Conference on Computer Vision Theory and Application 
+               VISSAPP'09)},
+  publisher = {INSTICC Press},
+  year      = {2009},
+  pages     = {331-340}
 }
 
-@MISC {www:flann,
-	author = "{WWW pages}",  
-	title = "{FLANN} - {F}ast {L}ibrary for {A}pproximate {N}earest {N}eighbors : {FLANN} - {FLANN} browse. [online]",
-	year = "[cit. 2014-12-14]",
-	howpublished = "\url{http://www.cs.ubc.ca/research/flann/}",
-}
-
-@MISC {www:opencv,
-	author = "{WWW pages}",  
-	title = "{OpenCV | OpenCV}. [online]",
-	year = "[cit. 2014-12-14]",
-	howpublished = "\url{http://opencv.org}",
-}
-
-@ARTICLE {article:brief,
-	author = "Michael Calonder and Vincent Lepetit and Christoph Strecha and Pascal Fua",  
-	title = "{BRIEF}: {B}inary {R}obust {I}ndependent {E}lementary {F}eatures [online]",
-	year = "[cit. 2014-12-8]",
-	howpublished = "\url{http://www.robots.ox.ac.uk/~vgg/rg/papers/CalonderLSF10.pdf}",
-}
-
-@ARTICLE {www:sift_surf,
-	author = "Lin Longfei",  
-	title = "{D}ifference between {SURF} and {SIFT}?where and when to use this algo? - {Q}uora [online]",
-	year = "[cit. 2014-12-8]",
-	howpublished = "\url{http://www.quora.com/Image-Processing/Difference-between-SURF-and-SIFT-where-and-when-to-use-this-algo}",
+@inproceedings{article:brief,
+ author = {Calonder, Michael and Lepetit, Vincent and Strecha, Christoph and Fua, Pascal},
+ title = {BRIEF: Binary Robust Independent Elementary Features},
+ booktitle = {Proceedings of the 11th European Conference on Computer Vision: Part IV},
+ series = {ECCV'10},
+ year = {2010},
+ isbn = {3-642-15560-X, 978-3-642-15560-4},
+ location = {Heraklion, Crete, Greece},
+ pages = {778--792},
+ numpages = {15},
+ url = {http://dl.acm.org/citation.cfm?id=1888089.1888148},
+ acmid = {1888148},
+ publisher = {Springer-Verlag},
+ address = {Berlin, Heidelberg},
 }
 
 @INPROCEEDINGS{article:dense, 
@@ -173,13 +161,6 @@ keywords={computer vision;feature extraction;image matching;transforms;BRISK met
 doi={10.1109/ICCV.2011.6126542}, 
 ISSN={1550-5499},}
 
-@INPROCEEDINGS{article:photo_tourism, 
-	author={Noah Snavely and Steven M. Seitz and Richard Szeliski}, 
-	booktitle={ACM Transactions on Graphics (Proceedings of SIGGRAPH 2006)}, 
-	title={Photo Tourism: Exploring image collections in 3D}, 
-	year={2006},
-}
-
 @INPROCEEDINGS{article:rome_in_a_day, 
 	author={Sameer Agarwal and Noah Snavely and Ian Simon and Steven M. Seitz and Richard Szeliski}, 
 	booktitle={International Conference on Computer Vision}, 
@@ -213,11 +194,13 @@ ISSN={1550-5499},}
 }
 
 @Book{book:multiple_view_geometry, 
-    author = "Hartley, R.~I. and Zisserman, A.",
-    title = "Multiple View Geometry in Computer Vision",
-    edition = "Second",
-    year = "2004",
-    publisher = "Cambridge University Press, ISBN: 0521540518"
+	author = {Hartley, Richard and Zisserman, Andrew},
+	title = {Multiple View Geometry in Computer Vision},
+	year = {2003},
+	isbn = {0521540518},
+	edition = {2},
+	publisher = {Cambridge University Press},
+	address = {New York, NY, USA},
 }
 
 @INPROCEEDINGS{cityofsights_ISMAR2010,
@@ -233,61 +216,12 @@ ISSN={1550-5499},}
   month = {Oct. 13-16}
 }
 
-
-@MISC {www:oxford_models,
-	author = "{WWW pages}",  
-	title = "{V}isual {G}eometry {G}roup {H}ome {P}age. [online]",
-	year = "[cit. 2015-07-10]",
-	howpublished = "\url{http://www.robots.ox.ac.uk/~vgg/data/data-mview.html}",
-}
-
-@MISC {www:blender,
-	author = "{WWW pages}",  
-	title = "blender.org - {H}ome of the {B}lender project - {F}ree and {O}pen {3D} {C}reation {S}oftware. [online]",
-	year = "[cit. 2015-07-10]",
-	howpublished = "\url{http://www.blender.org}",
-}
-
-@MISC {www:blender_precise_align,
-	author = "{WWW pages}",  
-	title = "{E}xtensions:2.6/{P}y/{S}cripts/{3D} interaction/{P}recise {A}lign - {B}lender{W}iki. [online]",
-	year = "[cit. 2015-07-10]",
-	howpublished = "\url{http://wiki.blender.org/index.php/Extensions:2.6/Py/Scripts/3D\_interaction /Precise\_Align}",
-}
-
-@MISC {www:libmv,
-	author = "{WWW pages}",  
-	title = "libmv/libmv. [online]",
-	year = "[cit. 2015-07-11]",
-	howpublished = "\url{https://github.com/libmv/libmv}",
-}
-
-@MISC {www:nvm,
-	author = "{WWW pages}",  
-	title = "{V}isual{SFM} : {A} {V}isual {S}tructure from {M}otion {S}ystem - {D}ocumentation. [online]",
-	year = "[cit. 2015-07-11]",
-	howpublished = "\url{http://ccwu.me/vsfm/doc.html\#nvm}",
-}
-
-@MISC {www:sure,
-	author = "{WWW pages}",  
-	title = "SURE. [online]",
-	year = "[cit. 2015-07-14]",
-	howpublished = "\url{http://www.ifp.uni-stuttgart.de/publications/software/sure/index.en.html}",
-}
-
-@MISC {www:cmpmvs,
-	author = "{WWW pages}",  
-	title = "{CMP} {S}f{M} {W}eb {S}ervice. [online]",
-	year = "[cit. 2015-07-14]",
-	howpublished = "\url{http://ptak.felk.cvut.cz/sfmservice/websfm.pl?menu=cmpmvs}",
-}
-
-@MISC {www:sba,
-	author = "{WWW pages}",  
-	title = "{S}parse {B}undle {A}djustment in {C}/{C}++. [online]",
-	year = "[cit. 2015-07-14]",
-	howpublished = "\url{http://users.ics.forth.gr/~lourakis/sba/}",
+@inproceedings {www:sure,
+	author = "{Mathias Rothermel, Konrad Wenzel, Dieter Fritsch, Norbert Haala}",  
+	title = "{SURE: Photogrammetric Surface Reconstruction from Imagery}",
+	year = "{4–5 December 2012}",
+	booktitle = "{Proceedings of LC3D Workshop}",
+	publisher = "{Berlin, Germany}",
 }
 
 @INPROCEEDINGS{book:cmpmvs,
@@ -297,64 +231,12 @@ ISSN={1550-5499},}
   year = {2011},
 }
 
-@misc{openMVG,
-  author = "Pierre Moulon and Pascal Monasse and Renaud Marlet and Others",
-  title = "{OpenMVG}",
-  howpublished = "\url{https://github.com/openMVG/openMVG}",
-}
-
-@misc{cmvs,
-  author = "Yasutaka Furukawa",
-  title = "{CMVS}",
-  howpublished = "\url{http://www.di.ens.fr/cmvs/}",
-}
-
-@misc{pmvs,
-  author = "Yasutaka Furukawa and Jean Ponce ",
-  title = "{PMVS2}",
-  howpublished = "\url{http://www.di.ens.fr/pmvs/}",
-}
-
-@MISC {sketchup,
-	author = "{WWW pages}",  
-	title = "{3D for Everyone | SketchUp}. [online]",
-	year = "[cit. 2015-07-14]",
-	howpublished = "\url{http://www.sketchup.com}",
-}
-
-@MISC {sketchup-modeling,
-	author = "{WWW pages}",  
-	title = "{Match Photo: Modeling from photos | SketchUp Knowledge Base}. [online]",
-	year = "[cit. 2015-07-14]",
-	howpublished = "\url{http://help.sketchup.com/en/article/94920}",
-}
-
-@MISC {123dcatch,
-	author = "{WWW pages}",  
-	title = "{Autodesk 123D Catch | Generate 3d model from photos}. [online]",
-	year = "[cit. 2015-07-14]",
-	howpublished = "\url{http://www.123dapp.com/catch}",
-}
-@MISC {hamming_distance,
-	author = "{University of Manchester}",  
-	title = "{Coding Theory lecture notes}. [online]",
-	year = "[cit. 2015-07-14]",
-	howpublished = "\url{http://www.maths.manchester.ac.uk/~pas/code/notes/part2.pdf}",
-}
-
 @MISC{vlfeat,
  Author = "{A. Vedaldi and B. Fulkerson}",
  Title = "{VLFeat: An Open and Portable Library
           of Computer Vision Algorithms}",
  Year  = "{2008}",
  howpublished = "\url{http://www.vlfeat.org/}",
- }
-
-@MISC{dataset-temple,
- Author = "{WWW pages}",
- Title = "{ vision.middlebury.edu/mview/data}",
- Year  = "[cit. 2015-07-14]",
- howpublished = "\url{http://vision.middlebury.edu/mview/data/}",
  }
 
 @Book{nearest_neighbour_search, 
@@ -366,40 +248,11 @@ ISSN={1550-5499},}
     publisher = "Springer Publishing Company, Incorporated"
 }
 
-@MISC{ply-format,
- Author = "{WWW pages}",
- Title = "{PLY - Polygon File Format}",
- Year  = "[cit. 2015-07-14]",
- howpublished = "\url{http://paulbourke.net/dataformats/ply/}",
- }
-
-@MISC{www:extrinsic-camera,
- Author = "{WWW pages}",
- Title = "{Dissecting the Camera Matrix, Part 2: The Extrinsic Matrix}",
- Year  = "[cit. 2015-07-14]",
- howpublished = "\url{http://ksimek.github.io/2012/08/22/extrinsic/}",
- }
- 
-@MISC{www:multi-view-geometry-presentation,
- Author = "{Andrew Zisserman and Marc Pollefeys}",
- Title = "{Multiple View Geometry}",
- Year  = "[cit. 2015-07-14]",
- howpublished = "\url{http://www.robots.ox.ac.uk/~az/tutorials/cvpr03_part1.pdf}",
- }
- 
-@MISC{www:visual-3D-modeling,
- Author = "{ Marc Pollefeys}",
- Title = "{Visual 3D Modeling from Images}",
- Year  = "[cit. 2015-07-14]",
- howpublished = "\url{http://www.cs.unc.edu/~marc/tutorial/}",
- }
- 
 @MISC{elements-of-computer-vision,
  Author = "{Andrea Fusiello}",
  Title = "{Elements of Geometric Computer Vision}",
  Year  = "2012",
   month = {Oct. 16},
- howpublished = "\url{http://www.diegm.uniud.it/fusiello/papers/egcv12.pdf}",
  }
  
 @book{solem,
@@ -420,18 +273,17 @@ ISSN={1550-5499},}
   year = 2012
 }
 
-@MISC{feature-tracking,
- Author = "{Pierre Moulon and Pascal Monasse}",
- Title = "{Unordered feature tracking made fast and easy}",
- Year  = "2012",
- howpublished = "CVMP 2012, \url{http://imagine.enpc.fr/~moulonp/publis/featureTracking_CVMP12.pdf}",
- }
+@inproceedings{feature-tracking,
+	Author = "{Pierre Moulon and Pascal Monasse}",
+	Title = "{Unordered feature tracking made fast and easy}",
+	Year  = "2012",
+	booktitle = "{CVMP 2012}",
+}
  
 @inproceedings{mser,
  author = {Donoser, Michael and Bischof, Horst},
  title = {Efficient Maximally Stable Extremal Region (MSER) Tracking},
  booktitle = {Proceedings of the 2006 IEEE Computer Society Conference on Computer Vision and Pattern Recognition - Volume 1},
- howpublished = "CVMP 2012, \url{http://imagine.enpc.fr/~moulonp/publis/featureTracking_CVMP12.pdf}",
  series = {CVPR '06},
  year = {2006},
  isbn = {0-7695-2597-0},
@@ -452,19 +304,42 @@ ISSN={1550-5499},}
  publisher = {Cambridge University Press},
  address = {New York, NY, USA},
  }
- 
-@MISC{www:exif,
- Author = "{TsuruZoh Tachibanaya}",
- Title = "{Exif file format}",
- Year  = "[cit. 2015-07-25]",
- howpublished = "\url{http://www.media.mit.edu/pia/Research/deepview/exif.html}",
- }
- 
- @misc{siftgpu, 
-Author = {Changchang Wu},
-Title = {Sift{G}{P}{U}: A {G}{P}{U} Implementation of Scale Invariant Feature Transform ({S}{I}{F}{T})}, 
-Howpublished = {\url{http://cs.unc.edu/~ccwu/siftgpu}},
-Year         = {2007}}
+
+@MISC{Hartley96triangulation,
+    author = {Richard Hartley and Peter Sturm},
+    title = {Triangulation},
+    year = {1996}
+}
+
+@inproceedings{Alismail_2011_6990,
+   author = "Hatem Said Alismail and Brett Browning and M Bernardine Dias",
+   title = "Evaluating Pose Estimation Methods for Stereo Visual Odometry on Robots",
+   booktitle = "the 11th International Conference on Intelligent Autonomous Systems (IAS-11)",
+   year = "2011",
+}
+
+@inproceedings{nlsq,
+   author = "{L. Polok, V. Ila, M. Solony, P. Smrz and P. Zemcik}",
+   title = "{Incremental Block Cholesky Factorization for Nonlinear Least Squares in Robotics}",
+   booktitle = "{Proceedings of Robotics: Science and Systems 2013}",
+   publisher = "{MIT Press}",
+   year = "{2013}",
+}
+
+@TECHREPORT{Lourakis04thedesign,
+    author = {Manolis I. A. Lourakis and Manolis I. A. Lourakis and Antonis A. Argyros and Antonis A. Argyros},
+    title = {The design and implementation of a generic sparse bundle adjustment software package based on the levenberg-marquardt algorithm},
+    institution = {},
+    year = {2004}
+}
+
+@inproceedings{cathedral,
+   author = "{Hansung Kim and Adrian Hilton}",
+   title = "{Influence of Colour and Feature Geometry on Multi-modal 3D Point Clouds Data Registration}",
+   booktitle = "{2nd International Conference on 3D Vision, 3DV 2014, Tokyo, Japan, December 8-11, 2014}",
+   pages = "{202--209}",
+   year = "{2014}",
+}
  
 @inproceedings{www:multicore-ba,
  	author = {Changchang Wu and Agarwal, S. and Curless, B. and Seitz, S. M.},
@@ -481,4 +356,21 @@ Year         = {2007}}
  publisher = {IEEE Computer Society},
  address = {Washington, DC, USA},
  keywords = {space efficient algorithms, bundle adjustment algorithm, inexact Newton algorithm, 3D scene reconstruction, GPU, multicore CPU},
-} 
+}
+
+@article{pmvs,
+  author    = "Yasutaka Furukawa and Jean Ponce",
+  title     = "Accurate, Dense, and Robust Multi-View Stereopsis",
+  journal   = "IEEE Trans. on Pattern Analysis and Machine Intelligence",
+  year = "2010",
+  volume = "32",
+  number = "8",
+  pages = "1362--1376"
+}
+
+@inproceedings{cmvs,
+author = "Yasutaka Furukawa and Brian Curless and Steven M. Seitz and Richard Szeliski",
+title = "Towards Internet-scale Multi-view Stereo",
+booktitle = "CVPR",
+year = "2010"
+}
